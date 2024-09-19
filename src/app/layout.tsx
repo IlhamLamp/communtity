@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
 
-// import { config } from '@fortawesome/fontawesome-svg-core'
-// import '@fortawesome/fontawesome-svg-core/styles.css'
-// config.autoAddCss = false
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+config.autoAddCss = false
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
 

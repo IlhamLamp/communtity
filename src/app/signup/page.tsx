@@ -1,5 +1,5 @@
-// import { faAt, faLock, faUser } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAt, faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
 const SignUpPage: React.FC = () => {
@@ -17,7 +17,7 @@ const SignUpPage: React.FC = () => {
 							<div className="mb-4 md:flex md:justify-between">
 								<div className="mb-4 md:mr-2 md:mb-0">
 									<div className="flex gap-2 items-center mb-2">
-										{/* <FontAwesomeIcon icon={faUser} />	 */}
+										<FontAwesomeIcon icon={faUser} />	
 										<label className="block text-sm font-bold text-gray-700" htmlFor="firstName">
 											First Name
 										</label>
@@ -43,7 +43,7 @@ const SignUpPage: React.FC = () => {
 							</div>
 							<div className="mb-4">
 								<div className="flex gap-2 items-center mb-2">
-									{/* <FontAwesomeIcon icon={faAt} /> */}
+									<FontAwesomeIcon icon={faAt} />
 									<label className="block text-sm font-bold text-gray-700" htmlFor="email">
 										Email
 									</label>
@@ -58,7 +58,7 @@ const SignUpPage: React.FC = () => {
 							<div className="mb-4 md:flex md:justify-between">
 								<div className="mb-4 md:mr-2 md:mb-0">
 									<div className="flex gap-2 items-center mb-2">
-										{/* <FontAwesomeIcon icon={faLock} />	 */}
+										<FontAwesomeIcon icon={faLock} />	
 										<label className="block text-sm font-bold text-gray-700" htmlFor="password">
 											Password
 										</label>
