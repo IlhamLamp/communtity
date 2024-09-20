@@ -5,6 +5,7 @@ import { Poppins } from "next/font/google";
 
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import Header from "@/components/Header";
 config.autoAddCss = false
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: Readonly<{
   return (
     <html lang="en" className="scroll-smooth">
       <body className={poppins.className}>
+        <Header />
         <main>
           {children}
         </main>

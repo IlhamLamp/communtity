@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { navMenuItems } from "./data";
 
-const Navbar = () => {
+const Header = () => {
 
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isProfileMobileClicked, setIsProfileMobileClicked] = useState<boolean>(false);
@@ -44,15 +44,35 @@ const Navbar = () => {
       </div>   
       
       <div className='basis-1/5 flex items-center gap-6 justify-end w-full'>
+
         {/* SEARCH BAR */}
-        <div className='hidden md:flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-slate-600 px-2'>
+        <div className='hidden md:flex ml-5 items-center gap-2 text-xs rounded-full ring-[1.5px] ring-slate-600 px-2'>
           <FontAwesomeIcon icon={faMagnifyingGlass} size="lg" style={{color: '#424874'}}/>
           <input type="text" placeholder="Search..." className="w-[200px] p-2 bg-transparent outline-none"/>
         </div>
+
         {/* NOTIFICATION */}
-        <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer relative'>
-          <FontAwesomeIcon icon={faBell} size="lg" style={{color: '#424874'}}/>
-          <div className='absolute -top-2 md:-top-3 -right-3 w-5 h-5 flex items-center justify-center bg-Yellow text-Navy font-semibold rounded-full text-xs'>1</div>
+        <div className="group">
+          <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer relative'>
+            <FontAwesomeIcon icon={faBell} size="lg" style={{color: '#424874'}}/>
+            <div className='absolute -top-2 md:-top-3 -right-3 w-5 h-5 flex items-center justify-center bg-Yellow text-Navy font-semibold rounded-full text-xs'>1</div>
+          </div>
+          {/* DROPDOWN */}
+          <div className="hidden lg:block absolute mr-2 right-16 top-14 bg-Purple shadow-md rounded-md invisible group-hover:visible transition ease-in-out duration-300">
+            <div className="absolute right-4 -top-0.5 w-6 h-6 bg-Purple transform rotate-45 origin-bottom-right z-10" />
+            <div className="py-1 px-2 z-30 text-left">
+              <Link href="#" className="w-full block px-2 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <span className="w-full px-8">
+                  Option 1
+                </span>
+              </Link>
+              <Link href="#" className="w-full block px-2 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <span className="w-full px-8">
+                  Option 2
+                </span>
+              </Link>
+            </div>
+          </div>
         </div>
 
         <Image src="/assets/avatar.png" alt="avatar" width={36} height={36} className="hidden md:block rounded-full"/>
@@ -62,9 +82,10 @@ const Navbar = () => {
             <Image src="/assets/avatar.png" alt="avatar" width={36} height={36} className="rounded-full"/>
           </button>
         </div>
+
         {/* DROPDOWN PROFILE CLICKED FOR MOBILE */}
         { isProfileMobileClicked && (
-          <div className="fixed inset-0 z-30 bg-white flex flex-col items-center justify-start pt-12 md:hidden">
+          <div className="fixed inset-0 z-30 bg-white flex flex-col items-center justify-start pt-10 md:hidden">
             <button onClick={() => setIsProfileMobileClicked(false)} className="absolute top-4 right-4 text-2xl">
               <FontAwesomeIcon icon={faTimes} />
             </button>
@@ -93,4 +114,4 @@ const Navbar = () => {
   )
 }
 
-export default Navbar;
+export default Header;

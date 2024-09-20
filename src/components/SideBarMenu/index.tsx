@@ -3,7 +3,7 @@ import { menuItems } from "./data";
 import Link from "next/link";
 import Image from "next/image";
 
-const Menu: React.FC = () => {
+const SideBarMenu: React.FC = () => {
     return (
         <div className="text-sm">
             {menuItems.map((i) => (
@@ -31,4 +31,4 @@ const Menu: React.FC = () => {
     )
 }
 
-export default Menu;
+export default SideBarMenu;
