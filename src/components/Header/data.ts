@@ -1,4 +1,4 @@
-import { faBriefcase, faGift, faHouse, faStreetView, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faBriefcase, faCommentDots, faHandHoldingHeart, faHouse, faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 
 export const navMenuItems = [
     {
@@ -7,19 +7,19 @@ export const navMenuItems = [
         href: '/',
     },
     {
-        icon: faUsers,
+        icon: faPeopleRoof,
         label: 'Group',
         href: '/group',
     },
     {
-        icon: faStreetView,
-        label: 'Nearest',
-        href: '/nearest',
+        icon: faCommentDots,
+        label: 'Messages',
+        href: '/messages',
     },
     {
-        icon: faGift,
-        label: 'Gift',
-        href: '/gift',
+        icon: faHandHoldingHeart,
+        label: 'Contribution',
+        href: '/contribution',
     },
     {
         icon: faBriefcase,

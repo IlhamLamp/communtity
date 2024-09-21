@@ -1,30 +1,25 @@
-import { role } from "@/lib/data";
 import { menuItems } from "./data";
 import Link from "next/link";
-import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const SideBarMenu: React.FC = () => {
+const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
     return (
-        <div className="text-sm">
+        <div className={isExpanded ? 'mt-0' : 'mt-10'}>
             {menuItems.map((i) => (
-            <div className="flex flex-col gap-2" key={i.title}>
-                <span className="hidden lg:block text-gray-400 font-light my-4">
-                {i.title}
+            <div className="flex flex-col gap-2 text-sm" key={i.title}>
+                <span className={`text-gray-400 font-light my-2 ${isExpanded ? "block" : "hidden"}`}>
+                    {i.title}
                 </span>
-                {i.items.map((item) => {
-                if (item.visible.includes(role)) {
-                    return (
-                    <Link
-                        href={item.href}
-                        key={item.label}
-                        className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-PurpleLight hover:text-Navy"
-                    >
-                        <Image src={item.icon} alt="" width={20} height={20} />
-                        <span className="hidden lg:block">{item.label}</span>
-                    </Link>
-                    );
-                }
-                })}
+                {i.items.map((item) => (
+                <Link
+                    href={item.href}
+                    key={item.label}
+                    className={`flex items-center gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-Gray hover:text-Navy ${isExpanded ? 'justify-start' : 'justify-center'}`}
+                >
+                    <FontAwesomeIcon icon={item.icon} />
+                    <span className={`text-sm ${isExpanded ? "block" : "hidden"}`}>{item.label}</span>
+                </Link>
+                ))}
             </div>
             ))}
         </div>

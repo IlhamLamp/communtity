@@ -22,6 +22,7 @@ const config: Config = {
         Navy: "#424874",
         Yellow: "#FAE27C",
         Red: "#D24545",
+        Gray: "#D6E4E5",
       },
     },
   },
