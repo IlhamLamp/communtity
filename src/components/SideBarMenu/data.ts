@@ -6,8 +6,8 @@ export const menuItems = [
     items: [
       {
         icon: faIdCard,
-        label: "Role",
-        href: "/role"
+        label: "Profile",
+        href: "/profile"
       },
       {
         icon: faUserGroup,

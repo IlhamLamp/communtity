@@ -23,12 +23,12 @@ const Header = () => {
         };
         window.addEventListener("scroll", handleScroll);
         return () => {
-        window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
     return (
-        <header className={`w-full fixed top-0 z-20 bg-white flex flex-row items-center justify-between px-4 py-2 md:py-0 transition-all ease-in-out ${isScrolled ? 'shadow-md' : 'shadow-none'}`}>
+        <header className={`w-full fixed top-0 z-20 bg-white flex flex-row items-center justify-between px-4 py-2 md:py-0 transition-all ease-in-out ${isScrolled ? 'shadow-lg' : 'shadow-none'}`}>
 
         <Link href="/" className="basis-1/5 flex items-center gap-2">
             <Image src="/assets/logo.png" alt="logo" width={32} height={32} />

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const MainWorksCard: React.FC<{ data: any }> = ({ data }) => {
 
     return (
-        <div className="bg-white border border-gray-300 w-full rounded-3xl shadow-md">
+        <div className="bg-white border border-gray-300 w-full rounded-3xl shadow-md hover:border hover:border-slate-500">
             <div className={`relative flex flex-col h-[250px] m-1 p-2 rounded-3xl ${data?.bg_color}`}>
                 <div className="flex w-full justify-between p-1">
                     <span className="bg-white text-slate-800 rounded-full p-2 text-xs">
