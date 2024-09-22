@@ -1,19 +1,27 @@
 export const filterData = [
     {
         id: 1,
-        name: 'Experience',
+        name: 'Types',
         options: [
             {
                 id: 1,
-                name: '0 Months',
+                name: 'Events',
             },
             {
                 id: 2,
-                name: '< 1 Year',
+                name: 'Projects',
             },
             {
                 id: 3,
-                name: '> 1 Year',
+                name: 'Group',
+            },
+            {
+                id: 4,
+                name: 'Community',
+            },
+            {
+                id: 5,
+                name: 'Other',
             },
         ],
     },
@@ -37,23 +45,19 @@ export const filterData = [
     },
     {
         id: 3,
-        name: 'Types',
+        name: 'Experience',
         options: [
             {
                 id: 1,
-                name: 'Events',
+                name: 'No experience',
             },
             {
                 id: 2,
-                name: 'Projects',
+                name: '< 1 Year',
             },
             {
                 id: 3,
-                name: 'Group',
-            },
-            {
-                id: 4,
-                name: 'Other',
+                name: '> 1 Year',
             },
         ],
     },

@@ -47,11 +47,11 @@ const HeroFilterBtn: React.FC<{ data: any; isOpen: boolean; toggleDropdown: () =
                     )}
 
                     {data?.options.map((d: any) => (
-                        <a key={d?.id}
+                        <button key={d?.id}
                            onClick={() => handleOptionClick(d?.name)} 
                            className="my-2 block border-b border-gray-100 text-sm text-gray-500 hover:text-Navy">
                             {d?.name}
-                        </a>
+                        </button>
                     ))}
                 </div>
             )}
