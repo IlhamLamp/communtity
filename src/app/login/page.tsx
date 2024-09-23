@@ -1,17 +1,17 @@
-import { faAt, faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faAt, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
 const LoginPage: React.FC = () => {
     return (
-        <div className="container mx-auto">
-			<div className="flex justify-center px-6 my-8">
-				<div className="w-full xl:w-3/4 lg:w-11/12 flex shadow-xl">
+        <div className="container mx-auto mt-16 lg:mt-14 bg-gray-100 lg:rounded-3xl">
+			<div className="flex justify-center px-6 py-8 lg:py-2">
+				<div className="w-full xl:w-3/4 lg:w-11/12 flex shadow-xl rounded-3xl">
 					<div
-						className="w-full h-auto bg-gray-400 hidden lg:block lg:w-5/12 bg-cover rounded-l-lg"
+						className="w-full h-auto bg-gray-400 hidden lg:block lg:w-5/12 bg-cover rounded-l-3xl"
 						style={{ backgroundImage: "url('./assets/signup.jpg')" }} 
 					/>
-					<div className="w-full lg:w-7/12 bg-white p-5 rounded-lg lg:rounded-l-none">
+					<div className="w-full lg:w-7/12 bg-white p-5 lg:rounded-r-3xl">
 						<h3 className="text-2xl text-center">Login with your account!</h3>
 						<form className="px-8 pt-6 pb-8 mb-4 bg-white rounded">
 							<div className="mb-4">
