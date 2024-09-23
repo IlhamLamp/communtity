@@ -9,7 +9,7 @@ export const profileData = [
         first_name: 'Kamisato',
         last_name: 'Ayaka',
         username: 'Kamisato',
-        phone: "0838121323",
+        phone: 838121323,
         address: {
             street: "123 Main St",
             city: "New York",
