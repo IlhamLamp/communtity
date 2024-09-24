@@ -25,8 +25,8 @@ const ContentProfile: React.FC<{ data: any }> = ({ data }) => {
                             <h1 className="text-center text-slate-800 text-4xl">{data?.first_name + " " + data?.last_name}</h1>
                             <h5 className="text-center text-slate-600 text-xl">{data?.role}</h5>
                         </div>
-                        <div className="absolute top-0 right-0 p-2 cursor-pointer">
-                            <FontAwesomeIcon icon={faCircleInfo} className="text-slate-600 text-2xl" onClick={toggleModal}/>
+                        <div className="absolute -top-2 lg:top-0 right-8 lg:right-0 p-2 cursor-pointer">
+                            <FontAwesomeIcon icon={faCircleInfo} className="text-slate-600 text-xl lg:text-2xl" onClick={toggleModal}/>
                         </div>
                     </div>
                     <p className="w-full text-gray-700 text-md text-justify px-4">{data?.about}</p>
