@@ -7,23 +7,23 @@ export const navMenuItems = [
         href: '/',
     },
     {
+        icon: faBriefcase,
+        label: 'Projects',
+        href: '/projects',
+    },
+    {
         icon: faPeopleRoof,
         label: 'Group',
         href: '/group',
     },
-    {
-        icon: faCommentDots,
-        label: 'Messages',
-        href: '/messages',
-    },
+    // {
+    //     icon: faCommentDots,
+    //     label: 'Messages',
+    //     href: '/messages',
+    // },
     {
         icon: faHandHoldingHeart,
-        label: 'Contribution',
-        href: '/contribution',
-    },
-    {
-        icon: faBriefcase,
-        label: 'Jobs',
-        href: '/job',
+        label: 'Events',
+        href: '/events',
     },
 ]

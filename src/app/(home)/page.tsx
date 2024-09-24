@@ -1,10 +1,10 @@
 import ContentHome from "@/components/Content/home";
-import Hero from "@/components/Hero";
+import ContentHeroHome from "@/components/Content/home/hero";
 
 export default function Home() {
   return (
     <div className="bg-gray-100">
-      <Hero />
+      <ContentHeroHome />
       <ContentHome />
     </div>
   );

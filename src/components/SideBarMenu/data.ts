@@ -16,7 +16,7 @@ export const menuItems = [
       },
       {
         icon: faFilePen,
-        label: "Registered",
+        label: "Applied",
         href: "/projects/applied"
       },
       {

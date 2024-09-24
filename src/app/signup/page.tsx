@@ -4,7 +4,7 @@ import React from "react";
 
 const SignUpPage: React.FC = () => {
     return (
-        <div className="container mx-auto mt-16 lg:mt-14 bg-gray-100 lg:rounded-3xl">
+        <div className="container mx-auto mt-14 bg-gray-100 lg:rounded-3xl">
 			<div className="flex justify-center px-6 py-8 lg:py-2">
 				<div className="w-full xl:w-3/4 lg:w-11/12 flex shadow-xl rounded-3xl">
 					<div

@@ -15,7 +15,7 @@ const Header = () => {
     const [isProfileMobileClicked, setIsProfileMobileClicked] = useState<boolean>(false);
     const [isNotifMobileClicked, setIsNotifMobileClicked] = useState<boolean>(false);
 
-    const displayNone = { display: path === "/signup" || path === "/login" ? "none" : "flex" }
+    const displayNone = { display: path === "/signup" || path === "/login" ? "hidden" : "flex" }
 
     useEffect(() => {
         const handleScroll = () => {
@@ -34,13 +34,13 @@ const Header = () => {
     return (
         <header className={`w-full fixed top-0 z-20 bg-white flex flex-row items-center justify-between px-4 py-2 md:py-0 transition-all ease-in-out ${isScrolled ? 'shadow-lg' : 'shadow-none'}`} style={{ padding: path === "/signup" || path === "/login" ? "py-4" : "py-2" }}>
 
-            <Link href="/" className="basis-1/5 flex items-center gap-2 p-2">
+            <Link href="/" className="basis-1/5 flex items-center gap-2 lg:p-2">
                 <Image src="/assets/logo.png" alt="logo" width={32} height={32} />
                 <span className="font-bold text-lg">Communtity</span>
             </Link>
 
             {/* sembunyikan ini di tampilan mobile */}
-            <div className="hidden basis-3/5 items-center gap-2 justify-center w-full px-8" style={displayNone}>
+            <div className="hidden lg:flex basis-3/5 items-center gap-2 justify-center w-full px-8">
             { navMenuItems.map((n) => (
                 <Link key={n.label} href={n.href} className="w-1/5 flex border-b-4 border-Navy p-4 justify-center">
                     <FontAwesomeIcon icon={n.icon} size="xl" style={{color: '#424874'}}/>
@@ -48,7 +48,7 @@ const Header = () => {
             ))}
             </div>   
             
-            <div className='basis-1/5 flex items-center gap-6 justify-end w-full p-2'>
+            <div className='basis-1/5 flex items-center gap-2 lg:gap-6 justify-between lg:justify-end w-full lg:p-2'>
                 <div className="hidden md:flex justify-end items-center w-64">
                     <div className="relative">
                         <input
@@ -88,9 +88,9 @@ const Header = () => {
 
                 <Image src="/assets/avatar.png" alt="avatar" width={36} height={36} className="hidden md:block rounded-full"/>
                 {/* PROFILE ICON FOR MOBILE - TOGGLE MENU */}
-                <div className="md:hidden flex items-center">
+                <div className="flex md:hidden items-center">
                     <button onClick={() => setIsProfileMobileClicked(!isProfileMobileClicked)}>
-                        <Image src="/assets/avatar.png" alt="avatar" width={36} height={36} className="rounded-full"/>
+                        <Image src="/assets/avatar.png" alt="avatar" width={30} height={30} className="rounded-full"/>
                     </button>
                 </div>
 

@@ -3,7 +3,7 @@ import { profileData } from "@/components/Content/profile/data";
 
 const ProfilePage: React.FC = () => {
     return (
-        <div>
+        <div className="bg-gray-100">
             { profileData.map((data: any, i: number) => (
                 <ContentProfile key={i} data={data} />
             ))}
