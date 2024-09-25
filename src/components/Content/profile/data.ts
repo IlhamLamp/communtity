@@ -2,8 +2,8 @@ import { faLinkedin, faGithub, faInstagram, faFacebook, faDiscord, faTelegram, f
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 
 
-export const profileData = [
-    {
+export const profileData = {
+    data: {
         _id: "e7126500-528b-4080-8591-a94513394899",
         user_id: 98,
         first_name: 'Kamisato',
@@ -79,5 +79,5 @@ export const profileData = [
         is_active: true,
         created_at: "2024-09-23T14:12:09Z",
         updated_at: "2024-09-23T14:12:09Z",
-    }
-];
+    },
+};

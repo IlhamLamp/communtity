@@ -2,9 +2,9 @@
 import { filterData } from "@/components/Buttons/data";
 import HeroFilterBtn from "@/components/Buttons/HeroFilterBtn";
 import MainSortBtn from "@/components/Buttons/MainSortBtn";
-import MainWorksCard from "@/components/Cards/MainWorksCard";
 import { useState } from "react";
 import { workContentData } from "./data";
+import HomepageWorkCard from "@/components/Cards/HomepageWorkCard";
 
 const ContentHome: React.FC = () => {
 
@@ -56,7 +56,7 @@ const ContentHome: React.FC = () => {
                 <div className="flex w-full items-center">
                     <div className="w-full grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                         { workContentData.map((data: any) => (
-                            <MainWorksCard key={data?.id} data={data} />
+                            <HomepageWorkCard key={data?.id} data={data} />
                         ))}
                     </div>
                 </div>

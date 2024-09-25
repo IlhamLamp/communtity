@@ -15,14 +15,6 @@ export const filterData = [
                 id: 3,
                 name: 'Group',
             },
-            {
-                id: 4,
-                name: 'Community',
-            },
-            {
-                id: 5,
-                name: 'Other',
-            },
         ],
     },
     {

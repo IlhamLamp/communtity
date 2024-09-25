@@ -7,7 +7,7 @@ export const heroIntroCards = [
     items: [
       {
         label: "People's favorite",
-        title: 'How we can save this world',
+        title: 'How we can save this world?',
         link: 'https://via.placeholder.com/150/0000FF',
       },
       {

@@ -20,27 +20,41 @@ const HeroIntroCard: React.FC = () => {
     setCurrentIndex(index);
   };
 
+   useEffect(() => {
+    const interval = setInterval(() => {
+      if (currentCard) {
+        setCurrentIndex((prevIndex) =>
+          prevIndex === currentCard.items.length - 1 ? 0 : prevIndex + 1
+        );
+      }
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [currentCard]);
+
   if (!currentCard) return null;
 
   return (
     <div 
-      className={`relative text-white shadow-md rounded-xl p-4 flex items-center justify-between space-x-4 w-full transition-all duration-500 ${currentCard.shadow}`}
+      className={`relative shadow-md rounded-xl p-4 flex items-center justify-between space-x-4 w-full max-w-full transition-all duration-500 ${currentCard.shadow}`}
       style={{
         backgroundImage: `url(${currentCard.image})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div>
-        <div className="bg-blue-400 rounded-full px-3 py-1 text-xs font-semibold mb-2">
-          {currentCard.items[currentIndex].label}
+      <div className="w-full flex flex-row justify-between my-4">
+        <div>
+          <div className="bg-Navy text-white rounded-full px-3 py-1 text-xs font-semibold mb-2">
+            {currentCard.items[currentIndex].label}
+          </div>
+          <h2 className="text-2xl font-bold text-white">{currentCard.items[currentIndex].title}</h2>
         </div>
-        <h2 className="text-2xl font-bold">{currentCard.items[currentIndex].title}</h2>
+        <div className="hidden lg:block">
+          <Link href={currentCard.items[currentIndex].link} className="px-2 py-1 rounded-full bg-white text-sm font-light hover:bg-Gray transition ease-linear duration-100">click here</Link>
+        </div>
       </div>
-      <div className="relative w-24 h-24 justify-center items-center">
-        <Link href={currentCard.items[currentIndex].link} className="p-2 bg-white">SAD</Link>
-      </div>
-      <div className="absolute bottom-4 left-6 w-20 flex justify-between">
+      <div className="absolute bottom-4 left-1 w-20 flex justify-between">
         {currentCard.items.map((_: any, index: number) => (
           <button
             key={index}

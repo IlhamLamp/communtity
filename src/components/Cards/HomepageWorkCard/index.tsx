@@ -1,7 +1,7 @@
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const MainWorksCard: React.FC<{ data: any }> = ({ data }) => {
+const HomepageWorkCard: React.FC<{ data: any }> = ({ data }) => {
 
     return (
         <div className="bg-white border border-gray-300 w-full rounded-3xl shadow-md hover:border hover:border-slate-500">
@@ -45,4 +45,4 @@ const MainWorksCard: React.FC<{ data: any }> = ({ data }) => {
     );
 };
 
-export default MainWorksCard;
+export default HomepageWorkCard;
