@@ -2,7 +2,7 @@ import ContentProjects from "@/components/Content/projects";
 
 const ProjectsPage: React.FC = () => {
     return (
-        <div className="bg-gray-100">
+        <div className="bg-Navy">
             <ContentProjects />
         </div>
     )

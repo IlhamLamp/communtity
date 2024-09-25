@@ -1,15 +1,13 @@
 'use client';
 
-import ProjectIntroCard from "@/components/Cards/ProjectIntroCard/indext";
-import { projectIntroCards } from "./data";
+import HeroIntroCard from "@/components/Cards/HeroIntroCard";
 
 const ContentProjects: React.FC = () => {
 
     return (
-        <section className="w-full">
-            <div className="">
-                <h1>Hey there!</h1>
-                <ProjectIntroCard cards={projectIntroCards}/>
+        <section className="w-full p-4">
+            <div id="projectsHero" className="flex w-[80%]">
+                <HeroIntroCard />
             </div>
         </section>
     );
