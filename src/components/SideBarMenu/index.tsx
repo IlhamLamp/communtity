@@ -11,14 +11,14 @@ const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
                     {i.title}
                 </span>
                 {i.items.map((item) => (
-                <Link
-                    href={item.href}
-                    key={item.label}
-                    className={`flex items-center gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-Gray hover:text-Navy ${isExpanded ? 'justify-start' : 'justify-center'}`}
-                >
-                    <FontAwesomeIcon icon={item.icon} />
-                    <span className={`text-sm ${isExpanded ? "block" : "hidden"}`}>{item.label}</span>
-                </Link>
+                    <Link
+                        href={item.href}
+                        key={item.label}
+                        className={`flex items-center gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-Gray hover:text-Navy ${isExpanded ? 'justify-start' : 'justify-center'}`}
+                    >
+                        <FontAwesomeIcon icon={item.icon} />
+                        <span className={`text-sm ${isExpanded ? "block" : "hidden"}`}>{item.label}</span>
+                    </Link>
                 ))}
             </div>
             ))}

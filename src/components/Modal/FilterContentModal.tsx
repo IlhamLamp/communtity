@@ -2,12 +2,17 @@ import { faCircleXmark, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
-const FilterContentModal: React.FC<{ data: any; toggle: any; }> = ({ data, toggle }) => {
-    const [types, setTypes] = useState<string>("");
-    const [tags, setTags] = useState<{ label: string; color: string }[]>([]);
+const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (filters: any) => void }> = ({ data, toggle, onApplyFilters }) => {
+    
+    const [types, setTypes] = useState<string>(data?.types || "");
+    const [tags, setTags] = useState<{ label: string; color: string }[]>(data?.tags || []);
     const [tagsInput, setTagsInput] = useState<string>("");
     const [roleInput, setRoleInput] = useState(data?.role || "");
-    const [locationInput, setLocationInput] = useState<string>();
+    const [locationInput, setLocationInput] = useState<string>(data?.location || "");
+    const [duration, setDuration] = useState<string>(data?.duration || "");
+    const [participation, setParticipation] = useState<string>(data?.participation || "");
+    const [experience, setExperience] = useState<string>(data?.experience || "");
+
     const [roleSuggestions, setRoleSuggestions] = useState<string[]>([]);
     const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
     const [locationSuggestions, setLocationSuggestion] = useState<string[]>([]);
@@ -105,7 +110,23 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; }> = ({ data, toggl
         // Simpan warna baru sebagai warna terakhir yang digunakan
         setLastColor(newColor);
         return newColor;
-      };
+    };
+
+    const handleApplyFilterClick = () => {
+        // Prepare the filter object with selected values
+        const filters = {
+            types,
+            tags,
+            role: roleInput,
+            location: locationInput,
+            duration,
+            participation,
+            experience
+        };
+
+        // Call the onApplyFilters function from the parent with the new filter values
+        onApplyFilters(filters);
+    };
 
     return (
         <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-50 bg-gray-800 bg-opacity-50 px-2 lg:p-0">
@@ -121,7 +142,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; }> = ({ data, toggl
                             <div className="gap-2 grid grid-cols-1 lg:grid-cols-2">
                                 <div className="w-full">
                                     <label htmlFor="types" className="block text-sm font-medium text-[#07074D]">Types</label>
-                                    <select name="types" id="types" className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">  
+                                    <select name="types" id="types" value={types} onChange={(e) => setTypes(e.target.value)} className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">  
                                         <option value="events">Events</option>
                                         <option value="projects">Projects</option>
                                         <option value="group">Group</option>
@@ -129,7 +150,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; }> = ({ data, toggl
                                 </div>
                                 <div className="w-full">
                                     <label htmlFor="duration" className="block text-sm font-medium text-[#07074D]">Duration</label>
-                                    <select name="duration" id="duration" className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">  
+                                    <select name="duration" id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">  
                                         <option value="day">Day</option>
                                         <option value="month">Month</option>
                                         <option value="year">Year</option>
@@ -137,7 +158,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; }> = ({ data, toggl
                                 </div>
                                 <div className="w-full">
                                     <label htmlFor="participation" className="block text-sm font-medium text-[#07074D]">Participation</label>
-                                    <select name="participation" id="participation" className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">  
+                                    <select name="participation" id="participation" value={participation} onChange={(e) => setParticipation(e.target.value)} className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">  
                                         <option value="remote">Remote</option>
                                         <option value="onsite">Onsite</option>
                                         <option value="hybrid">Hybrid</option>
@@ -171,8 +192,8 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; }> = ({ data, toggl
                                 </div>
                                 <div className="w-full">
                                     <label htmlFor="experience" className="block text-sm font-medium text-[#07074D]">Experience</label>
-                                    <select name="experience" id="experience" className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">  
-                                        <option value="">No Experience</option>
+                                    <select name="experience" id="experience" value={experience} onChange={(e) => setExperience(e.target.value)} className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">  
+                                        <option value="no">No Experience</option>
                                         <option value="< 1 year">&lt; 1 year</option>
                                         <option value="> 1 year">&gt; 1 year</option>
                                     </select>
@@ -207,7 +228,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; }> = ({ data, toggl
                     </form>
                 </div>
                 <div className="mt-2">
-                    <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-2 px-8 text-center text-sm font-semibold text-white outline-none">Filter</button>
+                    <button onClick={handleApplyFilterClick} className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-2 px-8 text-center text-sm font-semibold text-white outline-none">Apply filter</button>
                 </div>
             </div>
         </div>
