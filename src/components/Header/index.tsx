@@ -107,7 +107,7 @@ const Header = () => {
                         </div>
                         <nav className="flex flex-col gap-4 w-full p-2">
                         { navMenuItems.map((n) => (
-                            <Link key={n.label} href={n.href} className="flex items-center gap-4 px-4 py-2">
+                            <Link key={n.label} href={n.href} onClick={() => setIsProfileMobileClicked(false)} className="flex items-center gap-4 px-4 py-2">
                                 <FontAwesomeIcon icon={n.icon} size="sm" style={{color: '#424874'}}/>
                                 <span className="text-sm">{n.label}</span>
                             </Link>

@@ -15,7 +15,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (fi
 
     const [roleSuggestions, setRoleSuggestions] = useState<string[]>([]);
     const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
-    const [locationSuggestions, setLocationSuggestion] = useState<string[]>([]);
+    const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
     const [lastColor, setLastColor] = useState<string | null>(null);
 
     const allRoles = ["Programmer", "Designer", "Data Scientist", "DevOps Engineer", "Product Manager", "Backend Developer", "Frontend Developer"];
@@ -62,10 +62,11 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (fi
                 setLocationInput(value);
                 if (value.trim() !== "") {
                     const filteredSuggestions = allLocations.filter(loc => loc.toLowerCase().includes(value.toLowerCase()));
-                    setLocationSuggestion(filteredSuggestions);
+                    setLocationSuggestions(filteredSuggestions);
                 } else {
-                    setLocationSuggestion([]);
+                    setLocationSuggestions([]);
                 }
+                break;
             default:
                 break;
         }
@@ -79,7 +80,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (fi
 
     const handleSelectLocation = (loc: string) => {
         setLocationInput(loc);
-        setLocationSuggestion([]);
+        setLocationSuggestions([]);
     }
 
     const handleAddTag = (tag: string) => {
@@ -128,6 +129,31 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (fi
         onApplyFilters(filters);
     };
 
+     // Reset semua input ke nilai awal
+     const handleResetFilters = () => {
+        setTypes("");
+        setTags([]);
+        setTagsInput("");
+        setRoleInput("");
+        setLocationInput("");
+        setDuration("");
+        setParticipation("");
+        setExperience("");
+    };
+
+    // Periksa apakah ada input yang terisi
+    const hasMoreThanOneInputFilled = () => {
+        let filledInputs = 0;
+        if (types) filledInputs++;
+        if (tags.length > 0) filledInputs++;
+        if (roleInput) filledInputs++;
+        if (locationInput) filledInputs++;
+        if (duration) filledInputs++;
+        if (participation) filledInputs++;
+        if (experience) filledInputs++;
+        return filledInputs > 0;
+    };
+
     return (
         <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-50 bg-gray-800 bg-opacity-50 px-2 lg:p-0">
             <div className="relative mx-auto w-full max-w-[800px] bg-white p-8 rounded-lg">
@@ -168,7 +194,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (fi
                                     <label htmlFor="location" className="block text-sm font-medium text-[#07074D]">location</label>
                                     <input type="text" name="location" id="location" placeholder="Bekasi" value={locationInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, "location")} className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
                                     { locationSuggestions.length > 0 && (
-                                        <ul className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
+                                        <ul className="absolute border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
                                             {locationSuggestions.map((suggestion, index) => (
                                                 <li key={index} onClick={() => handleSelectLocation(suggestion)} className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm">
                                                     {suggestion}
@@ -181,7 +207,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (fi
                                     <label htmlFor="role" className="block text-sm font-medium text-[#07074D]">Role</label>
                                     <input type="text" name="role" id="role" placeholder="Programmer" value={roleInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, "role")} className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
                                     { roleSuggestions.length > 0 && (
-                                        <ul className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
+                                        <ul className="absolute border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
                                             {roleSuggestions.map((suggestion, index) => (
                                                 <li key={index} onClick={() => handleSelectRole(suggestion)} className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm">
                                                     {suggestion}
@@ -215,7 +241,7 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (fi
 
                                 {/* Dropdown suggestion */}
                                 {tagSuggestions.length > 0 && (
-                                    <ul className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
+                                    <ul className="absolute border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
                                         {tagSuggestions.map((suggestion, index) => (
                                             <li  key={index}  onClick={() => handleAddTag(suggestion)}  className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200">
                                                 {suggestion}
@@ -227,8 +253,12 @@ const FilterContentModal: React.FC<{ data: any; toggle: any; onApplyFilters: (fi
                         </div>
                     </form>
                 </div>
+                {/* BUTTON */}
                 <div className="mt-2">
                     <button onClick={handleApplyFilterClick} className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-2 px-8 text-center text-sm font-semibold text-white outline-none">Apply filter</button>
+                    { hasMoreThanOneInputFilled() && (
+                        <button onClick={handleResetFilters} className="hover:shadow-form w-full rounded-md bg-red-400 py-2 px-8 text-center text-sm font-semibold text-white outline-none">Reset</button>
+                    )}
                 </div>
             </div>
         </div>
