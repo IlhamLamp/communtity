@@ -2,6 +2,7 @@
 import {
   faPenToSquare,
   faPlus,
+  faTimes,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +25,88 @@ const CreateProjectForm: React.FC = () => {
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([
     { role: "", experience: "no_experience" },
   ]);
+  const [selectedTags, setSelectedTags] = useState<
+    { label: string; color: string }[]
+  >([]);
+  const [tagsInput, setTagsInput] = useState<string>("");
+  const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
+  const [lastTagColors, setLastTagColors] = useState<string | null>(null);
+
+  const allTags = [
+    "Technology",
+    "Programming",
+    "Web Development",
+    "Design",
+    "AI",
+    "Machine Learning",
+  ];
+
+  const bgColors = [
+    "bg-blue-200 hover:bg-blue-300",
+    "bg-green-200 hover:bg-green-300",
+    "bg-yellow-200 hover:bg-yellow-300",
+    "bg-indigo-200 hover:bg-indigo-300",
+    "bg-purple-200 hover:bg-purple-300",
+    "bg-pink-200 hover:bg-pink-300",
+    "bg-red-200 hover:bg-red-300",
+    "bg-orange-200 hover:bg-orange-300",
+    "bg-teal-200 hover:bg-teal-300",
+    "bg-gray-200 hover:bg-gray-300",
+    "bg-lime-200 hover:bg-lime-300",
+  ];
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
+    const value = e.target.value;
+
+    switch (type) {
+      case "tags":
+        setTagsInput(value);
+        if (value.trim() !== "") {
+          const filteredSuggestions = allTags.filter((tag) =>
+            tag.toLowerCase().includes(value.toLowerCase())
+          );
+          setTagSuggestions(filteredSuggestions);
+        } else {
+          setTagSuggestions([]);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const getRandomBgColor = () => {
+    let randomIndex = Math.floor(Math.random() * bgColors.length);
+    let newColor = bgColors[randomIndex];
+
+    while (newColor === lastTagColors) {
+      randomIndex = Math.floor(Math.random() * bgColors.length);
+      newColor = bgColors[randomIndex];
+    }
+
+    setLastTagColors(newColor);
+    return newColor;
+  };
+
+  const handleAddTag = (tag: string) => {
+    if (!selectedTags.some((t) => t.label === tag)) {
+      const color = getRandomBgColor();
+      setSelectedTags((prevTags) => [...prevTags, { label: tag, color }]);
+    }
+    setTagsInput("");
+    setTagSuggestions([]);
+  };
+
+  const handleRemoveTag = (
+    tag: string,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault(); // Tambahkan ini untuk mencegah refresh
+    setSelectedTags(selectedTags.filter((t) => t.label !== tag));
+  };
 
   const handleSelectionApproval = (value: "yes" | "no") => {
     setSelectedApproval(value);
@@ -47,7 +130,6 @@ const CreateProjectForm: React.FC = () => {
         const fileURL = URL.createObjectURL(file);
         setPreviewImgSrc(fileURL);
 
-        // Free memory once the image is loaded
         const imageElement = new Image();
         imageElement.src = fileURL;
         imageElement.onload = () => {
@@ -496,20 +578,18 @@ const CreateProjectForm: React.FC = () => {
           )}
           {currentStep === 3 && (
             <div>
-              <span className="text-sm font-light text-gray-500">Step 1</span>
+              <span className="text-sm font-light text-gray-500">Step 3</span>
               <h2 className="text-xl font-semibold mb-4 text-slate-800">
-                Project Title
+                Tags & Extras
               </h2>
-              <div className="flex flex-row space-x-6">
-                <div className="relative flex justify-center items-center">
-                  {/* Image preview */}
+              <div className="flex flex-row space-x-6 items-start">
+                <div className="relative flex-shrink-0 my-2">
                   <img
                     id="preview_img"
-                    className="h-[7rem] w-[8.5rem] object-cover rounded-full"
+                    className="h-[7rem] w-[7rem] object-cover rounded-full"
                     src={previewImgSrc}
                     alt="Current profile photo"
                   />
-                  {/* Pencil icon overlay */}
                   <label
                     htmlFor="img-projects-upload"
                     className="absolute bottom-0 right-0 bg-purple-600 py-1 px-2 rounded-full cursor-pointer hover:bg-purple-800"
@@ -519,7 +599,6 @@ const CreateProjectForm: React.FC = () => {
                       className="text-white"
                     />
                   </label>
-                  {/* Hidden file input */}
                   <input
                     type="file"
                     accept="image/*"
@@ -528,42 +607,74 @@ const CreateProjectForm: React.FC = () => {
                     id="img-projects-upload"
                   />
                 </div>
-                <div className="flex flex-col w-full text-sm">
-                  <div>
-                    <label className="block">Owner</label>
+                <div className="w-full grid grid-cols-2 gap-2 text-sm">
+                  <div className="w-full col-span-2">
+                    <label className="block mb-1">Tags</label>
+                    <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
+                      {selectedTags.map((tag, index) => (
+                        <div
+                          key={index}
+                          className={`py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
+                        >
+                          <span className="text-sm text-[#07074D]">
+                            {tag.label}
+                          </span>
+                          <button
+                            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                              handleRemoveTag(tag.label, e)
+                            }
+                            className="ml-2 text-slate-800 hover:text-slate-600"
+                          >
+                            <FontAwesomeIcon icon={faTimes} />
+                          </button>
+                        </div>
+                      ))}
+
+                      <input
+                        type="text"
+                        name="tags"
+                        id="tags"
+                        value={tagsInput}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleInputChange(e, "tags")
+                        }
+                        placeholder="Type to add tags"
+                        className="flex-grow outline-none text-sm font-medium bg-transparent"
+                      />
+                    </div>
+                    {tagSuggestions.length > 0 && (
+                      <ul className="absolute border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
+                        {tagSuggestions.map((suggestion, index) => (
+                          <li
+                            key={index}
+                            onClick={() => handleAddTag(suggestion)}
+                            className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
+                          >
+                            {suggestion}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <div className="w-full">
+                    <label className="block mb-1">Project Title</label>
                     <input
                       type="text"
-                      disabled={true}
-                      className="cursor-not-allowed border rounded-md w-full p-2 mb-2"
-                      placeholder="username"
+                      className="border rounded-md w-full p-2"
+                      placeholder="Enter project title"
                     />
                   </div>
-                  <div className="flex flex-row gap-2">
-                    <div className="w-full">
-                      <label className="block">Project Title</label>
-                      <input
-                        type="text"
-                        className="border rounded-md w-full p-2"
-                        placeholder="Enter project title"
-                      />
-                    </div>
-                    <div className="w-full">
-                      <label className="block">Company</label>
-                      <input
-                        type="text"
-                        className="border rounded-md w-full p-2"
-                        placeholder="Enter project company"
-                      />
-                    </div>
+                  <div className="w-full">
+                    <label className="block mb-1">Company</label>
+                    <input
+                      type="text"
+                      className="border rounded-md w-full p-2"
+                      placeholder="Enter project company"
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            // <div>
-            //     <h2 className="text-xl font-semibold mb-4">Step 3: Benefits & Extras</h2>
-            //     <label className="block mb-2">Project Tags</label>
-            //     <input type="text" className="border rounded-md w-full p-2 mb-4" placeholder="Enter project tags" />
-            // </div>
           )}
 
           {/* Navigation Buttons */}
