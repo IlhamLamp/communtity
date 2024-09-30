@@ -305,34 +305,38 @@ const CreateProjectForm: React.FC = () => {
                       </option>
                     </select>
                   </div>
-                  {/*  */}
+                  {/* ADDRESS */}
                   <div className="w-full">
-                    <label className="block mb-1">Participation</label>
-                    <select className="cursor-pointer border rounded-md w-full p-2">
-                      <option value="remote" selected>
-                        Remote
-                      </option>
-                      <option value="onsite" selected>
-                        On-site
-                      </option>
-                      <option value="Hybrid" selected>
-                        Hybrid
-                      </option>
-                    </select>
+                    <label className="block mb-1">City</label>
+                    <input
+                      type="text"
+                      className="border rounded-md w-full p-2"
+                      placeholder="Enter city location"
+                    />
                   </div>
                   <div className="w-full">
-                    <label className="block mb-1">Participation</label>
-                    <select className="cursor-pointer border rounded-md w-full p-2">
-                      <option value="remote" selected>
-                        Remote
-                      </option>
-                      <option value="onsite" selected>
-                        On-site
-                      </option>
-                      <option value="Hybrid" selected>
-                        Hybrid
-                      </option>
-                    </select>
+                    <label className="block mb-1">State</label>
+                    <input
+                      type="text"
+                      className="border rounded-md w-full p-2"
+                      placeholder="Enter state"
+                    />
+                  </div>
+                  <div className="w-full">
+                    <label className="block mb-1">ZIP</label>
+                    <input
+                      type="text"
+                      className="border rounded-md w-full p-2"
+                      placeholder="Enter zip code"
+                    />
+                  </div>
+                  <div className="w-full col-span-2">
+                    <label className="block mb-1">Street</label>
+                    <input
+                      type="text"
+                      className="border rounded-md w-full p-2"
+                      placeholder="Enter street address"
+                    />
                   </div>
                   {/* PRIVATE */}
                   <div className="w-full">
