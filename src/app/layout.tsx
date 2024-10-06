@@ -1,13 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
+import { Toaster } from "react-hot-toast";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import Header from "@/components/Header";
-config.autoAddCss = false
+config.autoAddCss = false;
 
-const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
 
 export const metadata: Metadata = {
   title: "Communtity",
@@ -20,16 +20,36 @@ export const metadata: Metadata = {
   // },
 };
 
-export default function RootLayout({ children }: Readonly<{
+export default function RootLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className={poppins.className}>
+        <Toaster
+          toastOptions={{
+            loading: {
+              style: {
+                background: "#FCE38A",
+              },
+            },
+            success: {
+              style: {
+                background: "#95E1D3",
+              },
+            },
+            error: {
+              style: {
+                background: "#F38181",
+                color: "white",
+              },
+            },
+          }}
+        />
         <Header />
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
       </body>
     </html>
   );
