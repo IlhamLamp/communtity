@@ -36,10 +36,10 @@ const RegisterAccountForm: React.FC<{
 
   const validate = () => {
     const newErrors = { email: "", password: "", confirmation_password: "" };
-    if (!data.email.includes("@")) {
+    if (!data.email?.includes("@")) {
       newErrors.email = "Invalid email address";
     }
-    if (data.password.length < 8) {
+    if (data?.password && data.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     }
     if (data.password !== data.confirmation_password) {

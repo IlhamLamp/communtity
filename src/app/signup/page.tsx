@@ -11,11 +11,13 @@ const SignUpPage: React.FC = () => {
     email: "",
     password: "",
     confirmation_password: "",
+    otp_code: "",
+    is_verified: false,
   });
 
   const handleInputChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = ev.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleRegisterClick = async (ev: React.FormEvent<HTMLFormElement>) => {
@@ -28,7 +30,11 @@ const SignUpPage: React.FC = () => {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          confirmation_password: formData.confirmation_password,
+        }),
       }
     ).then(async (response) => {
       const data = await response.json();
@@ -46,7 +52,16 @@ const SignUpPage: React.FC = () => {
         error: (err: TRegisterResponse) =>
           err.message || "An error occurred during registration.",
       })
-      .then(() => setIsOtpStage(true))
+      .then((data: TRegisterUser) => {
+        setFormData((prevData) => ({
+          ...prevData,
+          id: data.id,
+          otp_code: "",
+          otp_expiration: data.otp_expiration,
+          is_verified: data.is_verified,
+        }));
+        setIsOtpStage(true);
+      })
       .catch((error) => {
         console.error(error);
       });
@@ -70,7 +85,7 @@ const SignUpPage: React.FC = () => {
                 handleRegister={handleRegisterClick}
               />
             ) : (
-              <VerifyOtpForm />
+              <VerifyOtpForm data={formData} />
             )}
             <hr className="mb-6 border-t" />
             <div className="text-center">
