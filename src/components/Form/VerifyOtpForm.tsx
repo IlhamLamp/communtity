@@ -59,11 +59,11 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
         otp_code,
       }),
     }).then(async (response) => {
-      const data = await response.json();
+      const responseData = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || "Invalid OTP.");
+        return Promise.reject(responseData.message);
       }
-      return data;
+      return responseData;
     });
 
     toast
@@ -71,8 +71,7 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
         loading: "Verifying OTP...",
         success:
           "🎉 OTP verified successfully! redirects to the login page within 3 seconds",
-        error: (err: TRegisterResponse) =>
-          err.message || "Verification failed.",
+        error: (err: TRegisterResponse) => err.message || "Invalid OTP.",
       })
       .then(() => {
         setIsVerified(true);
