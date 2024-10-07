@@ -1,9 +1,11 @@
 "use client";
 import LoginAccountForm from "@/components/Form/LoginAccountForm";
 import { useAuth } from "@/context/AuthContext";
+import { checkAccessToken } from "@/middleware";
+import { RefreshToken } from "@/service/token";
 import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const LoginPage: React.FC = () => {
@@ -15,6 +17,31 @@ const LoginPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const { setAuthData } = useAuth();
 
+  // AUTO LOGIN CHECK
+  useEffect(() => {
+    setIsLogin(false);
+    const refresh_token = localStorage.getItem("refresh_token");
+    checkAccessToken(router, setIsLogin);
+    if (!localStorage.getItem("access_token") && refresh_token) {
+      RefreshToken(refresh_token)
+        .then((data) => {
+          if (data) {
+            localStorage.setItem("access_token", data.token);
+            localStorage.setItem("refresh_token", refresh_token);
+            setAuthData({
+              id: data.data.id,
+              email: data.data.email,
+            });
+          }
+          setIsLogin(true);
+          router.push("/");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [router, setAuthData]);
+
   const handleInputChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = ev.target;
     setFormData({
@@ -23,6 +50,7 @@ const LoginPage: React.FC = () => {
     });
   };
 
+  // MANUAL LOGIN WITH EMAIL PASSWORD
   const handleLoginClick = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     setIsLogin(false);
@@ -39,11 +67,11 @@ const LoginPage: React.FC = () => {
         throw new Error(data.message);
       }
       localStorage.setItem("access_token", data.data.token);
+      localStorage.setItem("refresh_token", data.data.refresh_token);
       setIsLogin(true);
       setAuthData({
         id: data.data.id,
         email: data.data.email,
-        refresh_token: data.data.refresh_token,
       });
       router.push("/");
       return data;
