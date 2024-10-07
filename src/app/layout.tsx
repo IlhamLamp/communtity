@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import Header from "@/components/Header";
+import { AuthProvider } from "@/context/AuthContext";
 config.autoAddCss = false;
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
@@ -28,28 +29,30 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={poppins.className}>
-        <Toaster
-          toastOptions={{
-            loading: {
-              style: {
-                background: "#FCE38A",
+        <AuthProvider>
+          <Toaster
+            toastOptions={{
+              loading: {
+                style: {
+                  background: "#FCE38A",
+                },
               },
-            },
-            success: {
-              style: {
-                background: "#95E1D3",
+              success: {
+                style: {
+                  background: "#95E1D3",
+                },
               },
-            },
-            error: {
-              style: {
-                background: "#F38181",
-                color: "white",
+              error: {
+                style: {
+                  background: "#F38181",
+                  color: "white",
+                },
               },
-            },
-          }}
-        />
-        <Header />
-        <main>{children}</main>
+            }}
+          />
+          <Header />
+          <main>{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

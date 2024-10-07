@@ -15,3 +15,19 @@ export type TRegisterResponse = {
     error: string;
     status: number;
 }
+
+export type TBasicLoginUser = {
+    email: string;
+    password: string;
+}
+
+export type TBasicLoginResponse = {
+    message: string;
+    data?: {
+        id: number;
+        email: string;
+        token: string;
+        refresh_token: string;
+    };
+    status: number;
+}
