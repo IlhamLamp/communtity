@@ -1,3 +1,5 @@
+import { useRouter } from 'next/navigation';
+
 type TResponseToken = {
     message: string;
     token: string;
@@ -27,3 +29,38 @@ export const RefreshToken = async (refresh_token: string): Promise<TResponseToke
         return null;
     }
 }
+
+export const CheckAccessToken = async (router: ReturnType<typeof useRouter>): Promise<boolean> => {
+    const accessToken = localStorage.getItem("access_token");
+    
+    if (!accessToken) {
+        return false;
+    }
+    try {
+        const response = await fetch("http://localhost:3001/api/v1/auth/verify-token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+        });
+        if (!response.ok) {
+            localStorage.removeItem("access_token");
+            return false;
+        } 
+        router.push("/");
+        return true;
+    } catch (error) {
+        console.error("Error verifying token:", error);
+        return false;
+    }
+}
+
+export const HandleLogout = (router: ReturnType<typeof useRouter>) => {
+    console.log("Failed to refresh token, logging out...");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    router.push("/login");
+}
+
+// POSIBLY ERROR WHEN ACCESSTOKEN VALID BUT SESSION STORAGE GONE

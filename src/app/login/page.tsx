@@ -1,8 +1,7 @@
 "use client";
 import LoginAccountForm from "@/components/Form/LoginAccountForm";
 import { useAuth } from "@/context/AuthContext";
-import { checkAccessToken } from "@/middleware";
-import { RefreshToken } from "@/service/token";
+import { CheckAccessToken, HandleLogout, RefreshToken } from "@/service/token";
 import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,14 +14,26 @@ const LoginPage: React.FC = () => {
     password: "",
   });
   const [isLogin, setIsLogin] = useState<boolean>(false);
-  const { setAuthData } = useAuth();
+  const { clearAuthData, setAuthData } = useAuth();
 
   // AUTO LOGIN CHECK
   useEffect(() => {
     setIsLogin(false);
+    const access_token = localStorage.getItem("access_token");
     const refresh_token = localStorage.getItem("refresh_token");
-    checkAccessToken(router, setIsLogin);
-    if (!localStorage.getItem("access_token") && refresh_token) {
+    // validity accessToken
+    if (access_token) {
+      CheckAccessToken(router).then((isValid) => {
+        if (isValid) {
+          setIsLogin(true);
+          return;
+        } else {
+          localStorage.removeItem("access_token");
+        }
+      });
+    }
+    // validity refreshToken
+    if (!access_token && refresh_token) {
       RefreshToken(refresh_token)
         .then((data) => {
           if (data) {
@@ -32,12 +43,18 @@ const LoginPage: React.FC = () => {
               id: data.data.id,
               email: data.data.email,
             });
+            setIsLogin(true);
+            router.push("/");
+          } else {
+            setIsLogin(false);
+            clearAuthData();
+            HandleLogout(router);
           }
-          setIsLogin(true);
-          router.push("/");
         })
         .catch((error) => {
           console.error(error);
+          clearAuthData();
+          HandleLogout(router);
         });
     }
   }, [router, setAuthData]);

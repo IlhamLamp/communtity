@@ -5,6 +5,7 @@ interface AuthContextType {
   id: number | null;
   email: string | null;
   setAuthData: (data: { id: number; email: string }) => void;
+  clearAuthData: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +23,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setAuthDataHandler = (data: { id: number; email: string }) => {
     setAuthData(data);
+  };
+
+  const clearAuthDataHandler = () => {
+    sessionStorage.removeItem("id");
+    sessionStorage.removeItem("email");
+    setAuthData({ id: null, email: null });
   };
 
   useEffect(() => {
@@ -48,6 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     () => ({
       ...authData,
       setAuthData: setAuthDataHandler,
+      clearAuthData: clearAuthDataHandler,
     }),
     [authData, setAuthData]
   );

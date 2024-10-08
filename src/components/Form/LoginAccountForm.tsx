@@ -42,7 +42,11 @@ const LoginAccountForm: React.FC<{
           </label>
         </div>
         <input
-          className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-gray-100 rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+          className={`${
+            isLogin
+              ? "cursor-not-allowed bg-gray-100 hover:bg-gray-200"
+              : "bg-white"
+          } w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-gray-100 rounded shadow appearance-none focus:outline-none focus:shadow-outline`}
           id="email"
           type="email"
           name="email"
@@ -63,7 +67,11 @@ const LoginAccountForm: React.FC<{
         </div>
         <div className="relative">
           <input
-            className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-gray-100 rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+            className={`${
+              isLogin
+                ? "cursor-not-allowed bg-gray-100 hover:bg-gray-200"
+                : "bg-white"
+            } w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-gray-100 rounded shadow appearance-none focus:outline-none focus:shadow-outline`}
             id="password"
             type={showPassword ? "text" : "password"}
             name="password"
