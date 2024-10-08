@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 
-type TResponseToken = {
+type TResponseRefreshToken = {
     message: string;
     token: string;
     data: {
@@ -10,7 +10,22 @@ type TResponseToken = {
     status: string;
 }
 
-export const RefreshToken = async (refresh_token: string): Promise<TResponseToken | null> => {
+type TResponseAccessToken = {
+    message: string;
+    is_valid: boolean;
+    data: {
+      id: number;
+      email: string;
+      iat?: number;
+      exp?: number;
+    },
+    status: number;
+}
+
+export const RefreshToken = async (refresh_token: string): Promise<TResponseRefreshToken | null> => {
+    if (!refresh_token) {
+        return null;
+    }
     try {
         const response = await fetch("http://localhost:3001/api/v1/auth/refresh-token", {
             method: "POST",
@@ -22,7 +37,7 @@ export const RefreshToken = async (refresh_token: string): Promise<TResponseToke
             console.error("Failed to refresh token", await response.json());
             return null;
         }
-        const data: TResponseToken = await response.json();
+        const data: TResponseRefreshToken = await response.json();
         return data;
     } catch (error) {
         console.error("Error", error)
@@ -30,29 +45,27 @@ export const RefreshToken = async (refresh_token: string): Promise<TResponseToke
     }
 }
 
-export const CheckAccessToken = async (router: ReturnType<typeof useRouter>): Promise<boolean> => {
-    const accessToken = localStorage.getItem("access_token");
-    
-    if (!accessToken) {
-        return false;
+export const CheckAccessToken = async (access_token: string): Promise<TResponseAccessToken | null> => {    
+    if (!access_token) {
+        return null;
     }
     try {
         const response = await fetch("http://localhost:3001/api/v1/auth/verify-token", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${access_token}`,
             },
         });
         if (!response.ok) {
             localStorage.removeItem("access_token");
-            return false;
-        } 
-        router.push("/");
-        return true;
+            return null;
+        }
+        const data: TResponseAccessToken = await response.json();
+        return data;
     } catch (error) {
         console.error("Error verifying token:", error);
-        return false;
+        return null;
     }
 }
 

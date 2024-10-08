@@ -1,5 +1,6 @@
 "use client";
 import LoginAccountForm from "@/components/Form/LoginAccountForm";
+import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 import { CheckAccessToken, HandleLogout, RefreshToken } from "@/service/token";
 import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
@@ -23,27 +24,37 @@ const LoginPage: React.FC = () => {
     const refresh_token = localStorage.getItem("refresh_token");
     // validity accessToken
     if (access_token) {
-      CheckAccessToken(router).then((isValid) => {
-        if (isValid) {
-          setIsLogin(true);
-          return;
-        } else {
-          localStorage.removeItem("access_token");
-        }
-      });
+      setIsLogin(true);
+      CheckAccessToken(access_token)
+        .then((data) => {
+          if (data) {
+            setAuthData({
+              id: data.data.id,
+              email: data.data.email,
+            });
+            router.push("/");
+            return;
+          } else {
+            localStorage.removeItem("access_token");
+            clearAuthData();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
     // validity refreshToken
     if (!access_token && refresh_token) {
       RefreshToken(refresh_token)
         .then((data) => {
           if (data) {
+            setIsLogin(true);
             localStorage.setItem("access_token", data.token);
             localStorage.setItem("refresh_token", refresh_token);
             setAuthData({
               id: data.data.id,
               email: data.data.email,
             });
-            setIsLogin(true);
             router.push("/");
           } else {
             setIsLogin(false);
@@ -83,9 +94,9 @@ const LoginPage: React.FC = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
+      setIsLogin(true);
       localStorage.setItem("access_token", data.data.token);
       localStorage.setItem("refresh_token", data.data.refresh_token);
-      setIsLogin(true);
       setAuthData({
         id: data.data.id,
         email: data.data.email,
@@ -102,6 +113,7 @@ const LoginPage: React.FC = () => {
   };
   return (
     <div className="container mx-auto mt-14 bg-gray-100 lg:rounded-3xl">
+      {isLogin && <LoadingSpinner />}
       <div className="flex justify-center px-6 py-8 lg:py-2">
         <div className="w-full xl:w-3/4 lg:w-11/12 flex shadow-xl rounded-3xl">
           <div

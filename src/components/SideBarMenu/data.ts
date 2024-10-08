@@ -7,22 +7,26 @@ export const menuItems = [
       {
         icon: faIdCard,
         label: "Profile",
-        href: "/profile"
+        href: "/profile",
+        is_private: true,
       },
       {
         icon: faUserGroup,
         label: "Friends",
-        href: "/friends"
+        href: "/friends",
+        is_private: true,
       },
       {
         icon: faFilePen,
         label: "Applied",
-        href: "/projects/applied"
+        href: "/projects/applied",
+        is_private: true,
       },
       {
         icon: faBookmark,
         label: "Saved",
-        href: "/projects/saved"
+        href: "/projects/saved",
+        is_private: true,
       },
     ],
   },
@@ -32,17 +36,20 @@ export const menuItems = [
       {
         icon: faCircleQuestion,
         label: "FAQ",
-        href: "/faqs"
+        href: "/faqs",
+        is_private: false,
       },
       {
         icon: faGear,
         label: "Settings",
         href: "/settings",
+        is_private: true,
       },
       {
         icon: faRightFromBracket,
         label: "Logout",
         href: "/logout",
+        is_private: false,
       },
     ],
   },
