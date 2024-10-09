@@ -1,69 +1,83 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { RefreshToken } from "@/service/token";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { CheckAccessToken, HandleLogout, RefreshToken } from "@/service/token";
 
-const useAuthCheck = (
-  setAuthData: (data: { id: number; email: string }) => void
-) => {
+const useAuthCheck = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [isVerifying, setIsVerifying] = useState<boolean>(true); // New state to prevent looping
   const router = useRouter();
+  const currentPath = usePathname();
+  const { clearAuthData, setAuthData } = useAuth();
 
-  const verifyAccessToken = async (accessToken: string) => {
-    const response = await fetch(
-      "http://localhost:3001/api/v1/auth/verify-token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    return response.ok;
-  };
+  const handleValidToken = (data: any) => {
+    setIsLogin(true);
+    setAuthData({
+      id: data.data.id,
+      email: data.data.email,
+    });
 
-  const handleRefreshToken = async (refreshToken: string) => {
-    const data = await RefreshToken(refreshToken);
-    if (data) {
-      localStorage.setItem("access_token", data.token);
-      setAuthData({ id: data.data.id, email: data.data.email });
-      setIsLogin(true);
+    if (currentPath === "/login" || currentPath === "/signup") {
       router.push("/");
-      return true;
     }
-    return false;
   };
 
   const verifyToken = async () => {
-    const accessToken = localStorage.getItem("access_token");
-    const refreshToken = localStorage.getItem("refresh_token");
+    const access_token = localStorage.getItem("access_token");
+    const refresh_token = localStorage.getItem("refresh_token");
 
-    if (accessToken) {
-      const isValid = await verifyAccessToken(accessToken);
-      if (isValid) {
-        setIsLogin(true);
+    // Prevent re-verification if already verified
+    if (isVerifying) {
+      // If access token exists, check its validity
+      if (access_token) {
+        const data = await CheckAccessToken(access_token);
+        if (data) {
+          handleValidToken(data);
+          setIsVerifying(false); // Mark verification complete
+          return;
+        }
+
+        // If access token is invalid, remove it and proceed
+        localStorage.removeItem("access_token");
+        clearAuthData();
+      }
+
+      // If access token is invalid or missing, check refresh token
+      if (refresh_token) {
+        const data = await RefreshToken(refresh_token);
+        if (data) {
+          localStorage.setItem("access_token", data.token);
+          handleValidToken(data);
+          setIsVerifying(false); // Mark verification complete
+          return;
+        }
+
+        // If refresh token is invalid, handle logout
+        clearAuthData();
+        HandleLogout(router);
+        setIsVerifying(false); // Mark verification complete
         return;
       }
-      localStorage.removeItem("access_token");
-    }
 
-    if (refreshToken) {
-      const isRefreshed = await handleRefreshToken(refreshToken);
-      if (!isRefreshed) {
+      // If neither tokens are present, redirect to login
+      if (!access_token && !refresh_token) {
+        clearAuthData();
         setIsLogin(false);
-        router.push("/login");
+        if (currentPath !== "/" && currentPath !== "/login") {
+          router.push("/login");
+        }
       }
-    } else {
-      setIsLogin(false);
-      router.push("/login");
+      setIsVerifying(false); // Mark verification complete
     }
   };
 
   useEffect(() => {
-    verifyToken();
-  }, [setAuthData, router]);
+    if (isVerifying) {
+      verifyToken();
+    }
+  }, [isVerifying, setAuthData, clearAuthData, router, currentPath]);
 
-  return isLogin;
+  return { isLogin, setIsLogin };
 };
 
 export default useAuthCheck;
