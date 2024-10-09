@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { CheckAccessToken, HandleLogout, RefreshToken } from "@/service/token";
+import { CheckAccessToken, RefreshToken } from "@/service/token";
 
 const useAuthCheck = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const { isLogin, setIsLogin, clearAuthData, setAuthData } = useAuth();
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isVerifying, setIsVerifying] = useState<boolean>(true); // New state to prevent looping
   const router = useRouter();
   const currentPath = usePathname();
-  const { clearAuthData, setAuthData } = useAuth();
 
   const handleValidToken = (data: any) => {
     setIsLogin(true);
@@ -26,6 +27,8 @@ const useAuthCheck = () => {
     const access_token = localStorage.getItem("access_token");
     const refresh_token = localStorage.getItem("refresh_token");
 
+    setIsLoading(true);
+
     // Prevent re-verification if already verified
     if (isVerifying) {
       // If access token exists, check its validity
@@ -34,6 +37,7 @@ const useAuthCheck = () => {
         if (data) {
           handleValidToken(data);
           setIsVerifying(false); // Mark verification complete
+          setIsLoading(false);
           return;
         }
 
@@ -49,13 +53,17 @@ const useAuthCheck = () => {
           localStorage.setItem("access_token", data.token);
           handleValidToken(data);
           setIsVerifying(false); // Mark verification complete
+          setIsLoading(false);
           return;
         }
 
         // If refresh token is invalid, handle logout
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
         clearAuthData();
-        HandleLogout(router);
         setIsVerifying(false); // Mark verification complete
+        setIsLoading(false);
+        router.push("/login");
         return;
       }
 
@@ -63,11 +71,12 @@ const useAuthCheck = () => {
       if (!access_token && !refresh_token) {
         clearAuthData();
         setIsLogin(false);
-        if (currentPath !== "/" && currentPath !== "/login") {
+        if (currentPath !== "/login") {
           router.push("/login");
         }
       }
       setIsVerifying(false); // Mark verification complete
+      setIsLoading(false);
     }
   };
 
@@ -77,7 +86,7 @@ const useAuthCheck = () => {
     }
   }, [isVerifying, setAuthData, clearAuthData, router, currentPath]);
 
-  return { isLogin, setIsLogin };
+  return { isLoading, isLogin, setIsLogin };
 };
 
 export default useAuthCheck;

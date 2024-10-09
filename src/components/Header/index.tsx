@@ -57,23 +57,28 @@ const Header = () => {
       </Link>
 
       {/* sembunyikan ini di tampilan mobile */}
-      {isLogin && (
-        <div className="hidden lg:flex basis-3/5 items-center gap-2 justify-center w-full px-8">
-          {navMenuItems.map((n) => (
-            <Link
-              key={n.label}
-              href={n.href}
-              className="w-1/5 flex border-b-4 border-Navy p-4 justify-center"
-            >
-              <FontAwesomeIcon
-                icon={n.icon}
-                size="xl"
-                style={{ color: "#424874" }}
-              />
-            </Link>
-          ))}
-        </div>
-      )}
+      <div className="hidden lg:flex basis-3/5 items-center gap-2 justify-center w-full px-8">
+        {isLogin &&
+          navMenuItems.map((n) => {
+            const isActive = path === n.href || path.startsWith(`${n.href}/`);
+
+            return (
+              <Link
+                key={n.label}
+                href={n.href}
+                className={`w-1/5 flex justify-center p-4 border-b-[6px] ${
+                  isActive ? "border-Navy" : "border-transparent"
+                }`}
+              >
+                <FontAwesomeIcon
+                  icon={n.icon}
+                  size="xl"
+                  style={{ color: "#424874" }}
+                />
+              </Link>
+            );
+          })}
+      </div>
 
       <div className="basis-1/5 flex items-center gap-2 lg:gap-6 justify-between lg:justify-end w-full lg:p-2">
         <div className="hidden md:flex justify-end items-center w-64">

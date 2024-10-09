@@ -69,11 +69,4 @@ export const CheckAccessToken = async (access_token: string): Promise<TResponseA
     }
 }
 
-export const HandleLogout = (router: ReturnType<typeof useRouter>) => {
-    console.log("Failed to refresh token, logging out...");
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    router.push("/login");
-}
-
 // POSIBLY ERROR WHEN ACCESSTOKEN VALID BUT SESSION STORAGE GONE

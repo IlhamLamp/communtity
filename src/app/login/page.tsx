@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import useAuthCheck from "@/hooks/useAuthCheck";
 import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const LoginPage: React.FC = () => {
@@ -112,6 +112,7 @@ const LoginPage: React.FC = () => {
       error: (err: TBasicLoginResponse) => err.message,
     });
   };
+
   return (
     <div className="container mx-auto mt-14 bg-gray-100 lg:rounded-3xl">
       {isLogin && <LoadingSpinner />}

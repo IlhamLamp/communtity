@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 interface AuthContextType {
   id: number | null;
   email: string | null;
+  isLogin: boolean;
+  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthData: (data: { id: number; email: string }) => void;
   clearAuthData: () => void;
 }
@@ -20,6 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     id: null,
     email: null,
   });
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const setAuthDataHandler = (data: { id: number; email: string }) => {
     setAuthData(data);
@@ -56,6 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       ...authData,
       setAuthData: setAuthDataHandler,
       clearAuthData: clearAuthDataHandler,
+      isLogin,
+      setIsLogin,
     }),
     [authData, setAuthData]
   );

@@ -1,4 +1,4 @@
-import { faBookmark, faCircleQuestion, faFilePen, faGear, faIdCard, faRightFromBracket, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark, faCircleQuestion, faFilePen, faGear, faIdCard, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 
 export const menuItems = [
   {
@@ -44,12 +44,6 @@ export const menuItems = [
         label: "Settings",
         href: "/settings",
         is_private: true,
-      },
-      {
-        icon: faRightFromBracket,
-        label: "Logout",
-        href: "/logout",
-        is_private: false,
       },
     ],
   },
