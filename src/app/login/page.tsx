@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import useAuthCheck from "@/hooks/useAuthCheck";
 import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 const LoginPage: React.FC = () => {
