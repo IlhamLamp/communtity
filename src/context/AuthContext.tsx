@@ -1,13 +1,18 @@
 "use client";
+import { CheckAccessToken, RefreshToken } from "@/service/token";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 interface AuthContextType {
   id: number | null;
   email: string | null;
   isLogin: boolean;
+  isLoading: boolean;
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthData: (data: { id: number; email: string }) => void;
   clearAuthData: () => void;
+  verifyToken: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,17 +27,69 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     id: null,
     email: null,
   });
+  const router = useRouter();
+  const currentPath = usePathname();
   const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const publicRoutes = ["/login", "/", "/faqs", "/signup", "/forgot-password"];
 
   const setAuthDataHandler = (data: { id: number; email: string }) => {
     setAuthData(data);
+    setIsLogin(true);
   };
 
   const clearAuthDataHandler = () => {
     sessionStorage.removeItem("id");
     sessionStorage.removeItem("email");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     setAuthData({ id: null, email: null });
+    setIsLogin(false);
   };
+
+  const verifyToken = async () => {
+    const access_token = localStorage.getItem("access_token");
+    const refresh_token = localStorage.getItem("refresh_token");
+
+    setIsLoading(true);
+
+    if (access_token) {
+      const data = await CheckAccessToken(access_token);
+      if (data) {
+        setAuthDataHandler({ id: data.data.id, email: data.data.email });
+        setIsLoading(false);
+        return;
+      }
+      localStorage.removeItem("access_token");
+    }
+
+    if (refresh_token) {
+      const data = await RefreshToken(refresh_token);
+      if (data) {
+        localStorage.setItem("access_token", data.token);
+        setAuthDataHandler({ id: data.data.id, email: data.data.email });
+        setIsLoading(false);
+        return;
+      }
+      clearAuthDataHandler();
+    } else {
+      clearAuthDataHandler();
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (isLogin && (currentPath === "/signup" || currentPath === "/login")) {
+      return router.push("/");
+    }
+    if (!publicRoutes.includes(currentPath) && !isLogin && !isLoading) {
+      return router.push("/login");
+    }
+    if (!isLogin && !isLoading) {
+      verifyToken();
+    }
+  }, [currentPath, isLogin, isLoading, router, verifyToken]);
 
   useEffect(() => {
     const storedId = sessionStorage.getItem("id");
@@ -60,9 +117,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setAuthData: setAuthDataHandler,
       clearAuthData: clearAuthDataHandler,
       isLogin,
+      isLoading,
+      setIsLoading,
       setIsLogin,
+      verifyToken,
     }),
-    [authData, setAuthData]
+    [authData, isLogin, isLoading]
   );
 
   return (

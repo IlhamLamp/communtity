@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { navMenuItems } from "./data";
 import { usePathname } from "next/navigation";
-import useAuthCheck from "@/hooks/useAuthCheck";
+import { useAuth } from "@/context/AuthContext";
 
 const Header = () => {
   const path = usePathname();
@@ -22,7 +22,7 @@ const Header = () => {
   const [isNotifMobileClicked, setIsNotifMobileClicked] =
     useState<boolean>(false);
 
-  const { isLogin } = useAuthCheck();
+  const { isLogin, isLoading } = useAuth();
 
   const displayNone = {
     display: path === "/signup" || path === "/login" ? "hidden" : "flex",
@@ -78,6 +78,7 @@ const Header = () => {
               </Link>
             );
           })}
+        {JSON.stringify(isLoading)}
       </div>
 
       <div className="basis-1/5 flex items-center gap-2 lg:gap-6 justify-between lg:justify-end w-full lg:p-2">

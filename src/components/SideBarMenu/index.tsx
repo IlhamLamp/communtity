@@ -1,7 +1,6 @@
 import { menuItems } from "./data";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useAuthCheck from "@/hooks/useAuthCheck";
 import {
   faPowerOff,
   faRightFromBracket,
@@ -9,9 +8,10 @@ import {
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { LogoutService } from "@/service/logout";
+import { useAuth } from "@/context/AuthContext";
 
 const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
-  const { isLogin, setIsLogin } = useAuthCheck();
+  const { isLogin, setIsLogin } = useAuth();
 
   const router = useRouter();
 
@@ -19,7 +19,6 @@ const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
     setIsLogin(true);
     const confirmLogout = window.confirm("Apakah Anda yakin ingin logout?");
     if (confirmLogout) {
-      // Logic untuk logout di sini (misalnya clear token, dll)
       LogoutService();
       toast.success("Succesfully Logout!", {
         duration: 4000,

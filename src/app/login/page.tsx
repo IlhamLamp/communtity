@@ -2,7 +2,6 @@
 import LoginAccountForm from "@/components/Form/LoginAccountForm";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
-import useAuthCheck from "@/hooks/useAuthCheck";
 import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,61 +14,7 @@ const LoginPage: React.FC = () => {
     password: "",
   });
   // AUTO LOGIN CHECK
-  const { isLogin, setIsLogin } = useAuthCheck();
-  const { setAuthData } = useAuth();
-
-  // AUTO LOGIN CHECK
-  // useEffect(() => {
-  //   setIsLogin(false);
-  //   const access_token = localStorage.getItem("access_token");
-  //   const refresh_token = localStorage.getItem("refresh_token");
-  //   // validity accessToken
-  //   if (access_token) {
-  //     setIsLogin(true);
-  //     CheckAccessToken(access_token)
-  //       .then((data) => {
-  //         if (data) {
-  //           setAuthData({
-  //             id: data.data.id,
-  //             email: data.data.email,
-  //           });
-  //           router.push("/");
-  //           return;
-  //         } else {
-  //           localStorage.removeItem("access_token");
-  //           clearAuthData();
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //       });
-  //   }
-  //   // validity refreshToken
-  //   if (!access_token && refresh_token) {
-  //     RefreshToken(refresh_token)
-  //       .then((data) => {
-  //         if (data) {
-  //           setIsLogin(true);
-  //           localStorage.setItem("access_token", data.token);
-  //           localStorage.setItem("refresh_token", refresh_token);
-  //           setAuthData({
-  //             id: data.data.id,
-  //             email: data.data.email,
-  //           });
-  //           router.push("/");
-  //         } else {
-  //           setIsLogin(false);
-  //           clearAuthData();
-  //           HandleLogout(router);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //         clearAuthData();
-  //         HandleLogout(router);
-  //       });
-  //   }
-  // }, [router, setAuthData]);
+  const { isLogin, setIsLogin, setAuthData } = useAuth();
 
   const handleInputChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = ev.target;
