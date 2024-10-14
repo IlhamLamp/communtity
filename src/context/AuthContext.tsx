@@ -1,7 +1,14 @@
 "use client";
 import { CheckAccessToken, RefreshToken } from "@/service/token";
 import { usePathname, useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 interface AuthContextType {
   id: number | null;
@@ -48,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLogin(false);
   };
 
-  const verifyToken = async () => {
+  const verifyToken = useCallback(async () => {
     const access_token = localStorage.getItem("access_token");
     const refresh_token = localStorage.getItem("refresh_token");
 
@@ -77,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       clearAuthDataHandler();
     }
     setIsLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     if (isLogin && (currentPath === "/signup" || currentPath === "/login")) {

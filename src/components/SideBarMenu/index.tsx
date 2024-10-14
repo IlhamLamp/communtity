@@ -15,11 +15,10 @@ const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
 
   const router = useRouter();
 
-  const handleLogout = () => {
-    setIsLogin(true);
+  const handleLogout = async () => {
     const confirmLogout = window.confirm("Apakah Anda yakin ingin logout?");
     if (confirmLogout) {
-      LogoutService();
+      await LogoutService();
       toast.success("Succesfully Logout!", {
         duration: 4000,
       });
