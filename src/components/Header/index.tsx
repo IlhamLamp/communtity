@@ -78,7 +78,8 @@ const Header = () => {
               </Link>
             );
           })}
-        {JSON.stringify(isLoading)}
+        <div>isLoading:{JSON.stringify(isLoading)}</div>
+        <div>isLogin:{JSON.stringify(isLogin)}</div>
       </div>
 
       <div className="basis-1/5 flex items-center gap-2 lg:gap-6 justify-between lg:justify-end w-full lg:p-2">

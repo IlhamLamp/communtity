@@ -1,3 +1,4 @@
+import { RegisterUserProfile } from "@/service/profile";
 import { TRegisterResponse, TRegisterUser } from "@/types/user";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -64,6 +65,7 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
         return Promise.reject(responseData.message);
         // throw new Error(responseData.message);
       }
+      await RegisterUserProfile(data);
       return responseData;
     });
 
@@ -71,9 +73,12 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
       .promise(verifyOtpPromise, {
         loading: "Verifying OTP...",
         success:
-          "🎉 OTP verified successfully! redirects to the login page within 3 seconds",
+          "🎉 OTP verified successfully! redirects to the login page within 5 seconds",
         error: (err: TRegisterResponse) => err.message || "invalid otp",
       })
+      // .then(async () => {
+      //   await RegisterUserProfile(data);
+      // })
       .then(() => {
         setIsVerified(true);
         setTimeout(() => {

@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 const SignUpPage: React.FC = () => {
   const [isOtpStage, setIsOtpStage] = useState<boolean>(false);
   const [formData, setFormData] = useState<TRegisterUser>({
+    id: 0,
     email: "",
     password: "",
     confirmation_password: "",
@@ -37,11 +38,11 @@ const SignUpPage: React.FC = () => {
         }),
       }
     ).then(async (response) => {
-      const data = await response.json();
+      const data: TRegisterResponse = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Something went wrong");
       }
-      return data;
+      return data.user;
     });
 
     toast
@@ -52,13 +53,12 @@ const SignUpPage: React.FC = () => {
         error: (err: TRegisterResponse) =>
           err.message || "An error occurred during registration.",
       })
-      .then((data: TRegisterUser) => {
+      .then((data) => {
         setFormData((prevData) => ({
           ...prevData,
-          id: data.id,
+          id: data?.id,
           otp_code: "",
-          otp_expiration: data.otp_expiration,
-          is_verified: data.is_verified,
+          is_verified: data?.is_verified,
         }));
         setIsOtpStage(true);
       })

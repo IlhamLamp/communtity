@@ -14,6 +14,7 @@ export type TRegisterResponse = {
     message: string;
     error: string;
     status: number;
+    user?: TRegisterUser;
 }
 
 export type TBasicLoginUser = {

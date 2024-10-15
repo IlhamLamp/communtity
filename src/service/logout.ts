@@ -1,4 +1,4 @@
-export const LogoutService = async() => {
+export const LogoutService = async () => {
     try {
         const access_token = localStorage.getItem('access_token');
         const response = await fetch('http://localhost:3001/api/v1/auth/logout', {

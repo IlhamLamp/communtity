@@ -21,6 +21,7 @@ const RegisterAccountForm: React.FC<{
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const toggleShowPassword = (ev: React.MouseEvent<HTMLButtonElement>) => {
     ev.preventDefault();
@@ -52,7 +53,12 @@ const RegisterAccountForm: React.FC<{
   const handleFormSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     if (validate()) {
-      handleRegister(ev);
+      setIsSubmitting(true);
+      try {
+        handleRegister(ev);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -163,10 +169,15 @@ const RegisterAccountForm: React.FC<{
       </div>
       <div className="mb-3 text-center">
         <button
-          className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+          className={`${
+            isSubmitting
+              ? "cursor-not-allowed bg-gray-100"
+              : "bg-blue-500 hover:bg-blue-700"
+          } w-full px-4 py-2 font-bold text-white rounded-full focus:outline-none focus:shadow-outline`}
           type="submit"
+          disabled={isSubmitting}
         >
-          Register Account
+          {isSubmitting ? "Registering..." : "Register Account"}
         </button>
       </div>
       <div className="flex flex-col mx-auto items-center gap-4 mb-4">
