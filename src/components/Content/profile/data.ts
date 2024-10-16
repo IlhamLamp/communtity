@@ -1,7 +1,6 @@
 import { faLinkedin, faGithub, faInstagram, faFacebook, faDiscord, faTelegram, faTwitter, faYoutube} from "@fortawesome/free-brands-svg-icons";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 
-
 export const profileData = {
     data: {
         _id: "e7126500-528b-4080-8591-a94513394899",

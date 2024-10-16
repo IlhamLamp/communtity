@@ -76,9 +76,6 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
           "🎉 OTP verified successfully! redirects to the login page within 5 seconds",
         error: (err: TRegisterResponse) => err.message || "invalid otp",
       })
-      // .then(async () => {
-      //   await RegisterUserProfile(data);
-      // })
       .then(() => {
         setIsVerified(true);
         setTimeout(() => {

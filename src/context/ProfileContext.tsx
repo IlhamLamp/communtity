@@ -1,4 +1,5 @@
-'use client';
+"use client";
+import { RefreshUserProfile } from "@/service/profile";
 import { TProfileUser } from "@/types/profile";
 import React, {
   createContext,
@@ -20,10 +21,34 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [profile, setProfile] = useState<TProfileUser | null>(null);
 
+  const refreshProfile = async () => {
+    try {
+      const accessToken = localStorage.getItem("access_token");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+      const response = await RefreshUserProfile(accessToken);
+      const profileData = response?.data;
+      if (!profileData) throw new Error("Profile data is undefined");
+      setProfile(profileData);
+    } catch (error) {
+      console.error("Failed to refresh profile:", error);
+      setProfile(null);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      refreshProfile();
+    }
+  }, []);
+
   const profileMemo = useMemo(
     () => ({
       profile,
       setProfile,
+      refreshProfile,
     }),
     [profile]
   );

@@ -11,8 +11,7 @@ const ProfilePage: React.FC = () => {
   } else {
     return (
       <div className="bg-gray-100">
-        {isLoading && <LoadingSpinner />}
-        <ContentProfile key={profileData?.data._id} data={profileData.data} />
+        <ContentProfile />
       </div>
     );
   }

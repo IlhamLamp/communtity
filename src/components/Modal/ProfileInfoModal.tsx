@@ -1,11 +1,13 @@
+import { TProfileUser } from "@/types/profile";
 import { faCircleXmark, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
-const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
-  data,
-  toggle,
-}) => {
+const ProfileInfoModal: React.FC<{
+  data: TProfileUser | null;
+  toggle: any;
+}> = ({ data, toggle }) => {
+  const email = sessionStorage.getItem("email") || "";
   const [tags, setTags] = useState<{ label: string; color: string }[]>([]);
   const [tagsInput, setTagsInput] = useState<string>("");
   const [roleInput, setRoleInput] = useState(data?.role || "");
@@ -14,6 +16,7 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
   const [lastColor, setLastColor] = useState<string | null>(null);
 
   const allRoles = [
+    "A Learner",
     "Programmer",
     "Designer",
     "Data Scientist",
@@ -79,7 +82,6 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
     }
   };
 
-  // Fungsi untuk memilih role dari suggestion
   const handleSelectRole = (role: string) => {
     setRoleInput(role);
     setSuggestions([]);
@@ -94,26 +96,21 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
     setTagSuggestions([]);
   };
 
-  // Fungsi untuk menghapus tag
   const handleRemoveTag = (
     tag: string,
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
-    e.preventDefault(); // Tambahkan ini untuk mencegah refresh
+    e.preventDefault();
     setTags(tags.filter((t) => t.label !== tag));
   };
 
   const getRandomBgColor = () => {
     let randomIndex = Math.floor(Math.random() * bgColors.length);
     let newColor = bgColors[randomIndex];
-
-    // Pastikan warna baru tidak sama dengan warna sebelumnya
     while (newColor === lastColor) {
       randomIndex = Math.floor(Math.random() * bgColors.length);
       newColor = bgColors[randomIndex];
     }
-
-    // Simpan warna baru sebagai warna terakhir yang digunakan
     setLastColor(newColor);
     return newColor;
   };
@@ -148,6 +145,7 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
                     name="first_name"
                     id="first_name"
                     placeholder="John"
+                    value={data?.first_name}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -162,8 +160,8 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
                     type="text"
                     name="last_name"
                     id="last_name"
-                    disabled={true}
                     placeholder="Doe"
+                    value={data?.last_name}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] cursor-not-allowed"
                   />
                 </div>
@@ -196,7 +194,7 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
                     id="email"
                     disabled={true}
                     placeholder="user@mail.com"
-                    value={data?.email}
+                    value={email}
                     className="w-full rounded-md border border-[#e0e0e0] bg-gray-100 py-2 px-4 text-sm font-medium text-[#6B7280] cursor-not-allowed"
                   />
                 </div>
@@ -255,7 +253,7 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
                     name="city"
                     id="city"
                     placeholder="Jakarta"
-                    value={data?.address.city}
+                    value={data?.address?.city}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -271,7 +269,7 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
                     name="state"
                     id="state"
                     placeholder="Indonesia"
-                    value={data?.address.state}
+                    value={data?.address?.state}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -287,7 +285,7 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
                     name="zip_code"
                     id="zip_code"
                     placeholder="11111"
-                    value={data?.address.zip_code}
+                    value={data?.address?.zip_code}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -304,7 +302,7 @@ const ProfileInfoModal: React.FC<{ data: any; toggle: any }> = ({
                   name="street"
                   id="street"
                   placeholder="Jl. Mawar No.80"
-                  value={data?.address.state}
+                  value={data?.address?.state}
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 />
               </div>
