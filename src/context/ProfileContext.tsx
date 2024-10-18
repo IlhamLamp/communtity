@@ -11,7 +11,9 @@ import React, {
 
 interface IProfileContext {
   profile: TProfileUser | null;
+  isLoading: boolean;
   setProfile: React.Dispatch<React.SetStateAction<TProfileUser | null>>;
+  refreshProfile: () => void;
 }
 
 const ProfileContext = createContext<IProfileContext | undefined>(undefined);
@@ -20,8 +22,10 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [profile, setProfile] = useState<TProfileUser | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const refreshProfile = async () => {
+    setIsLoading(true);
     try {
       const accessToken = localStorage.getItem("access_token");
       if (!accessToken) {
@@ -34,6 +38,9 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error) {
       console.error("Failed to refresh profile:", error);
       setProfile(null);
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setIsLoading(false);
     }
   };
 
@@ -47,10 +54,11 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
   const profileMemo = useMemo(
     () => ({
       profile,
+      isLoading,
       setProfile,
       refreshProfile,
     }),
-    [profile]
+    [profile, isLoading]
   );
   return (
     <ProfileContext.Provider value={profileMemo}>
