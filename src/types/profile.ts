@@ -1,3 +1,5 @@
+import { TRoleUser } from "./role";
+
 export type TProfileUser = {
     _id?: string;
     user_id?: number;
@@ -14,7 +16,7 @@ export type TProfileUser = {
     };
     profile_picture?: string;
     profile_cover?: string;
-    role?: string;
+    role?: TRoleUser;
     tags?: [];
     about?: string;
     social_links?: [];

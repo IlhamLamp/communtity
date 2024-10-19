@@ -7,6 +7,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import Header from "@/components/Header";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProfileProvider } from "@/context/ProfileContext";
+import { PublicResourceProvider } from "@/context/PublicContext";
 config.autoAddCss = false;
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
@@ -30,32 +31,34 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={poppins.className}>
-        <AuthProvider>
-          <ProfileProvider>
-            <Toaster
-              toastOptions={{
-                loading: {
-                  style: {
-                    background: "#FCE38A",
+        <PublicResourceProvider>
+          <AuthProvider>
+            <ProfileProvider>
+              <Toaster
+                toastOptions={{
+                  loading: {
+                    style: {
+                      background: "#FCE38A",
+                    },
                   },
-                },
-                success: {
-                  style: {
-                    background: "#95E1D3",
+                  success: {
+                    style: {
+                      background: "#95E1D3",
+                    },
                   },
-                },
-                error: {
-                  style: {
-                    background: "#F38181",
-                    color: "white",
+                  error: {
+                    style: {
+                      background: "#F38181",
+                      color: "white",
+                    },
                   },
-                },
-              }}
-            />
-            <Header />
-            <main>{children}</main>
-          </ProfileProvider>
-        </AuthProvider>
+                }}
+              />
+              <Header />
+              <main>{children}</main>
+            </ProfileProvider>
+          </AuthProvider>
+        </PublicResourceProvider>
       </body>
     </html>
   );

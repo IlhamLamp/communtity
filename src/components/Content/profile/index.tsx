@@ -58,7 +58,7 @@ const ContentProfile: React.FC = () => {
                 {fullName}
               </h1>
               <h5 className="text-center text-slate-600 text-xl">
-                {profile?.role}
+                {profile?.role?.name}
               </h5>
             </div>
             <div className="absolute -top-2 lg:top-0 right-8 lg:right-0 p-2 cursor-pointer">

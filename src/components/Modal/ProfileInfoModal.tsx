@@ -1,19 +1,24 @@
 import { TProfileUser } from "@/types/profile";
 import { faCircleXmark, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const ProfileInfoModal: React.FC<{
   data: TProfileUser | null;
   toggle: any;
 }> = ({ data, toggle }) => {
   const email = sessionStorage.getItem("email") || "";
+  const [profileData, setProfileData] = useState<TProfileUser | null>(data);
   const [tags, setTags] = useState<{ label: string; color: string }[]>([]);
   const [tagsInput, setTagsInput] = useState<string>("");
   const [roleInput, setRoleInput] = useState(data?.role || "");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
   const [lastColor, setLastColor] = useState<string | null>(null);
+
+  useEffect(() => {
+    setProfileData(data);
+  }, [data]);
 
   const allRoles = [
     "A Learner",
@@ -49,38 +54,67 @@ const ProfileInfoModal: React.FC<{
   ];
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: string
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: string
   ) => {
-    const value = e.target.value;
+    const { value } = e.target;
 
-    switch (type) {
-      case "role":
-        setRoleInput(value);
-        if (value.trim() !== "") {
-          const filteredSuggestions = allRoles.filter((role) =>
-            role.toLowerCase().includes(value.toLowerCase())
-          );
-          setSuggestions(filteredSuggestions);
-        } else {
-          setSuggestions([]);
-        }
-        break;
-      case "tags":
-        setTagsInput(value);
-        if (value.trim() !== "") {
-          const filteredSuggestions = allTags.filter((tag) =>
-            tag.toLowerCase().includes(value.toLowerCase())
-          );
-          setTagSuggestions(filteredSuggestions);
-        } else {
-          setTagSuggestions([]);
-        }
-        break;
-      default:
-        break;
+    if (field === "birthday") {
+      const dateValue = new Date(value);
+      setProfileData((prevData) => ({
+        ...prevData,
+        [field]: dateValue,
+      }));
+    } else if (field.startsWith("address.")) {
+      const addressField = field.split(".")[1];
+      setProfileData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData?.address,
+          [addressField]: value,
+        },
+      }));
+    } else {
+      setProfileData((prevData) => ({
+        ...prevData,
+        [field]: value,
+      }));
     }
   };
+
+  // const handleInputChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  //   type: string
+  // ) => {
+  //   const value = e.target.value;
+
+  //   switch (type) {
+  //     case "role":
+  //       setRoleInput(value);
+  //       if (value.trim() !== "") {
+  //         const filteredSuggestions = allRoles.filter((role) =>
+  //           role.toLowerCase().includes(value.toLowerCase())
+  //         );
+  //         setSuggestions(filteredSuggestions);
+  //       } else {
+  //         setSuggestions([]);
+  //       }
+  //       break;
+  //     case "tags":
+  //       setTagsInput(value);
+  //       if (value.trim() !== "") {
+  //         const filteredSuggestions = allTags.filter((tag) =>
+  //           tag.toLowerCase().includes(value.toLowerCase())
+  //         );
+  //         setTagSuggestions(filteredSuggestions);
+  //       } else {
+  //         setTagSuggestions([]);
+  //       }
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   const handleSelectRole = (role: string) => {
     setRoleInput(role);
@@ -145,7 +179,10 @@ const ProfileInfoModal: React.FC<{
                     name="first_name"
                     id="first_name"
                     placeholder="John"
-                    value={data?.first_name}
+                    value={profileData?.first_name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(e, "first_name")
+                    }
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -161,7 +198,10 @@ const ProfileInfoModal: React.FC<{
                     name="last_name"
                     id="last_name"
                     placeholder="Doe"
-                    value={data?.last_name}
+                    value={profileData?.last_name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(e, "last_name")
+                    }
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] cursor-not-allowed"
                   />
                 </div>
@@ -177,7 +217,10 @@ const ProfileInfoModal: React.FC<{
                     name="username"
                     id="username"
                     placeholder="jdoe99"
-                    value={data?.username}
+                    value={profileData?.username}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(e, "username")
+                    }
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -214,7 +257,10 @@ const ProfileInfoModal: React.FC<{
                       name="phone"
                       id="phone"
                       placeholder="8123456789"
-                      value={data?.phone}
+                      value={profileData?.phone}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(e, "phone")
+                      }
                       className="w-full rounded-r-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md no-sp"
                     />
                   </div>
@@ -224,13 +270,21 @@ const ProfileInfoModal: React.FC<{
                     htmlFor="date"
                     className="block text-sm font-medium text-[#07074D]"
                   >
-                    Born Date
+                    Birthday
                   </label>
                   <input
                     type="date"
                     name="date"
                     id="date"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                    value={
+                      profileData?.birthday
+                        ? profileData.birthday.toISOString().split("T")[0]
+                        : ""
+                    }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(e, "birthday")
+                    }
                   />
                 </div>
               </div>
@@ -253,7 +307,10 @@ const ProfileInfoModal: React.FC<{
                     name="city"
                     id="city"
                     placeholder="Jakarta"
-                    value={data?.address?.city}
+                    value={profileData?.address?.city}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(e, "address.city")
+                    }
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -270,6 +327,9 @@ const ProfileInfoModal: React.FC<{
                     id="state"
                     placeholder="Indonesia"
                     value={data?.address?.state}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(e, "address.state")
+                    }
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -286,6 +346,9 @@ const ProfileInfoModal: React.FC<{
                     id="zip_code"
                     placeholder="11111"
                     value={data?.address?.zip_code}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(e, "address.zip_code")
+                    }
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
@@ -302,7 +365,10 @@ const ProfileInfoModal: React.FC<{
                   name="street"
                   id="street"
                   placeholder="Jl. Mawar No.80"
-                  value={data?.address?.state}
+                  value={data?.address?.street}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(e, "address.street")
+                  }
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 />
               </div>
@@ -325,10 +391,6 @@ const ProfileInfoModal: React.FC<{
                     name="role"
                     id="role"
                     placeholder="Programmer"
-                    value={roleInput}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "role")
-                    }
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                   {suggestions.length > 0 && (
