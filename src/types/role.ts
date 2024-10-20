@@ -4,3 +4,10 @@ export type TRoleUser = {
     description?: string;
     is_active?: boolean;
 }
+
+export type TRoleResponse = {
+    status:  number;
+    message: string;
+    error: string;
+    data: any;
+}

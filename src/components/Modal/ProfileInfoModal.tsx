@@ -1,4 +1,6 @@
+import { usePublicResource } from "@/context/PublicContext";
 import { TProfileUser } from "@/types/profile";
+import { TRoleUser } from "@/types/role";
 import { faCircleXmark, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
@@ -11,25 +13,34 @@ const ProfileInfoModal: React.FC<{
   const [profileData, setProfileData] = useState<TProfileUser | null>(data);
   const [tags, setTags] = useState<{ label: string; color: string }[]>([]);
   const [tagsInput, setTagsInput] = useState<string>("");
-  const [roleInput, setRoleInput] = useState(data?.role || "");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
   const [lastColor, setLastColor] = useState<string | null>(null);
+
+  const [roleSearchTerm, setRoleSearchTerm] = useState<string>("");
+  const [filteredRoles, setFilteredRoles] = useState<TRoleUser[]>([]);
+  const [isInputRoleFocused, setIsInputRoleFocused] = useState<boolean>(false);
+  const { roles, isLoading } = usePublicResource();
 
   useEffect(() => {
     setProfileData(data);
   }, [data]);
 
-  const allRoles = [
-    "A Learner",
-    "Programmer",
-    "Designer",
-    "Data Scientist",
-    "DevOps Engineer",
-    "Product Manager",
-    "Backend Developer",
-    "Frontend Developer",
-  ];
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (roles && roleSearchTerm) {
+        const filtered = roles.filter((role) =>
+          role.name?.toLowerCase().includes(roleSearchTerm.toLowerCase())
+        );
+        setFilteredRoles(filtered);
+      } else {
+        setFilteredRoles(roles || []);
+      }
+    }, 300);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [roleSearchTerm, roles]);
+
   const allTags = [
     "Technology",
     "Programming",
@@ -59,6 +70,10 @@ const ProfileInfoModal: React.FC<{
   ) => {
     const { value } = e.target;
 
+    if (field === "role") {
+      setRoleSearchTerm(value);
+    }
+
     if (field === "birthday") {
       const dateValue = new Date(value);
       setProfileData((prevData) => ({
@@ -82,43 +97,12 @@ const ProfileInfoModal: React.FC<{
     }
   };
 
-  // const handleInputChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   type: string
-  // ) => {
-  //   const value = e.target.value;
-
-  //   switch (type) {
-  //     case "role":
-  //       setRoleInput(value);
-  //       if (value.trim() !== "") {
-  //         const filteredSuggestions = allRoles.filter((role) =>
-  //           role.toLowerCase().includes(value.toLowerCase())
-  //         );
-  //         setSuggestions(filteredSuggestions);
-  //       } else {
-  //         setSuggestions([]);
-  //       }
-  //       break;
-  //     case "tags":
-  //       setTagsInput(value);
-  //       if (value.trim() !== "") {
-  //         const filteredSuggestions = allTags.filter((tag) =>
-  //           tag.toLowerCase().includes(value.toLowerCase())
-  //         );
-  //         setTagSuggestions(filteredSuggestions);
-  //       } else {
-  //         setTagSuggestions([]);
-  //       }
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  const handleSelectRole = (role: string) => {
-    setRoleInput(role);
-    setSuggestions([]);
+  const handleSelectRole = (role: TRoleUser) => {
+    setProfileData((prevData) => ({
+      ...prevData,
+      role,
+    }));
+    setFilteredRoles([]);
   };
 
   const handleAddTag = (tag: string) => {
@@ -390,18 +374,24 @@ const ProfileInfoModal: React.FC<{
                     type="text"
                     name="role"
                     id="role"
-                    placeholder="Programmer"
+                    placeholder="Search role"
+                    value={profileData?.role?.name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleInputChange(e, "role")
+                    }
+                    onFocus={() => setIsInputRoleFocused(true)}
+                    onBlur={() => setIsInputRoleFocused(false)}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
-                  {suggestions.length > 0 && (
-                    <ul className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
-                      {suggestions.map((suggestion, index) => (
+                  {isInputRoleFocused && filteredRoles.length > 0 && (
+                    <ul className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10">
+                      {filteredRoles.map((role: TRoleUser) => (
                         <li
-                          key={index}
-                          onClick={() => handleSelectRole(suggestion)}
+                          key={role._id}
+                          onClick={() => handleSelectRole(role)}
                           className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
                         >
-                          {suggestion}
+                          {role.name}
                         </li>
                       ))}
                     </ul>
