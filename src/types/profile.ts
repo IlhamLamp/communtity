@@ -1,5 +1,10 @@
 import { TRoleUser } from "./role";
 
+export type TExperience = {
+    value: string;
+    label: string;
+}
+
 export type TProfileUser = {
     _id?: string;
     user_id?: number;
@@ -17,6 +22,7 @@ export type TProfileUser = {
     profile_picture?: string;
     profile_cover?: string;
     role?: TRoleUser;
+    experience?: TExperience;
     tags?: [];
     about?: string;
     social_links?: [];

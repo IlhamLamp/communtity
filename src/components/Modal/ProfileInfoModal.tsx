@@ -1,5 +1,5 @@
 import { usePublicResource } from "@/context/PublicContext";
-import { TProfileUser } from "@/types/profile";
+import { TExperience, TProfileUser } from "@/types/profile";
 import { TRoleUser } from "@/types/role";
 import { faCircleXmark, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +19,7 @@ const ProfileInfoModal: React.FC<{
   const [roleSearchTerm, setRoleSearchTerm] = useState<string>("");
   const [filteredRoles, setFilteredRoles] = useState<TRoleUser[]>([]);
   const [isInputRoleFocused, setIsInputRoleFocused] = useState<boolean>(false);
+  const [visibleRolesCount, setVisibleRolesCount] = useState<number>(10);
   const { roles, isLoading } = usePublicResource();
 
   useEffect(() => {
@@ -65,7 +66,9 @@ const ProfileInfoModal: React.FC<{
   ];
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
     field: string
   ) => {
     const { value } = e.target;
@@ -89,6 +92,16 @@ const ProfileInfoModal: React.FC<{
           [addressField]: value,
         },
       }));
+    } else if (field === "experience") {
+      const experienceOptions: Record<string, TExperience> = {
+        no_experience: { value: "no_experience", label: "No Experience" },
+        less_than_year: { value: "less_than_year", label: "< 1 year" },
+        more_than_year: { value: "more_than_year", label: "> 1 year" },
+      };
+      setProfileData((prevData) => ({
+        ...prevData,
+        experience: experienceOptions[value],
+      }));
     } else {
       setProfileData((prevData) => ({
         ...prevData,
@@ -102,7 +115,15 @@ const ProfileInfoModal: React.FC<{
       ...prevData,
       role,
     }));
+    setIsInputRoleFocused(false);
     setFilteredRoles([]);
+  };
+
+  const handleScrollRole = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollTop + clientHeight >= scrollHeight) {
+      setVisibleRolesCount((prevCount) => prevCount + 10);
+    }
   };
 
   const handleAddTag = (tag: string) => {
@@ -360,10 +381,10 @@ const ProfileInfoModal: React.FC<{
 
             <div className="mb-2 pt-2">
               <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
-                Working Status
+                Working Status {JSON.stringify(isInputRoleFocused)}
               </label>
               <div className="gap-2 grid grid-cols-1 lg:grid-cols-2">
-                <div className="w-full">
+                <div className="w-full relative">
                   <label
                     htmlFor="role"
                     className="block text-sm font-medium text-[#07074D]"
@@ -380,20 +401,29 @@ const ProfileInfoModal: React.FC<{
                       handleInputChange(e, "role")
                     }
                     onFocus={() => setIsInputRoleFocused(true)}
-                    onBlur={() => setIsInputRoleFocused(false)}
+                    onBlur={() => {
+                      setTimeout(() => setIsInputRoleFocused(false), 150);
+                      setVisibleRolesCount(10);
+                    }}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                   {isInputRoleFocused && filteredRoles.length > 0 && (
-                    <ul className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10">
-                      {filteredRoles.map((role: TRoleUser) => (
-                        <li
-                          key={role._id}
-                          onClick={() => handleSelectRole(role)}
-                          className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
-                        >
-                          {role.name}
-                        </li>
-                      ))}
+                    <ul
+                      className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onScroll={handleScrollRole}
+                    >
+                      {filteredRoles
+                        .slice(0, visibleRolesCount)
+                        .map((role: TRoleUser) => (
+                          <li
+                            key={role._id}
+                            onClick={() => handleSelectRole(role)}
+                            className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
+                          >
+                            {role.name}
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </div>
@@ -407,11 +437,15 @@ const ProfileInfoModal: React.FC<{
                   <select
                     name="experience"
                     id="experience"
+                    value={profileData?.experience?.value}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      handleInputChange(e, "experience")
+                    }
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   >
-                    <option value="">No Experience</option>
-                    <option value="< 1 year">&lt; 1 year</option>
-                    <option value="> 1 year">&gt; 1 year</option>
+                    <option value="no_experience">No Experience</option>
+                    <option value="less_than_year">&lt; 1 year</option>
+                    <option value="more_than_year">&gt; 1 year</option>
                   </select>
                 </div>
               </div>
