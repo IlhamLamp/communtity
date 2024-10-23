@@ -1,4 +1,5 @@
 import { TRoleUser } from "./role";
+import { TTag } from "./tag";
 
 export type TExperience = {
     value: string;
@@ -23,7 +24,7 @@ export type TProfileUser = {
     profile_cover?: string;
     role?: TRoleUser;
     experience?: TExperience;
-    tags?: [];
+    tags?: TTag[];
     about?: string;
     social_links?: [];
     is_active?: boolean;

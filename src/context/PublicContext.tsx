@@ -1,5 +1,6 @@
 "use client";
 import { TRoleResponse, TRoleUser } from "@/types/role";
+import { TTag, TTagResponse } from "@/types/tag";
 import React, {
   createContext,
   useContext,
@@ -10,8 +11,10 @@ import React, {
 
 interface IPublicResourceContext {
   roles: TRoleUser[] | null;
+  tags: TTag[] | null;
   isLoading: boolean;
   refreshRoles: () => void;
+  refreshTags: () => void;
 }
 
 const PublicResourceContext = createContext<IPublicResourceContext | undefined>(
@@ -22,6 +25,7 @@ export const PublicResourceProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [roles, setRoles] = useState<TRoleUser[] | null>(null);
+  const [tags, setTags] = useState<TTag[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const refreshRoles = async () => {
@@ -38,17 +42,34 @@ export const PublicResourceProvider: React.FC<{
     }
   };
 
+  const refreshTags = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:3002/api/v1/tag");
+      const data: TTagResponse = await response.json();
+      setTags(data.data);
+    } catch (error) {
+      console.error("Error fetching tag:", error);
+      setTags([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     refreshRoles();
+    refreshTags();
   }, []);
 
   const publicResourceMemo = useMemo(
     () => ({
       roles,
+      tags,
       isLoading,
       refreshRoles,
+      refreshTags,
     }),
-    [roles, isLoading]
+    [roles, tags, isLoading]
   );
   return (
     <PublicResourceContext.Provider value={publicResourceMemo}>

@@ -1,9 +1,11 @@
 import { usePublicResource } from "@/context/PublicContext";
 import { TExperience, TProfileUser } from "@/types/profile";
 import { TRoleUser } from "@/types/role";
+import { TTag } from "@/types/tag";
 import { faCircleXmark, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
+import { bgTagColors } from "./bgTagColor";
 
 const ProfileInfoModal: React.FC<{
   data: TProfileUser | null;
@@ -11,16 +13,19 @@ const ProfileInfoModal: React.FC<{
 }> = ({ data, toggle }) => {
   const email = sessionStorage.getItem("email") || "";
   const [profileData, setProfileData] = useState<TProfileUser | null>(data);
-  const [tags, setTags] = useState<{ label: string; color: string }[]>([]);
-  const [tagsInput, setTagsInput] = useState<string>("");
-  const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
-  const [lastColor, setLastColor] = useState<string | null>(null);
+  const { roles, tags, isLoading } = usePublicResource();
 
+  // role
   const [roleSearchTerm, setRoleSearchTerm] = useState<string>("");
-  const [filteredRoles, setFilteredRoles] = useState<TRoleUser[]>([]);
+  const [filteredRoles, setFilteredRoles] = useState<TRoleUser[] | null>(null);
   const [isInputRoleFocused, setIsInputRoleFocused] = useState<boolean>(false);
   const [visibleRolesCount, setVisibleRolesCount] = useState<number>(10);
-  const { roles, isLoading } = usePublicResource();
+
+  // tag
+  const [tagSearchTerm, setTagSearchTerm] = useState<string>("");
+  const [filteredTags, setFilteredTags] = useState<TTag[] | null>(null);
+  const [isInputTagFocused, setIsInputTagFocused] = useState<boolean>(false);
+  const [visibleTagsCount, setVisibleTagsCount] = useState<number>(10);
 
   useEffect(() => {
     setProfileData(data);
@@ -29,41 +34,28 @@ const ProfileInfoModal: React.FC<{
   useEffect(() => {
     const handler = setTimeout(() => {
       if (roles && roleSearchTerm) {
-        const filtered = roles.filter((role) =>
+        const filteredRoles = roles.filter((role) =>
           role.name?.toLowerCase().includes(roleSearchTerm.toLowerCase())
         );
-        setFilteredRoles(filtered);
+        setFilteredRoles(filteredRoles);
       } else {
         setFilteredRoles(roles || []);
       }
+
+      if (tags && tagSearchTerm) {
+        const filteredTags = tags.filter((tag) =>
+          tag.name?.toLowerCase().includes(tagSearchTerm.toLowerCase())
+        );
+        setFilteredTags(filteredTags);
+      } else {
+        setFilteredTags(tags || []);
+      }
     }, 300);
+
     return () => {
       clearTimeout(handler);
     };
-  }, [roleSearchTerm, roles]);
-
-  const allTags = [
-    "Technology",
-    "Programming",
-    "Web Development",
-    "Design",
-    "AI",
-    "Machine Learning",
-  ];
-
-  const bgColors = [
-    "bg-blue-200 hover:bg-blue-300",
-    "bg-green-200 hover:bg-green-300",
-    "bg-yellow-200 hover:bg-yellow-300",
-    "bg-indigo-200 hover:bg-indigo-300",
-    "bg-purple-200 hover:bg-purple-300",
-    "bg-pink-200 hover:bg-pink-300",
-    "bg-red-200 hover:bg-red-300",
-    "bg-orange-200 hover:bg-orange-300",
-    "bg-teal-200 hover:bg-teal-300",
-    "bg-gray-200 hover:bg-gray-300",
-    "bg-lime-200 hover:bg-lime-300",
-  ];
+  }, [roleSearchTerm, roles, tagSearchTerm, tags]);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -71,42 +63,53 @@ const ProfileInfoModal: React.FC<{
     >,
     field: string
   ) => {
+    e.preventDefault();
     const { value } = e.target;
 
-    if (field === "role") {
-      setRoleSearchTerm(value);
-    }
-
-    if (field === "birthday") {
-      const dateValue = new Date(value);
-      setProfileData((prevData) => ({
-        ...prevData,
-        [field]: dateValue,
-      }));
-    } else if (field.startsWith("address.")) {
-      const addressField = field.split(".")[1];
-      setProfileData((prevData) => ({
-        ...prevData,
-        address: {
-          ...prevData?.address,
-          [addressField]: value,
-        },
-      }));
-    } else if (field === "experience") {
-      const experienceOptions: Record<string, TExperience> = {
-        no_experience: { value: "no_experience", label: "No Experience" },
-        less_than_year: { value: "less_than_year", label: "< 1 year" },
-        more_than_year: { value: "more_than_year", label: "> 1 year" },
-      };
-      setProfileData((prevData) => ({
-        ...prevData,
-        experience: experienceOptions[value],
-      }));
-    } else {
-      setProfileData((prevData) => ({
-        ...prevData,
-        [field]: value,
-      }));
+    switch (field) {
+      case "tags":
+        setTagSearchTerm(value);
+        break;
+      case "role":
+        setRoleSearchTerm(value);
+        break;
+      case "birthday":
+        const dateValue = new Date(value);
+        setProfileData((prevData) => ({
+          ...prevData,
+          [field]: dateValue,
+        }));
+        break;
+      case "address.street":
+      case "address.city":
+      case "address.state":
+      case "address.zip_code":
+        const addressField = field.split(".")[1];
+        setProfileData((prevData) => ({
+          ...prevData,
+          address: {
+            ...prevData?.address,
+            [addressField]: value,
+          },
+        }));
+        break;
+      case "experience":
+        const experienceOptions: Record<string, TExperience> = {
+          no_experience: { value: "no_experience", label: "No Experience" },
+          less_than_year: { value: "less_than_year", label: "< 1 year" },
+          more_than_year: { value: "more_than_year", label: "> 1 year" },
+        };
+        setProfileData((prevData) => ({
+          ...prevData,
+          experience: experienceOptions[value],
+        }));
+        break;
+      default:
+        setProfileData((prevData) => ({
+          ...prevData,
+          [field]: value,
+        }));
+        break;
     }
   };
 
@@ -126,31 +129,39 @@ const ProfileInfoModal: React.FC<{
     }
   };
 
-  const handleAddTag = (tag: string) => {
-    if (!tags.some((t) => t.label === tag)) {
-      const color = getRandomBgColor();
-      setTags((prevTags) => [...prevTags, { label: tag, color }]);
-    }
-    setTagsInput("");
-    setTagSuggestions([]);
+  const handleAddTag = (tag: TTag) => {
+    if (!tags || !profileData) return;
+    if (profileData.tags?.find((t) => t.name === tag.name)) return alert('You have already added');
+    const newTag = { ...tag, color: getRandomBgColor() };
+    setProfileData((prevData) => ({
+      ...prevData,
+      tags: [...(prevData?.tags || []), newTag],
+    }));
+    setTagSearchTerm("");
   };
 
   const handleRemoveTag = (
-    tag: string,
+    tag: TTag,
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
-    setTags(tags.filter((t) => t.label !== tag));
+    if (!tags || !profileData) return;
+    const updatedTags =
+      profileData.tags?.filter((t) => t.name !== tag.name) || [];
+    setProfileData((prevData) => ({
+      ...prevData,
+      tags: updatedTags,
+    }));
   };
 
   const getRandomBgColor = () => {
-    let randomIndex = Math.floor(Math.random() * bgColors.length);
-    let newColor = bgColors[randomIndex];
+    if (!tags || tags.length === 0)
+      return bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
+    const lastColor = tags[tags.length - 1]?.color || "";
+    let newColor = bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
     while (newColor === lastColor) {
-      randomIndex = Math.floor(Math.random() * bgColors.length);
-      newColor = bgColors[randomIndex];
+      newColor = bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
     }
-    setLastColor(newColor);
     return newColor;
   };
 
@@ -381,7 +392,7 @@ const ProfileInfoModal: React.FC<{
 
             <div className="mb-2 pt-2">
               <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
-                Working Status {JSON.stringify(isInputRoleFocused)}
+                Working Status
               </label>
               <div className="gap-2 grid grid-cols-1 lg:grid-cols-2">
                 <div className="w-full relative">
@@ -407,25 +418,27 @@ const ProfileInfoModal: React.FC<{
                     }}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
-                  {isInputRoleFocused && filteredRoles.length > 0 && (
-                    <ul
-                      className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onScroll={handleScrollRole}
-                    >
-                      {filteredRoles
-                        .slice(0, visibleRolesCount)
-                        .map((role: TRoleUser) => (
-                          <li
-                            key={role._id}
-                            onClick={() => handleSelectRole(role)}
-                            className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
-                          >
-                            {role.name}
-                          </li>
-                        ))}
-                    </ul>
-                  )}
+                  {isInputRoleFocused &&
+                    filteredRoles &&
+                    filteredRoles.length > 0 && (
+                      <ul
+                        className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onScroll={handleScrollRole}
+                      >
+                        {filteredRoles
+                          .slice(0, visibleRolesCount)
+                          .map((role: TRoleUser) => (
+                            <li
+                              key={role._id}
+                              onClick={() => handleSelectRole(role)}
+                              className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
+                            >
+                              {role.name}
+                            </li>
+                          ))}
+                      </ul>
+                    )}
                 </div>
                 <div className="w-full">
                   <label
@@ -449,7 +462,7 @@ const ProfileInfoModal: React.FC<{
                   </select>
                 </div>
               </div>
-              <div className="w-full pt-2">
+              <div className="w-full pt-2 relative">
                 <label
                   htmlFor="tags"
                   className="block text-sm font-medium text-[#07074D]"
@@ -457,30 +470,32 @@ const ProfileInfoModal: React.FC<{
                   Tags
                 </label>
                 <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
-                  {tags.map((tag, index) => (
-                    <div
-                      key={index}
-                      className={`py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
-                    >
-                      <span className="text-sm text-[#07074D]">
-                        {tag.label}
-                      </span>
-                      <button
-                        onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                          handleRemoveTag(tag.label, e)
-                        }
-                        className="ml-2 text-slate-800 hover:text-slate-600"
+                  {profileData &&
+                    profileData.tags?.map((tag, index) => (
+                      <div
+                        key={index}
+                        className={`cursor-default py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
                       >
-                        <FontAwesomeIcon icon={faTimes} />
-                      </button>
-                    </div>
-                  ))}
+                        <span className="text-sm text-[#07074D]">
+                          {tag.name}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                            handleRemoveTag(tag, e)
+                          }
+                          className="ml-2 text-slate-800 hover:text-slate-600"
+                        >
+                          <FontAwesomeIcon icon={faTimes} />
+                        </button>
+                      </div>
+                    ))}
 
                   <input
                     type="text"
                     name="tags"
                     id="tags"
-                    value={tagsInput}
+                    value={""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleInputChange(e, "tags")
                     }
@@ -490,15 +505,15 @@ const ProfileInfoModal: React.FC<{
                 </div>
 
                 {/* Dropdown suggestion */}
-                {tagSuggestions.length > 0 && (
-                  <ul className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto">
-                    {tagSuggestions.map((suggestion, index) => (
+                {filteredTags && filteredTags.length > 0 && (
+                  <ul className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full">
+                    {filteredTags.map((filterTag, index) => (
                       <li
                         key={index}
-                        onClick={() => handleAddTag(suggestion)}
+                        onClick={() => handleAddTag(filterTag)}
                         className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
                       >
-                        {suggestion}
+                        {filterTag.name}
                       </li>
                     ))}
                   </ul>
@@ -508,7 +523,10 @@ const ProfileInfoModal: React.FC<{
           </form>
         </div>
         <div className="mt-2">
-          <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-2 px-8 text-center text-sm font-semibold text-white outline-none">
+          <button
+            onClick={() => console.log(profileData)}
+            className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-2 px-8 text-center text-sm font-semibold text-white outline-none"
+          >
             Submit
           </button>
         </div>
