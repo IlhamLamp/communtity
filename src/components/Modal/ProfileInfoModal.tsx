@@ -15,17 +15,31 @@ const ProfileInfoModal: React.FC<{
   const [profileData, setProfileData] = useState<TProfileUser | null>(data);
   const { roles, tags, isLoading } = usePublicResource();
 
-  // role
-  const [roleSearchTerm, setRoleSearchTerm] = useState<string>("");
-  const [filteredRoles, setFilteredRoles] = useState<TRoleUser[] | null>(null);
-  const [isInputRoleFocused, setIsInputRoleFocused] = useState<boolean>(false);
-  const [visibleRolesCount, setVisibleRolesCount] = useState<number>(10);
+  // // role
+  // const [roleSearchTerm, setRoleSearchTerm] = useState<string>("");
+  // const [filteredRoles, setFilteredRoles] = useState<TRoleUser[] | null>(null);
+  // const [isInputRoleFocused, setIsInputRoleFocused] = useState<boolean>(false);
+  // const [visibleRolesCount, setVisibleRolesCount] = useState<number>(10);
 
-  // tag
-  const [tagSearchTerm, setTagSearchTerm] = useState<string>("");
-  const [filteredTags, setFilteredTags] = useState<TTag[] | null>(null);
-  const [isInputTagFocused, setIsInputTagFocused] = useState<boolean>(false);
-  const [visibleTagsCount, setVisibleTagsCount] = useState<number>(10);
+  // // tag
+  // const [tagSearchTerm, setTagSearchTerm] = useState<string>("");
+  // const [filteredTags, setFilteredTags] = useState<TTag[] | null>(null);
+  // const [isInputTagFocused, setIsInputTagFocused] = useState<boolean>(false);
+  // const [visibleTagsCount, setVisibleTagsCount] = useState<number>(10);
+
+  // shared-state
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filteredItems, setFilteredItems] = useState<
+    TRoleUser[] | TTag[] | null
+  >(null);
+  // const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+  const [isInputFocused, setIsInputFocused] = useState<{
+    [key: string]: boolean;
+  }>({ role: false, tags: false });
+  const [visibleItemCount, setVisibleItemCount] = useState<number>(10);
+  const [currentItemType, setCurrentItemType] = useState<"role" | "tags">(
+    "role"
+  );
 
   useEffect(() => {
     setProfileData(data);
@@ -33,29 +47,21 @@ const ProfileInfoModal: React.FC<{
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (roles && roleSearchTerm) {
-        const filteredRoles = roles.filter((role) =>
-          role.name?.toLowerCase().includes(roleSearchTerm.toLowerCase())
+      let itemsToFilter = currentItemType === "role" ? roles : tags;
+      if (itemsToFilter && searchTerm) {
+        const filtered = itemsToFilter.filter((item) =>
+          item.name?.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        setFilteredRoles(filteredRoles);
+        setFilteredItems(filtered);
       } else {
-        setFilteredRoles(roles || []);
-      }
-
-      if (tags && tagSearchTerm) {
-        const filteredTags = tags.filter((tag) =>
-          tag.name?.toLowerCase().includes(tagSearchTerm.toLowerCase())
-        );
-        setFilteredTags(filteredTags);
-      } else {
-        setFilteredTags(tags || []);
+        setFilteredItems(itemsToFilter || []);
       }
     }, 300);
 
     return () => {
       clearTimeout(handler);
     };
-  }, [roleSearchTerm, roles, tagSearchTerm, tags]);
+  }, [searchTerm, currentItemType, roles, tags]);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -65,13 +71,14 @@ const ProfileInfoModal: React.FC<{
   ) => {
     e.preventDefault();
     const { value } = e.target;
+    setSearchTerm(value);
 
     switch (field) {
-      case "tags":
-        setTagSearchTerm(value);
-        break;
       case "role":
-        setRoleSearchTerm(value);
+        setCurrentItemType("role");
+        break;
+      case "tags":
+        setCurrentItemType("tags");
         break;
       case "birthday":
         const dateValue = new Date(value);
@@ -113,31 +120,44 @@ const ProfileInfoModal: React.FC<{
     }
   };
 
-  const handleSelectRole = (role: TRoleUser) => {
-    setProfileData((prevData) => ({
-      ...prevData,
-      role,
-    }));
-    setIsInputRoleFocused(false);
-    setFilteredRoles([]);
+  const handleSelectItem = (item: TRoleUser | TTag) => {
+    if (!profileData) return;
+    const handlers: { [key: string]: (item: any) => void } = {
+      role: (item: TRoleUser) => {
+        setProfileData((prevData) => ({
+          ...prevData,
+          role: item,
+        }));
+      },
+      tags: (item: TTag) => {
+        const newTag = { ...item, color: getRandomBgColor() };
+        const isTagExist = profileData.tags?.find(
+          (t) => t.name === newTag.name
+        );
+        if (!isTagExist) {
+          setProfileData((prevData) => ({
+            ...prevData,
+            tags: [...(prevData?.tags || []), newTag],
+          }));
+        } else {
+          return alert("You have already added");
+        }
+      },
+    };
+    const handler = handlers[currentItemType];
+    if (handler) {
+      handler(item);
+    }
+    setSearchTerm("");
+    setIsInputFocused({ ...isInputFocused, [currentItemType]: false });
+    setFilteredItems(null);
   };
 
   const handleScrollRole = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollTop + clientHeight >= scrollHeight) {
-      setVisibleRolesCount((prevCount) => prevCount + 10);
+      setVisibleItemCount((prevCount) => prevCount + 10);
     }
-  };
-
-  const handleAddTag = (tag: TTag) => {
-    if (!tags || !profileData) return;
-    if (profileData.tags?.find((t) => t.name === tag.name)) return alert('You have already added');
-    const newTag = { ...tag, color: getRandomBgColor() };
-    setProfileData((prevData) => ({
-      ...prevData,
-      tags: [...(prevData?.tags || []), newTag],
-    }));
-    setTagSearchTerm("");
   };
 
   const handleRemoveTag = (
@@ -145,7 +165,7 @@ const ProfileInfoModal: React.FC<{
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
-    if (!tags || !profileData) return;
+    if (!profileData) return;
     const updatedTags =
       profileData.tags?.filter((t) => t.name !== tag.name) || [];
     setProfileData((prevData) => ({
@@ -411,27 +431,34 @@ const ProfileInfoModal: React.FC<{
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleInputChange(e, "role")
                     }
-                    onFocus={() => setIsInputRoleFocused(true)}
+                    onFocus={() => {
+                      setIsInputFocused({ ...isInputFocused, role: true });
+                      setCurrentItemType("role");
+                    }}
                     onBlur={() => {
-                      setTimeout(() => setIsInputRoleFocused(false), 150);
-                      setVisibleRolesCount(10);
+                      setTimeout(
+                        () =>
+                          setIsInputFocused({ ...isInputFocused, role: false }),
+                        150
+                      );
+                      setVisibleItemCount(10);
                     }}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
-                  {isInputRoleFocused &&
-                    filteredRoles &&
-                    filteredRoles.length > 0 && (
+                  {isInputFocused.role &&
+                    filteredItems &&
+                    filteredItems.length > 0 && (
                       <ul
                         className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
                         onMouseDown={(e) => e.preventDefault()}
                         onScroll={handleScrollRole}
                       >
-                        {filteredRoles
-                          .slice(0, visibleRolesCount)
+                        {filteredItems
+                          .slice(0, visibleItemCount)
                           .map((role: TRoleUser) => (
                             <li
                               key={role._id}
-                              onClick={() => handleSelectRole(role)}
+                              onClick={() => handleSelectItem(role)}
                               className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
                             >
                               {role.name}
@@ -467,13 +494,14 @@ const ProfileInfoModal: React.FC<{
                   htmlFor="tags"
                   className="block text-sm font-medium text-[#07074D]"
                 >
-                  Tags
+                  Tags {JSON.stringify(searchTerm)}
                 </label>
                 <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
-                  {profileData &&
-                    profileData.tags?.map((tag, index) => (
+                  {Array.isArray(profileData?.tags) &&
+                    profileData.tags.length > 0 &&
+                    profileData.tags.map((tag, index) => (
                       <div
-                        key={index}
+                        key={tag._id}
                         className={`cursor-default py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
                       >
                         <span className="text-sm text-[#07074D]">
@@ -495,29 +523,51 @@ const ProfileInfoModal: React.FC<{
                     type="text"
                     name="tags"
                     id="tags"
-                    value={""}
+                    value={searchTerm}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleInputChange(e, "tags")
                     }
+                    onFocus={() => {
+                      setIsInputFocused({ ...isInputFocused, tags: true });
+                      setCurrentItemType("tags");
+                    }}
+                    onBlur={() => {
+                      setTimeout(
+                        () =>
+                          setIsInputFocused({ ...isInputFocused, tags: false }),
+                        150
+                      );
+                      setVisibleItemCount(10);
+                    }}
                     placeholder="Type to add tags"
                     className="flex-grow outline-none text-sm font-medium bg-transparent"
                   />
                 </div>
 
                 {/* Dropdown suggestion */}
-                {filteredTags && filteredTags.length > 0 && (
-                  <ul className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full">
-                    {filteredTags.map((filterTag, index) => (
-                      <li
-                        key={index}
-                        onClick={() => handleAddTag(filterTag)}
-                        className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
-                      >
-                        {filterTag.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                {isInputFocused.tags &&
+                  filteredItems &&
+                  filteredItems.length > 0 && (
+                    <ul
+                      onMouseDown={(e) => e.preventDefault()}
+                      onScroll={handleScrollRole}
+                      className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
+                    >
+                      {filteredItems
+                        .slice(0, visibleItemCount)
+                        .map((tag: TTag) => (
+                          <li
+                            key={tag._id}
+                            onClick={() => {
+                              handleSelectItem(tag);
+                            }}
+                            className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
+                          >
+                            {tag.name}
+                          </li>
+                        ))}
+                    </ul>
+                  )}
               </div>
             </div>
           </form>
