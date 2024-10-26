@@ -1,5 +1,5 @@
 import { ProfileDefaultData } from "@/data/profile.default";
-import { TProfileLoggedInResponse } from "@/types/profile";
+import { TProfileLoggedInResponse, TProfileUser } from "@/types/profile";
 import { TRegisterUser } from "@/types/user";
 
 export const RegisterUserProfile = async (data: TRegisterUser) => {
@@ -26,14 +26,39 @@ export const RegisterUserProfile = async (data: TRegisterUser) => {
             body: JSON.stringify(profileData),
         })
         if (!response.ok) {
-            const resData = await response.json();
-            console.error(resData.error);
-            return Promise.reject(resData.message);
+            const errorData = await response.json();
+            console.error(errorData.error);
+            return Promise.reject(errorData.message);
         }
         return response;
     } catch (error) {
         console.error(error);
         return error;
+    }
+}
+
+export const UpdateUserProfile = async (data: TProfileUser) => {
+    if (!data) return null;
+    try {
+        const response = await fetch(`https://localhost:3002/api/v1/profile/update/${data.user_id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+            },
+            body: JSON.stringify(data),
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error:', errorData.message);
+            return Promise.reject(errorData.message || 'Failed to update profile');
+        }
+
+        const updatedProfile = await response.json();
+        return updatedProfile;
+    } catch (error) {
+        console.error('An error occurred while updating the profile:', error);
+        return Promise.reject('An error occurred while updating the profile');
     }
 }
 

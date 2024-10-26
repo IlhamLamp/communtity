@@ -1,6 +1,8 @@
 import { TRoleUser } from "./role";
 import { TTag } from "./tag";
 
+export type TAddressFieldInputProfile = "address.street" | "address.city" | "address.state" | "address.zip_code";
+
 export type TExperience = {
     value: string;
     label: string;

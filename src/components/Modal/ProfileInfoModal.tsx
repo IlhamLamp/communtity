@@ -1,5 +1,9 @@
 import { usePublicResource } from "@/context/PublicContext";
-import { TExperience, TProfileUser } from "@/types/profile";
+import {
+  TAddressFieldInputProfile,
+  TExperience,
+  TProfileUser,
+} from "@/types/profile";
 import { TRoleUser } from "@/types/role";
 import { TTag } from "@/types/tag";
 import { faCircleXmark, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -11,28 +15,19 @@ const ProfileInfoModal: React.FC<{
   data: TProfileUser | null;
   toggle: any;
 }> = ({ data, toggle }) => {
-  const email = sessionStorage.getItem("email") || "";
+  const email = sessionStorage.getItem("email") ?? "";
   const [profileData, setProfileData] = useState<TProfileUser | null>(data);
   const { roles, tags, isLoading } = usePublicResource();
 
-  // // role
-  // const [roleSearchTerm, setRoleSearchTerm] = useState<string>("");
-  // const [filteredRoles, setFilteredRoles] = useState<TRoleUser[] | null>(null);
-  // const [isInputRoleFocused, setIsInputRoleFocused] = useState<boolean>(false);
-  // const [visibleRolesCount, setVisibleRolesCount] = useState<number>(10);
-
-  // // tag
-  // const [tagSearchTerm, setTagSearchTerm] = useState<string>("");
-  // const [filteredTags, setFilteredTags] = useState<TTag[] | null>(null);
-  // const [isInputTagFocused, setIsInputTagFocused] = useState<boolean>(false);
-  // const [visibleTagsCount, setVisibleTagsCount] = useState<number>(10);
-
   // shared-state
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<{ role: string; tags: string }>({
+    role: "",
+    tags: "",
+  });
+
   const [filteredItems, setFilteredItems] = useState<
     TRoleUser[] | TTag[] | null
   >(null);
-  // const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [isInputFocused, setIsInputFocused] = useState<{
     [key: string]: boolean;
   }>({ role: false, tags: false });
@@ -46,11 +41,20 @@ const ProfileInfoModal: React.FC<{
   }, [data]);
 
   useEffect(() => {
+    setSearchTerm((prev) => ({
+      ...prev,
+      role: profileData?.role?.name ?? "",
+    }));
+  }, [profileData]);
+
+  useEffect(() => {
     const handler = setTimeout(() => {
       let itemsToFilter = currentItemType === "role" ? roles : tags;
+      const searchValue =
+        currentItemType === "role" ? searchTerm.role : searchTerm.tags;
       if (itemsToFilter && searchTerm) {
         const filtered = itemsToFilter.filter((item) =>
-          item.name?.toLowerCase().includes(searchTerm.toLowerCase())
+          item.name?.toLowerCase().includes(searchValue.toLowerCase())
         );
         setFilteredItems(filtered);
       } else {
@@ -67,11 +71,14 @@ const ProfileInfoModal: React.FC<{
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
-    field: string
+    field: keyof TProfileUser | TAddressFieldInputProfile
   ) => {
     e.preventDefault();
     const { value } = e.target;
-    setSearchTerm(value);
+    setSearchTerm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
 
     switch (field) {
       case "role":
@@ -92,13 +99,23 @@ const ProfileInfoModal: React.FC<{
       case "address.state":
       case "address.zip_code":
         const addressField = field.split(".")[1];
-        setProfileData((prevData) => ({
-          ...prevData,
-          address: {
-            ...prevData?.address,
-            [addressField]: value,
-          },
-        }));
+        if (addressField === "zip_code") {
+          setProfileData((prevData) => ({
+            ...prevData,
+            address: {
+              ...prevData?.address,
+              [addressField]: Number(value),
+            },
+          }));
+        } else {
+          setProfileData((prevData) => ({
+            ...prevData,
+            address: {
+              ...prevData?.address,
+              [addressField]: value,
+            },
+          }));
+        }
         break;
       case "experience":
         const experienceOptions: Record<string, TExperience> = {
@@ -148,7 +165,10 @@ const ProfileInfoModal: React.FC<{
     if (handler) {
       handler(item);
     }
-    setSearchTerm("");
+    setSearchTerm((prev) => ({
+      ...prev,
+      [currentItemType]: "",
+    }));
     setIsInputFocused({ ...isInputFocused, [currentItemType]: false });
     setFilteredItems(null);
   };
@@ -427,7 +447,7 @@ const ProfileInfoModal: React.FC<{
                     name="role"
                     id="role"
                     placeholder="Search role"
-                    value={profileData?.role?.name}
+                    value={searchTerm.role}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleInputChange(e, "role")
                     }
@@ -523,7 +543,7 @@ const ProfileInfoModal: React.FC<{
                     type="text"
                     name="tags"
                     id="tags"
-                    value={searchTerm}
+                    value={searchTerm.tags}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleInputChange(e, "tags")
                     }
