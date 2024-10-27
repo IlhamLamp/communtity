@@ -24,6 +24,11 @@ const ContentProfile: React.FC = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  const handleProfileUpdated = () => {
+    refreshProfile();
+    toggleModal();
+  };
+
   if (isLoading) {
     return <LoadingPage />;
   }
@@ -76,7 +81,10 @@ const ContentProfile: React.FC = () => {
             <SocialProfileGroup data={profile?.social_links} />
           )}
           {isModalOpen && (
-            <ProfileInfoModal data={profile} toggle={toggleModal} />
+            <ProfileInfoModal
+              toggle={toggleModal}
+              onProfileUdpated={handleProfileUpdated}
+            />
           )}
 
           <div className="w-full flex gap-4 justify-center items-center mt-10">

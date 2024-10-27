@@ -2,25 +2,35 @@ import { usePublicResource } from "@/context/PublicContext";
 import {
   TAddressFieldInputProfile,
   TExperience,
+  TProfileUpdateResponse,
   TProfileUser,
 } from "@/types/profile";
 import { TRoleUser } from "@/types/role";
 import { TTag } from "@/types/tag";
-import { faCircleXmark, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { bgTagColors } from "./bgTagColor";
+import FormProfileContactInformation from "./profile-form-info/contact-information";
+import FormProfileAddressDetails from "./profile-form-info/address-details";
+import FormProfileWorkingStatus from "./profile-form-info/working-status";
+import { UpdateUserProfile } from "@/service/profile";
+import toast from "react-hot-toast";
+import { useProfile } from "@/context/ProfileContext";
 
 const ProfileInfoModal: React.FC<{
-  data: TProfileUser | null;
   toggle: any;
-}> = ({ data, toggle }) => {
-  const email = sessionStorage.getItem("email") ?? "";
-  const [profileData, setProfileData] = useState<TProfileUser | null>(data);
-  const { roles, tags, isLoading } = usePublicResource();
+  onProfileUdpated: () => void;
+}> = ({ toggle, onProfileUdpated }) => {
+  const { profile } = useProfile();
+  const [profileData, setProfileData] = useState<TProfileUser | null>(profile);
+  const { roles, tags } = usePublicResource();
 
   // shared-state
-  const [searchTerm, setSearchTerm] = useState<{ role: string; tags: string }>({
+  const [searchTerm, setSearchTerm] = useState<{
+    role: string;
+    tags: string;
+  }>({
     role: "",
     tags: "",
   });
@@ -37,8 +47,8 @@ const ProfileInfoModal: React.FC<{
   );
 
   useEffect(() => {
-    setProfileData(data);
-  }, [data]);
+    setProfileData(profile);
+  }, [profile]);
 
   useEffect(() => {
     setSearchTerm((prev) => ({
@@ -147,14 +157,12 @@ const ProfileInfoModal: React.FC<{
         }));
       },
       tags: (item: TTag) => {
-        const newTag = { ...item, color: getRandomBgColor() };
-        const isTagExist = profileData.tags?.find(
-          (t) => t.name === newTag.name
-        );
+        // const newTag = { ...item, color: getRandomBgColor() };
+        const isTagExist = profileData.tags?.find((t) => t.name === item.name);
         if (!isTagExist) {
           setProfileData((prevData) => ({
             ...prevData,
-            tags: [...(prevData?.tags || []), newTag],
+            tags: [...(prevData?.tags || []), item],
           }));
         } else {
           return alert("You have already added");
@@ -205,6 +213,23 @@ const ProfileInfoModal: React.FC<{
     return newColor;
   };
 
+  const handleUpdateProfile = async () => {
+    if (!profileData) return;
+    toast
+      .promise(UpdateUserProfile(profileData), {
+        loading: "Updating profile...",
+        success: "🎉 Profile updated successfully!",
+        error: (err: TProfileUpdateResponse) =>
+          err.message || "Failed to update profile",
+      })
+      .then(() => {
+        onProfileUdpated();
+      })
+      .catch((error) => {
+        console.error("Profile update failed:", error);
+      });
+  };
+
   return (
     <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-50 bg-gray-800 bg-opacity-50 px-2 lg:p-0">
       <div className="relative mx-auto w-full max-w-[800px] bg-white p-8 rounded-lg">
@@ -218,383 +243,33 @@ const ProfileInfoModal: React.FC<{
 
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <form>
-            <div className="mb-2">
-              <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
-                Contact Information
-              </label>
-              <div className="gap-2 grid grid-cols-2 lg:grid-cols-3">
-                <div className="w-full">
-                  <label
-                    htmlFor="first_name"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    id="first_name"
-                    placeholder="John"
-                    value={profileData?.first_name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "first_name")
-                    }
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="last_name"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    id="last_name"
-                    placeholder="Doe"
-                    value={profileData?.last_name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "last_name")
-                    }
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] cursor-not-allowed"
-                  />
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    placeholder="jdoe99"
-                    value={profileData?.username}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "username")
-                    }
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    disabled={true}
-                    placeholder="user@mail.com"
-                    value={email}
-                    className="w-full rounded-md border border-[#e0e0e0] bg-gray-100 py-2 px-4 text-sm font-medium text-[#6B7280] cursor-not-allowed"
-                  />
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    Phone Number
-                  </label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 rounded-l-md border border-[#e0e0e0] bg-gray-100 text-gray-600 text-sm">
-                      +62
-                    </span>
-                    <input
-                      type="number"
-                      name="phone"
-                      id="phone"
-                      placeholder="8123456789"
-                      value={profileData?.phone}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleInputChange(e, "phone")
-                      }
-                      className="w-full rounded-r-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md no-sp"
-                    />
-                  </div>
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="date"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    Birthday
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    id="date"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                    value={
-                      profileData?.birthday
-                        ? profileData.birthday.toISOString().split("T")[0]
-                        : ""
-                    }
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "birthday")
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-2 pt-2">
-              <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
-                Address Details
-              </label>
-              <div className="gap-2 grid grid-cols-1 lg:grid-cols-3">
-                <div className="w-full">
-                  <label
-                    htmlFor="city"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    id="city"
-                    placeholder="Jakarta"
-                    value={profileData?.address?.city}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "address.city")
-                    }
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="state"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    State
-                  </label>
-                  <input
-                    type="text"
-                    name="state"
-                    id="state"
-                    placeholder="Indonesia"
-                    value={data?.address?.state}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "address.state")
-                    }
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="zip_code"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    ZIP Code
-                  </label>
-                  <input
-                    type="number"
-                    name="zip_code"
-                    id="zip_code"
-                    placeholder="11111"
-                    value={data?.address?.zip_code}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "address.zip_code")
-                    }
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
-              </div>
-              <div className="w-full pt-2">
-                <label
-                  htmlFor="street"
-                  className="block text-sm font-medium text-[#07074D]"
-                >
-                  Street
-                </label>
-                <input
-                  type="text"
-                  name="street"
-                  id="street"
-                  placeholder="Jl. Mawar No.80"
-                  value={data?.address?.street}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    handleInputChange(e, "address.street")
-                  }
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                />
-              </div>
-            </div>
-
-            <div className="mb-2 pt-2">
-              <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
-                Working Status
-              </label>
-              <div className="gap-2 grid grid-cols-1 lg:grid-cols-2">
-                <div className="w-full relative">
-                  <label
-                    htmlFor="role"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    Role
-                  </label>
-                  <input
-                    type="text"
-                    name="role"
-                    id="role"
-                    placeholder="Search role"
-                    value={searchTerm.role}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "role")
-                    }
-                    onFocus={() => {
-                      setIsInputFocused({ ...isInputFocused, role: true });
-                      setCurrentItemType("role");
-                    }}
-                    onBlur={() => {
-                      setTimeout(
-                        () =>
-                          setIsInputFocused({ ...isInputFocused, role: false }),
-                        150
-                      );
-                      setVisibleItemCount(10);
-                    }}
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                  {isInputFocused.role &&
-                    filteredItems &&
-                    filteredItems.length > 0 && (
-                      <ul
-                        className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onScroll={handleScrollRole}
-                      >
-                        {filteredItems
-                          .slice(0, visibleItemCount)
-                          .map((role: TRoleUser) => (
-                            <li
-                              key={role._id}
-                              onClick={() => handleSelectItem(role)}
-                              className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
-                            >
-                              {role.name}
-                            </li>
-                          ))}
-                      </ul>
-                    )}
-                </div>
-                <div className="w-full">
-                  <label
-                    htmlFor="experience"
-                    className="block text-sm font-medium text-[#07074D]"
-                  >
-                    Experience
-                  </label>
-                  <select
-                    name="experience"
-                    id="experience"
-                    value={profileData?.experience?.value}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      handleInputChange(e, "experience")
-                    }
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  >
-                    <option value="no_experience">No Experience</option>
-                    <option value="less_than_year">&lt; 1 year</option>
-                    <option value="more_than_year">&gt; 1 year</option>
-                  </select>
-                </div>
-              </div>
-              <div className="w-full pt-2 relative">
-                <label
-                  htmlFor="tags"
-                  className="block text-sm font-medium text-[#07074D]"
-                >
-                  Tags {JSON.stringify(searchTerm)}
-                </label>
-                <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
-                  {Array.isArray(profileData?.tags) &&
-                    profileData.tags.length > 0 &&
-                    profileData.tags.map((tag, index) => (
-                      <div
-                        key={tag._id}
-                        className={`cursor-default py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
-                      >
-                        <span className="text-sm text-[#07074D]">
-                          {tag.name}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                            handleRemoveTag(tag, e)
-                          }
-                          className="ml-2 text-slate-800 hover:text-slate-600"
-                        >
-                          <FontAwesomeIcon icon={faTimes} />
-                        </button>
-                      </div>
-                    ))}
-
-                  <input
-                    type="text"
-                    name="tags"
-                    id="tags"
-                    value={searchTerm.tags}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleInputChange(e, "tags")
-                    }
-                    onFocus={() => {
-                      setIsInputFocused({ ...isInputFocused, tags: true });
-                      setCurrentItemType("tags");
-                    }}
-                    onBlur={() => {
-                      setTimeout(
-                        () =>
-                          setIsInputFocused({ ...isInputFocused, tags: false }),
-                        150
-                      );
-                      setVisibleItemCount(10);
-                    }}
-                    placeholder="Type to add tags"
-                    className="flex-grow outline-none text-sm font-medium bg-transparent"
-                  />
-                </div>
-
-                {/* Dropdown suggestion */}
-                {isInputFocused.tags &&
-                  filteredItems &&
-                  filteredItems.length > 0 && (
-                    <ul
-                      onMouseDown={(e) => e.preventDefault()}
-                      onScroll={handleScrollRole}
-                      className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
-                    >
-                      {filteredItems
-                        .slice(0, visibleItemCount)
-                        .map((tag: TTag) => (
-                          <li
-                            key={tag._id}
-                            onClick={() => {
-                              handleSelectItem(tag);
-                            }}
-                            className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
-                          >
-                            {tag.name}
-                          </li>
-                        ))}
-                    </ul>
-                  )}
-              </div>
-            </div>
+            <FormProfileContactInformation
+              data={profileData}
+              handleInputChange={handleInputChange}
+            />
+            <FormProfileAddressDetails
+              data={profileData}
+              handleInputChange={handleInputChange}
+            />
+            <FormProfileWorkingStatus
+              data={profileData}
+              filteredItems={filteredItems}
+              handleInputChange={handleInputChange}
+              handleRemoveTag={handleRemoveTag}
+              handleScrollRole={handleScrollRole}
+              handleSelectItem={handleSelectItem}
+              isInputFocused={isInputFocused}
+              searchTerm={searchTerm}
+              setCurrentItemType={setCurrentItemType}
+              setIsInputFocused={setIsInputFocused}
+              setVisibleItemCount={setVisibleItemCount}
+              visibleItemCount={visibleItemCount}
+            />
           </form>
         </div>
         <div className="mt-2">
           <button
-            onClick={() => console.log(profileData)}
+            onClick={handleUpdateProfile}
             className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-2 px-8 text-center text-sm font-semibold text-white outline-none"
           >
             Submit

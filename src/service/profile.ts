@@ -38,13 +38,14 @@ export const RegisterUserProfile = async (data: TRegisterUser) => {
 }
 
 export const UpdateUserProfile = async (data: TProfileUser) => {
-    if (!data) return null;
+    if (!data) return Promise.reject('Invalid data');;
+    const token = localStorage.getItem("access_token");
     try {
-        const response = await fetch(`https://localhost:3002/api/v1/profile/update/${data.user_id}`, {
+        const response = await fetch(`http://localhost:3002/api/v1/profile/update/${data.user_id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify(data),
         })
@@ -55,6 +56,7 @@ export const UpdateUserProfile = async (data: TProfileUser) => {
         }
 
         const updatedProfile = await response.json();
+        console.log(updatedProfile);
         return updatedProfile;
     } catch (error) {
         console.error('An error occurred while updating the profile:', error);

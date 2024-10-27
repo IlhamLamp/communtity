@@ -1,14 +1,44 @@
-import { TProfileUser } from "@/types/profile";
+import { TAddressFieldInputProfile, TProfileUser } from "@/types/profile";
+import { TRoleUser } from "@/types/role";
+import { TTag } from "@/types/tag";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dispatch, SetStateAction } from "react";
 
-const FormProfileWorkingStatus: React.FC<{
+interface FormProfileWorkingStatusProps {
   data: TProfileUser | null;
+  filteredItems: TRoleUser[] | TTag[] | null;
+  isInputFocused: { [key: string]: boolean };
+  visibleItemCount: number;
+  searchTerm: { role: string; tags: string };
+  setVisibleItemCount: (count: number) => void;
   handleInputChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
-    field: string
+    field: keyof TProfileUser | TAddressFieldInputProfile
   ) => void;
-}> = ({ data, handleInputChange }) => {
+  handleRemoveTag: (tag: TTag, e: React.MouseEvent<HTMLButtonElement>) => void;
+  setIsInputFocused: (focused: { [key: string]: boolean }) => void;
+  setCurrentItemType: Dispatch<SetStateAction<"tags" | "role">>;
+  handleSelectItem: (item: TRoleUser | TTag) => void;
+  handleScrollRole: (e: React.UIEvent<HTMLUListElement>) => void;
+}
+
+const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
+  data,
+  filteredItems,
+  isInputFocused,
+  visibleItemCount,
+  searchTerm,
+  setVisibleItemCount,
+  handleInputChange,
+  handleRemoveTag,
+  setIsInputFocused,
+  setCurrentItemType,
+  handleSelectItem,
+  handleScrollRole,
+}) => {
   return (
     <div className="mb-2 pt-2">
       <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
@@ -27,7 +57,7 @@ const FormProfileWorkingStatus: React.FC<{
             name="role"
             id="role"
             placeholder="Search role"
-            value={searchTerm.role}
+            value={searchTerm.role || ""}
             onChange={(e) => handleInputChange(e, "role")}
             onFocus={() => {
               setIsInputFocused({ ...isInputFocused, role: true });
@@ -72,7 +102,7 @@ const FormProfileWorkingStatus: React.FC<{
           <select
             name="experience"
             id="experience"
-            value={data?.experience?.value}
+            value={data?.experience?.value || ""}
             onChange={(e) => handleInputChange(e, "experience")}
             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
           >
@@ -87,12 +117,12 @@ const FormProfileWorkingStatus: React.FC<{
           htmlFor="tags"
           className="block text-sm font-medium text-[#07074D]"
         >
-          Tags {JSON.stringify(searchTerm)}
+          Tags
         </label>
         <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
           {Array.isArray(data?.tags) &&
             data.tags.length > 0 &&
-            data.tags.map((tag, index) => (
+            data.tags.map((tag) => (
               <div
                 key={tag._id}
                 className={`cursor-default py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
@@ -100,9 +130,7 @@ const FormProfileWorkingStatus: React.FC<{
                 <span className="text-sm text-[#07074D]">{tag.name}</span>
                 <button
                   type="button"
-                  onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                    handleRemoveTag(tag, e)
-                  }
+                  onClick={(e) => handleRemoveTag(tag, e)}
                   className="ml-2 text-slate-800 hover:text-slate-600"
                 >
                   <FontAwesomeIcon icon={faTimes} />
@@ -114,10 +142,8 @@ const FormProfileWorkingStatus: React.FC<{
             type="text"
             name="tags"
             id="tags"
-            value={searchTerm.tags}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleInputChange(e, "tags")
-            }
+            value={searchTerm.tags || ""}
+            onChange={(e) => handleInputChange(e, "tags")}
             onFocus={() => {
               setIsInputFocused({ ...isInputFocused, tags: true });
               setCurrentItemType("tags");
@@ -134,24 +160,29 @@ const FormProfileWorkingStatus: React.FC<{
           />
         </div>
 
-        {/* Dropdown suggestion */}
         {isInputFocused.tags && filteredItems && filteredItems.length > 0 && (
           <ul
+            className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
             onMouseDown={(e) => e.preventDefault()}
             onScroll={handleScrollRole}
-            className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
           >
-            {filteredItems.slice(0, visibleItemCount).map((tag: TTag) => (
-              <li
-                key={tag._id}
-                onClick={() => {
-                  handleSelectItem(tag);
-                }}
-                className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
-              >
-                {tag.name}
-              </li>
-            ))}
+            {filteredItems
+              .filter(
+                (tag) =>
+                  !(data?.tags || []).some(
+                    (selectedTag) => selectedTag._id === tag._id
+                  )
+              )
+              .slice(0, visibleItemCount)
+              .map((tag: TTag) => (
+                <li
+                  key={tag._id}
+                  onClick={() => handleSelectItem(tag)}
+                  className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
+                >
+                  {tag.name}
+                </li>
+              ))}
           </ul>
         )}
       </div>

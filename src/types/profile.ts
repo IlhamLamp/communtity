@@ -41,3 +41,11 @@ export type TProfileLoggedInResponse = {
     error?: string;
     statusCode?: number;
 }
+
+export type TProfileUpdateResponse = {
+    status: number;
+    message: string;
+    data?: TProfileUser;
+    error?: string;
+    statusCode?: number;
+}
