@@ -1,5 +1,8 @@
+import { SearchUserProfile } from "@/service/profile";
 import { TAddressFieldInputProfile, TProfileUser } from "@/types/profile";
-import { ChangeEvent } from "react";
+import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ChangeEvent, useCallback, useState } from "react";
 
 const FormProfileContactInformation: React.FC<{
   data: TProfileUser | null;
@@ -9,6 +12,46 @@ const FormProfileContactInformation: React.FC<{
   ) => void;
 }> = ({ data, handleInputChange }) => {
   const email = sessionStorage.getItem("email") ?? "";
+  const [isUsernameAvailable, setIsUsernameAvailable] =
+    useState<boolean>(false);
+
+  const debounce = (func: (...args: any[]) => void, delay: number) => {
+    let timer: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  const validateUsername = async (username: string) => {
+    if (!username || username === "") {
+      console.error("Username can't be empty");
+      setIsUsernameAvailable(false);
+      return;
+    }
+
+    try {
+      const result = await SearchUserProfile(username);
+      if (result.data && result.data.length > 0) {
+        setIsUsernameAvailable(false);
+      } else {
+        setIsUsernameAvailable(true);
+      }
+    } catch (error) {
+      console.error("An error occurred while validate username profile");
+    }
+  };
+
+  const debouncedValidateUsername = useCallback(
+    debounce(validateUsername, 500),
+    []
+  );
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleInputChange(e, "username");
+    debouncedValidateUsername(e.target.value);
+  };
+
   return (
     <div className="mb-2">
       <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
@@ -52,9 +95,18 @@ const FormProfileContactInformation: React.FC<{
         <div className="w-full">
           <label
             htmlFor="username"
-            className="block text-sm font-medium text-[#07074D]"
+            className="flex justify-between text-sm font-medium text-[#07074D]"
           >
-            Username
+            <span>Username</span>
+            {isUsernameAvailable ? (
+              <span className="flex text-CardFour items-center gap-2">
+                <FontAwesomeIcon icon={faCheck} /> Available
+              </span>
+            ) : (
+              <span className="flex text-CardOne items-center gap-2">
+                <FontAwesomeIcon icon={faClose} /> Unavailable
+              </span>
+            )}
           </label>
           <input
             type="text"
@@ -62,7 +114,7 @@ const FormProfileContactInformation: React.FC<{
             id="username"
             placeholder="jdoe99"
             value={data?.username || ""}
-            onChange={(e) => handleInputChange(e, "username")}
+            onChange={handleUsernameChange}
             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
           />
         </div>

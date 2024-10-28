@@ -90,3 +90,29 @@ export const RefreshUserProfile = async (access_token?: string) => {
         return Promise.reject('An error occurred while fetching the profile');
     }
 }
+
+export const SearchUserProfile = async (name: string) => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        console.error('Search profile missing access token');
+        return Promise.reject('Access token is required');
+    }
+    try {
+        const response = await fetch(`http://localhost:3002/api/v1/profile/search?name=${name}`, {
+            method: "GET",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+        });
+            
+        if (!response.ok) {
+            throw new Error("Failed to retrieve profile");
+        }
+            
+        return await response.json();
+    } catch (error) {
+        console.error('An error occurred while fetching the profile:', error);
+        return Promise.reject('An error occurred while fetching the profile');
+    }
+}
