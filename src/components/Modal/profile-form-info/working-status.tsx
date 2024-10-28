@@ -1,7 +1,8 @@
+import { saveRoleToDatabase, saveTagToDatabase } from "@/service/public";
 import { TAddressFieldInputProfile, TProfileUser } from "@/types/profile";
-import { TRoleUser } from "@/types/role";
-import { TTag } from "@/types/tag";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { TRoleResponse, TRoleUser } from "@/types/role";
+import { TTag, TTagResponse } from "@/types/tag";
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dispatch, SetStateAction } from "react";
 
@@ -39,6 +40,27 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
   handleSelectItem,
   handleScrollRole,
 }) => {
+  const handleAddNewItemOtherThanSuggestions = async (
+    newItemName: string,
+    itemType: "tags" | "role"
+  ) => {
+    try {
+      const saveFunction =
+        itemType === "tags" ? saveTagToDatabase : saveRoleToDatabase;
+      const newItem: TTagResponse | TRoleResponse = await saveFunction(
+        newItemName
+      );
+
+      if (newItem && newItem.data && newItem.data._id) {
+        handleSelectItem(newItem.data);
+      } else {
+        console.error(`Failed to save the new ${itemType} to the database.`);
+      }
+    } catch (error) {
+      console.error(`An error occurred while adding a new ${itemType}:`, error);
+    }
+  };
+
   return (
     <div className="mb-2 pt-2">
       <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
@@ -72,23 +94,40 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
             }}
             className="w-full rounded-md border border-[#e0e0e0] bg-white py-2 px-4 text-sm font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
           />
-          {isInputFocused.role && filteredItems && filteredItems.length > 0 && (
+          {isInputFocused.role && filteredItems && (
             <ul
               className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
               onMouseDown={(e) => e.preventDefault()}
               onScroll={handleScrollRole}
             >
-              {filteredItems
-                .slice(0, visibleItemCount)
-                .map((role: TRoleUser) => (
-                  <li
-                    key={role._id}
-                    onClick={() => handleSelectItem(role)}
-                    className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
-                  >
-                    {role.name}
-                  </li>
-                ))}
+              {/* FILTER ROLE SUGGESTIONS*/}
+              {filteredItems.length > 0 &&
+                filteredItems
+                  .slice(0, visibleItemCount)
+                  .map((role: TRoleUser) => (
+                    <li
+                      key={role._id}
+                      onClick={() => handleSelectItem(role)}
+                      className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
+                    >
+                      {role.name}
+                    </li>
+                  ))}
+              {/* OTHER THAN SUGGESION */}
+              {filteredItems.length === 0 && searchTerm.role && (
+                <li
+                  onClick={() =>
+                    handleAddNewItemOtherThanSuggestions(
+                      searchTerm.role,
+                      "role"
+                    )
+                  }
+                  className="cursor-pointer py-2 px-4 text-sm text-blue-600 hover:bg-gray-200"
+                >
+                  <FontAwesomeIcon icon={faPlus} size="lg" className="pr-2" />
+                  Add "{searchTerm.role}" as new role
+                </li>
+              )}
             </ul>
           )}
         </div>
@@ -160,29 +199,43 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
           />
         </div>
 
-        {isInputFocused.tags && filteredItems && filteredItems.length > 0 && (
+        {isInputFocused.tags && filteredItems && (
           <ul
             className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
             onMouseDown={(e) => e.preventDefault()}
             onScroll={handleScrollRole}
           >
-            {filteredItems
-              .filter(
-                (tag) =>
-                  !(data?.tags || []).some(
-                    (selectedTag) => selectedTag._id === tag._id
-                  )
-              )
-              .slice(0, visibleItemCount)
-              .map((tag: TTag) => (
-                <li
-                  key={tag._id}
-                  onClick={() => handleSelectItem(tag)}
-                  className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
-                >
-                  {tag.name}
-                </li>
-              ))}
+            {/* FILTER TAGS SUGGESTION */}
+            {filteredItems.length > 0 &&
+              filteredItems
+                .filter(
+                  (tag) =>
+                    !(data?.tags || []).some(
+                      (selectedTag) => selectedTag._id === tag._id
+                    )
+                )
+                .slice(0, visibleItemCount)
+                .map((tag: TTag) => (
+                  <li
+                    key={tag._id}
+                    onClick={() => handleSelectItem(tag)}
+                    className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
+                  >
+                    {tag.name}
+                  </li>
+                ))}
+            {/* OTHER THAN SUGGESTION */}
+            {filteredItems.length === 0 && searchTerm.tags && (
+              <li
+                onClick={() =>
+                  handleAddNewItemOtherThanSuggestions(searchTerm.tags, "tags")
+                }
+                className="cursor-pointer py-2 px-4 text-sm text-blue-600 hover:bg-gray-200"
+              >
+                <FontAwesomeIcon icon={faPlus} size="lg" className="pr-2" />
+                Add "{searchTerm.tags}" as new tag
+              </li>
+            )}
           </ul>
         )}
       </div>

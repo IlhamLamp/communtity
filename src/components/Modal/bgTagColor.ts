@@ -11,3 +11,14 @@ export const bgTagColors = [
     "bg-gray-200 hover:bg-gray-300",
     "bg-lime-200 hover:bg-lime-300",
 ];
+
+export const getRandomBgColor = () => {
+    // if (!tags || tags.length === 0)
+    //   return bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
+    // const lastColor = tags[tags.length - 1]?.color || "";
+    // let newColor = bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
+    // while (newColor === lastColor) {
+    //   newColor = bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
+    // }
+    return bgTagColors[Math.floor(Math.random() * bgTagColors.length)];;
+};

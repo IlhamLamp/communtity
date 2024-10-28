@@ -10,7 +10,6 @@ import { TTag } from "@/types/tag";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { bgTagColors } from "./bgTagColor";
 import FormProfileContactInformation from "./profile-form-info/contact-information";
 import FormProfileAddressDetails from "./profile-form-info/address-details";
 import FormProfileWorkingStatus from "./profile-form-info/working-status";
@@ -200,17 +199,6 @@ const ProfileInfoModal: React.FC<{
       ...prevData,
       tags: updatedTags,
     }));
-  };
-
-  const getRandomBgColor = () => {
-    if (!tags || tags.length === 0)
-      return bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
-    const lastColor = tags[tags.length - 1]?.color || "";
-    let newColor = bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
-    while (newColor === lastColor) {
-      newColor = bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
-    }
-    return newColor;
   };
 
   const handleUpdateProfile = async () => {

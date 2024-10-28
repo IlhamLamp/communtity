@@ -5,8 +5,8 @@ export type TTag = {
 }
 
 export type TTagResponse = {
-    status:  number;
-    message: string;
-    error: string;
-    data: any;
+    status?:  number;
+    message?: string;
+    error?: string;
+    data?: any;
 }

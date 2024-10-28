@@ -3,12 +3,14 @@ import SocialProfileGroup from "@/components/Buttons/Social/SocialProfileGroup";
 import LoadingPage from "@/components/Loading/LoadingPage";
 import ProfileInfoModal from "@/components/Modal/ProfileInfoModal";
 import { useProfile } from "@/context/ProfileContext";
+import { usePublicResource } from "@/context/PublicContext";
 import { faCamera, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 const ContentProfile: React.FC = () => {
   const { profile, refreshProfile, isLoading } = useProfile();
+  const { refreshRoles, refreshTags } = usePublicResource();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -26,6 +28,8 @@ const ContentProfile: React.FC = () => {
 
   const handleProfileUpdated = () => {
     refreshProfile();
+    refreshRoles();
+    refreshTags();
     toggleModal();
   };
 

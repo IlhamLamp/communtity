@@ -6,8 +6,8 @@ export type TRoleUser = {
 }
 
 export type TRoleResponse = {
-    status:  number;
-    message: string;
-    error: string;
-    data: any;
+    status?:  number;
+    message?: string;
+    error?: string;
+    data?: any;
 }
