@@ -1,4 +1,11 @@
 import { TAddressFieldInputProfile, TProfileUser } from "@/types/profile";
+import {
+  faCity,
+  faEnvelopesBulk,
+  faFlag,
+  faRoad,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent } from "react";
 
 const FormProfileAddressDetails: React.FC<{
@@ -9,7 +16,7 @@ const FormProfileAddressDetails: React.FC<{
   ) => void;
 }> = ({ data, handleInputChange }) => {
   return (
-    <div className="mb-2 pt-2">
+    <div id="form-address-details" className="mb-2 pt-2">
       <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
         Address Details
       </label>
@@ -19,7 +26,11 @@ const FormProfileAddressDetails: React.FC<{
             htmlFor="city"
             className="block text-sm font-medium text-[#07074D]"
           >
-            City
+            <FontAwesomeIcon
+              icon={faCity}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>City</span>
           </label>
           <input
             type="text"
@@ -36,7 +47,11 @@ const FormProfileAddressDetails: React.FC<{
             htmlFor="state"
             className="block text-sm font-medium text-[#07074D]"
           >
-            State
+            <FontAwesomeIcon
+              icon={faFlag}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>State</span>
           </label>
           <input
             type="text"
@@ -53,7 +68,11 @@ const FormProfileAddressDetails: React.FC<{
             htmlFor="zip_code"
             className="block text-sm font-medium text-[#07074D]"
           >
-            ZIP Code
+            <FontAwesomeIcon
+              icon={faEnvelopesBulk}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>ZIP Code</span>
           </label>
           <input
             type="text"
@@ -77,7 +96,11 @@ const FormProfileAddressDetails: React.FC<{
           htmlFor="street"
           className="block text-sm font-medium text-[#07074D]"
         >
-          Street
+          <FontAwesomeIcon
+            icon={faRoad}
+            className="pr-2 text-sm text-gray-600"
+          />
+          <span>Street</span>
         </label>
         <input
           type="text"

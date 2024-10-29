@@ -1,5 +1,3 @@
-import { useRouter } from 'next/navigation';
-
 type TResponseRefreshToken = {
     message: string;
     token: string;

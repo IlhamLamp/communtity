@@ -1,8 +1,15 @@
 import { saveRoleToDatabase, saveTagToDatabase } from "@/service/public";
-import { TAddressFieldInputProfile, TProfileUser } from "@/types/profile";
+import { TProfileUser } from "@/types/profile";
 import { TRoleResponse, TRoleUser } from "@/types/role";
 import { TTag, TTagResponse } from "@/types/tag";
-import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faIdCardClip,
+  faNoteSticky,
+  faPlus,
+  faTags,
+  faTimes,
+  faUserGear,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dispatch, SetStateAction } from "react";
 
@@ -17,7 +24,7 @@ interface FormProfileWorkingStatusProps {
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
-    field: keyof TProfileUser | TAddressFieldInputProfile
+    field: keyof TProfileUser
   ) => void;
   handleRemoveTag: (tag: TTag, e: React.MouseEvent<HTMLButtonElement>) => void;
   setIsInputFocused: (focused: { [key: string]: boolean }) => void;
@@ -62,7 +69,7 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
   };
 
   return (
-    <div className="mb-2 pt-2">
+    <div id="form-working-status" className="mb-2 pt-2">
       <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
         Working Status
       </label>
@@ -72,13 +79,17 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
             htmlFor="role"
             className="block text-sm font-medium text-[#07074D]"
           >
-            Role
+            <FontAwesomeIcon
+              icon={faIdCardClip}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>Role</span>
           </label>
           <input
             type="text"
             name="role"
             id="role"
-            placeholder="Search role"
+            placeholder="Type to add role"
             value={searchTerm.role || ""}
             onChange={(e) => handleInputChange(e, "role")}
             onFocus={() => {
@@ -136,7 +147,11 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
             htmlFor="experience"
             className="block text-sm font-medium text-[#07074D]"
           >
-            Experience
+            <FontAwesomeIcon
+              icon={faUserGear}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>Experience</span>
           </label>
           <select
             name="experience"
@@ -150,94 +165,123 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
             <option value="more_than_year">&gt; 1 year</option>
           </select>
         </div>
-      </div>
-      <div className="w-full pt-2 relative">
-        <label
-          htmlFor="tags"
-          className="block text-sm font-medium text-[#07074D]"
-        >
-          Tags
-        </label>
-        <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
-          {Array.isArray(data?.tags) &&
-            data.tags.length > 0 &&
-            data.tags.map((tag) => (
-              <div
-                key={tag._id}
-                className={`cursor-default py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
-              >
-                <span className="text-sm text-[#07074D]">{tag.name}</span>
-                <button
-                  type="button"
-                  onClick={(e) => handleRemoveTag(tag, e)}
-                  className="ml-2 text-slate-800 hover:text-slate-600"
-                >
-                  <FontAwesomeIcon icon={faTimes} />
-                </button>
-              </div>
-            ))}
-
-          <input
-            type="text"
-            name="tags"
-            id="tags"
-            value={searchTerm.tags || ""}
-            onChange={(e) => handleInputChange(e, "tags")}
-            onFocus={() => {
-              setIsInputFocused({ ...isInputFocused, tags: true });
-              setCurrentItemType("tags");
-            }}
-            onBlur={() => {
-              setTimeout(
-                () => setIsInputFocused({ ...isInputFocused, tags: false }),
-                150
-              );
-              setVisibleItemCount(10);
-            }}
-            placeholder="Type to add tags"
-            className="flex-grow outline-none text-sm font-medium bg-transparent"
-          />
-        </div>
-
-        {isInputFocused.tags && filteredItems && (
-          <ul
-            className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
-            onMouseDown={(e) => e.preventDefault()}
-            onScroll={handleScrollRole}
+        <div className="w-full relative col-span-2">
+          <label
+            htmlFor="tags"
+            className="block text-sm font-medium text-[#07074D]"
           >
-            {/* FILTER TAGS SUGGESTION */}
-            {filteredItems.length > 0 &&
-              filteredItems
-                .filter(
-                  (tag) =>
-                    !(data?.tags || []).some(
-                      (selectedTag) => selectedTag._id === tag._id
-                    )
-                )
-                .slice(0, visibleItemCount)
-                .map((tag: TTag) => (
-                  <li
-                    key={tag._id}
-                    onClick={() => handleSelectItem(tag)}
-                    className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
+            <FontAwesomeIcon
+              icon={faTags}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>Tags</span>
+          </label>
+          <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
+            {Array.isArray(data?.tags) &&
+              data.tags.length > 0 &&
+              data.tags.map((tag) => (
+                <div
+                  key={tag._id}
+                  className={`cursor-default py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
+                >
+                  <span className="text-sm text-[#07074D]">{tag.name}</span>
+                  <button
+                    type="button"
+                    onClick={(e) => handleRemoveTag(tag, e)}
+                    className="ml-2 text-slate-800 hover:text-slate-600"
                   >
-                    {tag.name}
-                  </li>
-                ))}
-            {/* OTHER THAN SUGGESTION */}
-            {filteredItems.length === 0 && searchTerm.tags && (
-              <li
-                onClick={() =>
-                  handleAddNewItemOtherThanSuggestions(searchTerm.tags, "tags")
-                }
-                className="cursor-pointer py-2 px-4 text-sm text-blue-600 hover:bg-gray-200"
-              >
-                <FontAwesomeIcon icon={faPlus} size="lg" className="pr-2" />
-                Add "{searchTerm.tags}" as new tag
-              </li>
-            )}
-          </ul>
-        )}
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                </div>
+              ))}
+
+            <input
+              type="text"
+              name="tags"
+              id="tags"
+              value={searchTerm.tags || ""}
+              onChange={(e) => handleInputChange(e, "tags")}
+              onFocus={() => {
+                setIsInputFocused({ ...isInputFocused, tags: true });
+                setCurrentItemType("tags");
+              }}
+              onBlur={() => {
+                setTimeout(
+                  () => setIsInputFocused({ ...isInputFocused, tags: false }),
+                  150
+                );
+                setVisibleItemCount(10);
+              }}
+              placeholder="Type to add tags"
+              className="flex-grow outline-none text-sm font-medium bg-transparent"
+            />
+          </div>
+
+          {isInputFocused.tags && filteredItems && (
+            <ul
+              className="border border-gray-300 bg-white rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
+              onMouseDown={(e) => e.preventDefault()}
+              onScroll={handleScrollRole}
+            >
+              {/* FILTER TAGS SUGGESTION */}
+              {filteredItems.length > 0 &&
+                filteredItems
+                  .filter(
+                    (tag) =>
+                      !(data?.tags || []).some(
+                        (selectedTag) => selectedTag._id === tag._id
+                      )
+                  )
+                  .slice(0, visibleItemCount)
+                  .map((tag: TTag) => (
+                    <li
+                      key={tag._id}
+                      onClick={() => handleSelectItem(tag)}
+                      className="cursor-pointer py-2 px-4 text-sm hover:bg-gray-200"
+                    >
+                      {tag.name}
+                    </li>
+                  ))}
+              {/* OTHER THAN SUGGESTION */}
+              {filteredItems.length === 0 && searchTerm.tags && (
+                <li
+                  onClick={() =>
+                    handleAddNewItemOtherThanSuggestions(
+                      searchTerm.tags,
+                      "tags"
+                    )
+                  }
+                  className="cursor-pointer py-2 px-4 text-sm text-blue-600 hover:bg-gray-200"
+                >
+                  <FontAwesomeIcon icon={faPlus} size="lg" className="pr-2" />
+                  Add "{searchTerm.tags}" as new tag
+                </li>
+              )}
+            </ul>
+          )}
+        </div>
+        <div className="w-full col-span-2">
+          <label
+            htmlFor="about"
+            className="block text-sm font-medium text-[#07074D]"
+          >
+            <FontAwesomeIcon
+              icon={faNoteSticky}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>About</span>
+          </label>
+          <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
+            <textarea
+              name="about"
+              id="about"
+              placeholder="Wrote about you here"
+              value={data?.about || ""}
+              onChange={(e) => handleInputChange(e, "about")}
+              className="w-full h-24 resize-none outline-none text-sm text-gray-700 font-thin bg-transparent overflow-y-clip"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

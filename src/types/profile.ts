@@ -2,10 +2,30 @@ import { TRoleUser } from "./role";
 import { TTag } from "./tag";
 
 export type TAddressFieldInputProfile = "address.street" | "address.city" | "address.state" | "address.zip_code";
+export type TSocialLinksFieldInputProfile = {
+    key: "social_links";
+    id: number;
+    subfield: keyof TSocialLinks;
+}
+
+export type TSocialLinks = {
+    id?: number;
+    name?: string;
+    icon?: any;
+    link?: string;
+    is_exist?: boolean;
+}
 
 export type TExperience = {
     value: string;
     label: string;
+}
+
+export type TAddress = {
+    street?: string;
+    city?: string;
+    state?: string;
+    zip_code?: number
 }
 
 export type TProfileUser = {
@@ -16,23 +36,20 @@ export type TProfileUser = {
     username?: string;
     phone?: number;
     birthday?: Date;
-    address?: {
-        street?: string;
-        city?: string;
-        state?: string;
-        zip_code?: number
-    };
+    address?: TAddress;
     profile_picture?: string;
     profile_cover?: string;
     role?: TRoleUser;
     experience?: TExperience;
     tags?: TTag[];
     about?: string;
-    social_links?: [];
+    social_links?: TSocialLinks[];
     is_active?: boolean;
     created_at?: Date;
     updated_at?: Date;
 }
+
+// RESPONSE
 
 export type TProfileLoggedInResponse = {
     status: number;

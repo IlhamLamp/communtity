@@ -1,6 +1,14 @@
 import { SearchUserProfile } from "@/service/profile";
-import { TAddressFieldInputProfile, TProfileUser } from "@/types/profile";
-import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
+import { TProfileUser } from "@/types/profile";
+import {
+  faAt,
+  faBirthdayCake,
+  faCheck,
+  faClose,
+  faPhone,
+  faUser,
+  faUserTag,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent, useCallback, useState } from "react";
 
@@ -8,7 +16,7 @@ const FormProfileContactInformation: React.FC<{
   data: TProfileUser | null;
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: keyof TProfileUser | TAddressFieldInputProfile
+    field: keyof TProfileUser
   ) => void;
 }> = ({ data, handleInputChange }) => {
   const email = sessionStorage.getItem("email") ?? "";
@@ -53,7 +61,7 @@ const FormProfileContactInformation: React.FC<{
   };
 
   return (
-    <div className="mb-2">
+    <div id="form-contact-information" className="mb-2 pt-2">
       <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
         Contact Information
       </label>
@@ -63,7 +71,11 @@ const FormProfileContactInformation: React.FC<{
             htmlFor="first_name"
             className="block text-sm font-medium text-[#07074D]"
           >
-            First Name
+            <FontAwesomeIcon
+              icon={faUser}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>First Name</span>
           </label>
           <input
             type="text"
@@ -97,7 +109,13 @@ const FormProfileContactInformation: React.FC<{
             htmlFor="username"
             className="flex justify-between text-sm font-medium text-[#07074D]"
           >
-            <span>Username</span>
+            <div>
+              <FontAwesomeIcon
+                icon={faUserTag}
+                className="pr-2 text-sm text-gray-600"
+              />
+              <span>Username</span>
+            </div>
             {isUsernameAvailable ? (
               <span className="flex text-CardFour items-center gap-2">
                 <FontAwesomeIcon icon={faCheck} /> Available
@@ -123,7 +141,11 @@ const FormProfileContactInformation: React.FC<{
             htmlFor="email"
             className="block text-sm font-medium text-[#07074D]"
           >
-            Email
+            <FontAwesomeIcon
+              icon={faAt}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>Email</span>
           </label>
           <input
             type="email"
@@ -140,7 +162,11 @@ const FormProfileContactInformation: React.FC<{
             htmlFor="phone"
             className="block text-sm font-medium text-[#07074D]"
           >
-            Phone Number
+            <FontAwesomeIcon
+              icon={faPhone}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>Phone Number</span>
           </label>
           <div className="flex">
             <span className="inline-flex items-center px-3 rounded-l-md border border-[#e0e0e0] bg-gray-100 text-gray-600 text-sm">
@@ -167,7 +193,11 @@ const FormProfileContactInformation: React.FC<{
             htmlFor="date"
             className="block text-sm font-medium text-[#07074D]"
           >
-            Birthday
+            <FontAwesomeIcon
+              icon={faBirthdayCake}
+              className="pr-2 text-sm text-gray-600"
+            />
+            <span>Birthday</span>
           </label>
           <input
             type="date"

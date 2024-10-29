@@ -1,9 +1,11 @@
 import { usePublicResource } from "@/context/PublicContext";
 import {
+  TAddress,
   TAddressFieldInputProfile,
   TExperience,
   TProfileUpdateResponse,
   TProfileUser,
+  TSocialLinksFieldInputProfile,
 } from "@/types/profile";
 import { TRoleUser } from "@/types/role";
 import { TTag } from "@/types/tag";
@@ -16,6 +18,7 @@ import FormProfileWorkingStatus from "./profile-form-info/working-status";
 import { UpdateUserProfile } from "@/service/profile";
 import toast from "react-hot-toast";
 import { useProfile } from "@/context/ProfileContext";
+import FormProfileSocialLink from "./profile-form-info/social-link";
 
 const ProfileInfoModal: React.FC<{
   toggle: any;
@@ -80,14 +83,54 @@ const ProfileInfoModal: React.FC<{
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
-    field: keyof TProfileUser | TAddressFieldInputProfile
+    field:
+      | keyof TProfileUser
+      | TAddressFieldInputProfile
+      | TSocialLinksFieldInputProfile
   ) => {
     e.preventDefault();
     const { value } = e.target;
+
+    const updateSocialLinkField = (field: TSocialLinksFieldInputProfile) => {
+      setProfileData((prevData) => ({
+        ...prevData,
+        social_links: (prevData?.social_links || []).map((link) =>
+          link.id === field.id ? { ...link, [field.subfield]: value } : link
+        ),
+      }));
+    };
+
+    const updateAddressField = (addressField: keyof TAddress) => {
+      setProfileData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData?.address,
+          [addressField]: addressField === "zip_code" ? Number(value) : value,
+        },
+      }));
+    };
+
+    const updateExperienceField = () => {
+      const experienceOptions: Record<string, TExperience> = {
+        no_experience: { value: "no_experience", label: "No Experience" },
+        less_than_year: { value: "less_than_year", label: "< 1 year" },
+        more_than_year: { value: "more_than_year", label: "> 1 year" },
+      };
+      setProfileData((prevData) => ({
+        ...prevData,
+        experience: experienceOptions[value],
+      }));
+    };
+
     setSearchTerm((prev) => ({
       ...prev,
-      [field]: value,
+      [field as keyof TProfileUser]: value,
     }));
+
+    if (typeof field === "object" && field.key === "social_links") {
+      updateSocialLinkField(field as TSocialLinksFieldInputProfile);
+      return;
+    }
 
     switch (field) {
       case "role":
@@ -108,39 +151,15 @@ const ProfileInfoModal: React.FC<{
       case "address.state":
       case "address.zip_code":
         const addressField = field.split(".")[1];
-        if (addressField === "zip_code") {
-          setProfileData((prevData) => ({
-            ...prevData,
-            address: {
-              ...prevData?.address,
-              [addressField]: Number(value),
-            },
-          }));
-        } else {
-          setProfileData((prevData) => ({
-            ...prevData,
-            address: {
-              ...prevData?.address,
-              [addressField]: value,
-            },
-          }));
-        }
+        updateAddressField(addressField as keyof TAddress);
         break;
       case "experience":
-        const experienceOptions: Record<string, TExperience> = {
-          no_experience: { value: "no_experience", label: "No Experience" },
-          less_than_year: { value: "less_than_year", label: "< 1 year" },
-          more_than_year: { value: "more_than_year", label: "> 1 year" },
-        };
-        setProfileData((prevData) => ({
-          ...prevData,
-          experience: experienceOptions[value],
-        }));
+        updateExperienceField();
         break;
       default:
         setProfileData((prevData) => ({
           ...prevData,
-          [field]: value,
+          [field as keyof TProfileUser]: value,
         }));
         break;
     }
@@ -156,7 +175,6 @@ const ProfileInfoModal: React.FC<{
         }));
       },
       tags: (item: TTag) => {
-        // const newTag = { ...item, color: getRandomBgColor() };
         const isTagExist = profileData.tags?.find((t) => t.name === item.name);
         if (!isTagExist) {
           setProfileData((prevData) => ({
@@ -252,6 +270,10 @@ const ProfileInfoModal: React.FC<{
               setIsInputFocused={setIsInputFocused}
               setVisibleItemCount={setVisibleItemCount}
               visibleItemCount={visibleItemCount}
+            />
+            <FormProfileSocialLink
+              data={profileData}
+              handleInputChange={handleInputChange}
             />
           </form>
         </div>
