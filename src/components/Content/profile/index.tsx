@@ -2,20 +2,22 @@
 import SocialProfileGroup from "@/components/Buttons/Social/SocialProfileGroup";
 import LoadingPage from "@/components/Loading/LoadingPage";
 import ProfileInfoModal from "@/components/Modal/ProfileInfoModal";
+import ProfilePictureModal from "@/components/Modal/ProfilePictureModal";
 import { useProfile } from "@/context/ProfileContext";
 import { usePublicResource } from "@/context/PublicContext";
-import {
-  faCamera,
-  faCircleInfo,
-  faPenToSquare,
-} from "@fortawesome/free-solid-svg-icons";
+import { TProfileModalState } from "@/types/profile";
+import { faCamera, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 const ContentProfile: React.FC = () => {
   const { profile, refreshProfile, isLoading } = useProfile();
   const { refreshRoles, refreshTags } = usePublicResource();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalState, setModalState] = useState<TProfileModalState>({
+    profileInfo: false,
+    profilePicture: false,
+    profileCover: false,
+  });
 
   useEffect(() => {
     refreshProfile();
@@ -26,15 +28,18 @@ const ContentProfile: React.FC = () => {
       ? `${profile.first_name} ${profile.last_name}`
       : profile?.first_name || profile?.last_name || "Anonymous";
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const toggleModal = (modalName: keyof TProfileModalState) => {
+    setModalState((prevState) => ({
+      ...prevState,
+      [modalName]: !prevState[modalName],
+    }));
   };
 
   const handleProfileUpdated = () => {
     refreshProfile();
     refreshRoles();
     refreshTags();
-    toggleModal();
+    toggleModal("profileInfo");
   };
 
   if (isLoading) {
@@ -56,14 +61,20 @@ const ContentProfile: React.FC = () => {
           </div>
         </div>
         {/* PROFILE */}
-        <div className="w-full mx-auto h-[5rem] flex justify-center relative">
-          <img
-            src="/assets/avatar.png"
-            alt="User Profile"
-            className="rounded-full object-cover w-[8rem] h-[8rem] bottom-[4rem] lg:w-[10rem] lg:h-[10rem] lg:bottom-[6rem] border-2 border-Navy shadow-xl relative"
-          />
-          <div className="absolute right-4 bottom-0 cursor-pointer bg-black bg-opacity-50 rounded-full p-2">
-            <FontAwesomeIcon icon={faCamera} className="text-white text-xl" />
+        <div className="w-full mx-auto h-[5rem] flex justify-center">
+          <div className="relative">
+            <img
+              src="/assets/avatar.png"
+              alt="User Profile"
+              className="rounded-full object-cover w-[8rem] h-[8rem] bottom-[4rem] lg:w-[10rem] lg:h-[10rem] lg:bottom-[6rem] border-2 border-Navy shadow-xl relative"
+            />
+            <div className="absolute top-4 right-0 cursor-pointer bg-black bg-opacity-50 rounded-full p-2">
+              <FontAwesomeIcon
+                icon={faCamera}
+                className="text-white text-xl"
+                onClick={() => toggleModal("profilePicture")}
+              />
+            </div>
           </div>
         </div>
         {/* CONTENT */}
@@ -81,7 +92,7 @@ const ContentProfile: React.FC = () => {
               <FontAwesomeIcon
                 icon={faPenToSquare}
                 className="text-slate-600 text-xl lg:text-2xl"
-                onClick={toggleModal}
+                onClick={() => toggleModal("profileInfo")}
               />
             </div>
           </div>
@@ -89,14 +100,7 @@ const ContentProfile: React.FC = () => {
             {profile?.about}
           </p>
           <SocialProfileGroup data={profile?.social_links ?? []} />
-          {isModalOpen && (
-            <ProfileInfoModal
-              toggle={toggleModal}
-              onProfileUdpated={handleProfileUpdated}
-            />
-          )}
-
-          <div className="w-full flex gap-4 justify-center items-center mt-10 mb-6">
+          <div className="flex flex-wrap gap-4 justify-center items-center mt-10 mb-6">
             {Array.isArray(profile?.tags) &&
               profile.tags.length > 0 &&
               profile.tags.map((tag) => (
@@ -109,6 +113,19 @@ const ContentProfile: React.FC = () => {
                 </a>
               ))}
           </div>
+          {/* ALL INFO MODAL  */}
+          {modalState.profileInfo && (
+            <ProfileInfoModal
+              toggle={() => toggleModal("profileInfo")}
+              onProfileUdpated={handleProfileUpdated}
+            />
+          )}
+          {modalState.profilePicture && (
+            <ProfilePictureModal
+              toggle={() => toggleModal("profilePicture")}
+              // onProfileUdpated={handleProfileUpdated}
+            />
+          )}
         </div>
       </div>
     </section>

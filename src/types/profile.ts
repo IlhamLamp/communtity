@@ -49,6 +49,13 @@ export type TProfileUser = {
     updated_at?: Date;
 }
 
+// MODAL HELPER
+export type TProfileModalState = {
+    profileInfo: boolean;
+    profilePicture: boolean;
+    profileCover: boolean;
+};
+
 // RESPONSE
 
 export type TProfileLoggedInResponse = {

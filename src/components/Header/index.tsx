@@ -78,8 +78,6 @@ const Header = () => {
               </Link>
             );
           })}
-        <div>isLoading:{JSON.stringify(isLoading)}</div>
-        <div>isLogin:{JSON.stringify(isLogin)}</div>
       </div>
 
       <div className="basis-1/5 flex items-center gap-2 lg:gap-6 justify-between lg:justify-end w-full lg:p-2">
@@ -170,13 +168,15 @@ const Header = () => {
             </button>
             <div className="divide-y divide-slate-300 flex flex-col w-full">
               <div className="flex flex-row items-center gap-4 p-4">
-                <Image
-                  src="/assets/avatar.png"
-                  alt="avatar"
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
+                <a href="/profile">
+                  <Image
+                    src="/assets/avatar.png"
+                    alt="avatar"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                </a>
                 <span className="font-semibold">Profile</span>
               </div>
               <nav className="flex flex-col gap-4 w-full p-2">

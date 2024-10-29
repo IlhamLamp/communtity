@@ -21,7 +21,7 @@ import { useProfile } from "@/context/ProfileContext";
 import FormProfileSocialLink from "./profile-form-info/social-link";
 
 const ProfileInfoModal: React.FC<{
-  toggle: any;
+  toggle: () => void;
   onProfileUdpated: () => void;
 }> = ({ toggle, onProfileUdpated }) => {
   const { profile } = useProfile();
@@ -277,12 +277,13 @@ const ProfileInfoModal: React.FC<{
             />
           </form>
         </div>
+
         <div className="mt-2">
           <button
             onClick={handleUpdateProfile}
             className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-2 px-8 text-center text-sm font-semibold text-white outline-none"
           >
-            Submit
+            Save
           </button>
         </div>
       </div>
