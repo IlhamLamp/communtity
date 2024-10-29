@@ -4,7 +4,11 @@ import LoadingPage from "@/components/Loading/LoadingPage";
 import ProfileInfoModal from "@/components/Modal/ProfileInfoModal";
 import { useProfile } from "@/context/ProfileContext";
 import { usePublicResource } from "@/context/PublicContext";
-import { faCamera, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCamera,
+  faCircleInfo,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
@@ -40,6 +44,7 @@ const ContentProfile: React.FC = () => {
   return (
     <section className="w-full overflow-hidden">
       <div className="w-full mx-auto">
+        {/* COVER */}
         <div className="w-full mx-auto relative">
           <img
             src="/assets/cover.jpg"
@@ -50,6 +55,7 @@ const ContentProfile: React.FC = () => {
             <FontAwesomeIcon icon={faCamera} className="text-white text-3xl" />
           </div>
         </div>
+        {/* PROFILE */}
         <div className="w-full mx-auto h-[5rem] flex justify-center relative">
           <img
             src="/assets/avatar.png"
@@ -60,7 +66,8 @@ const ContentProfile: React.FC = () => {
             <FontAwesomeIcon icon={faCamera} className="text-white text-xl" />
           </div>
         </div>
-        <div className="w-full mx-auto lg:px-8 flex flex-col gap-4 justify-center items-center">
+        {/* CONTENT */}
+        <div className="w-[90%] lg:w-[80%] mx-auto lg:px-8 flex flex-col gap-4 justify-center items-center">
           <div className="w-full flex justify-center relative">
             <div id="profileNameRole">
               <h1 className="text-center text-slate-800 text-4xl">
@@ -72,18 +79,16 @@ const ContentProfile: React.FC = () => {
             </div>
             <div className="absolute -top-2 lg:top-0 right-8 lg:right-0 p-2 cursor-pointer">
               <FontAwesomeIcon
-                icon={faCircleInfo}
+                icon={faPenToSquare}
                 className="text-slate-600 text-xl lg:text-2xl"
                 onClick={toggleModal}
               />
             </div>
           </div>
-          <p className="w-[90%] lg:w-[80%] text-gray-700 text-md text-justify px-4">
+          <p className="w-full text-gray-700 text-md text-justify px-4">
             {profile?.about}
           </p>
-          {profile?.social_links?.length !== 0 && (
-            <SocialProfileGroup data={profile?.social_links} />
-          )}
+          <SocialProfileGroup data={profile?.social_links ?? []} />
           {isModalOpen && (
             <ProfileInfoModal
               toggle={toggleModal}
@@ -91,10 +96,18 @@ const ContentProfile: React.FC = () => {
             />
           )}
 
-          <div className="w-full flex gap-4 justify-center items-center mt-10">
-            <div className="lg:w-1/5 lg:h-32 sm:w-1/3 sm:h-[5rem] flex justify-center items-center rounded-sm text-center text-lg px-6 py-4 border-2 border-dashed border-gray-300">
-              27
-            </div>
+          <div className="w-full flex gap-4 justify-center items-center mt-10 mb-6">
+            {Array.isArray(profile?.tags) &&
+              profile.tags.length > 0 &&
+              profile.tags.map((tag) => (
+                <a
+                  key={tag._id}
+                  href={tag.name}
+                  className={`cursor-pointer py-1 px-3 text-sm rounded-full flex items-center text-center ${tag.color}`}
+                >
+                  <span className="text-sm text-[#07074D]">{tag.name}</span>
+                </a>
+              ))}
           </div>
         </div>
       </div>

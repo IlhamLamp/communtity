@@ -1,15 +1,5 @@
+import { iconMapping } from "@/lib/iconMapping";
 import { TProfileUser, TSocialLinksFieldInputProfile } from "@/types/profile";
-import {
-  faDiscord,
-  faFacebook,
-  faGithub,
-  faInstagram,
-  faLinkedin,
-  faTelegram,
-  faTwitter,
-  faYoutube,
-} from "@fortawesome/free-brands-svg-icons";
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const FormProfileSocialLink: React.FC<{
@@ -19,18 +9,6 @@ const FormProfileSocialLink: React.FC<{
     field: TSocialLinksFieldInputProfile
   ) => void;
 }> = ({ data, handleInputChange }) => {
-  const iconMapping: Record<string, any> = {
-    Linkedin: faLinkedin,
-    Github: faGithub,
-    Instagram: faInstagram,
-    Facebook: faFacebook,
-    Discord: faDiscord,
-    Telegram: faTelegram,
-    Twitter: faTwitter,
-    Youtube: faYoutube,
-    Web: faGlobe,
-  };
-
   return (
     <div id="form-profile-socialLink" className="mb-2 pt-2">
       <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
