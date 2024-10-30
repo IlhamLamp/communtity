@@ -12,9 +12,11 @@ import { useEffect, useState } from "react";
 import { navMenuItems } from "./data";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/ProfileContext";
 
 const Header = () => {
   const path = usePathname();
+  const { profile } = useProfile();
   const [inputSearchFocused, setInputSearchFocused] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isProfileMobileClicked, setIsProfileMobileClicked] =
@@ -100,7 +102,6 @@ const Header = () => {
             </button>
           </div>
         </div>
-
         {/* NOTIFICATION */}
         {isLogin && (
           <div className="group" style={displayNone}>
@@ -134,29 +135,25 @@ const Header = () => {
             </div>
           </div>
         )}
-
-        <Image
-          src="/assets/avatar.png"
-          alt="avatar"
-          width={36}
-          height={36}
-          className="hidden md:block rounded-full"
-        />
+        <div className="hidden md:flex-shrink-0 ml-2">
+          <img
+            src={profile?.profile_picture || "/assets/avatar.png"}
+            alt={profile?.first_name || "avatar"}
+            className="rounded-full object-cover w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] shadow-xl"
+          />
+        </div>
         {/* PROFILE ICON FOR MOBILE - TOGGLE MENU */}
         <div className="flex md:hidden items-center">
           <button
             onClick={() => setIsProfileMobileClicked(!isProfileMobileClicked)}
           >
-            <Image
-              src="/assets/avatar.png"
-              alt="avatar"
-              width={30}
-              height={30}
-              className="rounded-full"
+            <img
+              src={profile?.profile_picture || "/assets/avatar.png"}
+              alt={profile?.first_name || "avatar"}
+              className="rounded-full object-cover w-[2rem] h-[2rem] shadow-xl"
             />
           </button>
         </div>
-
         {/* DROPDOWN PROFILE CLICKED FOR MOBILE */}
         {isProfileMobileClicked && (
           <div className="fixed inset-0 z-30 bg-white flex flex-col items-center justify-start pt-10 md:hidden">
@@ -169,12 +166,10 @@ const Header = () => {
             <div className="divide-y divide-slate-300 flex flex-col w-full">
               <div className="flex flex-row items-center gap-4 p-4">
                 <a href="/profile">
-                  <Image
-                    src="/assets/avatar.png"
-                    alt="avatar"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
+                  <img
+                    src={profile?.profile_picture || "/assets/avatar.png"}
+                    alt={profile?.first_name || "avatar"}
+                    className="rounded-full object-cover w-[2rem] h-[2rem] shadow-xl"
                   />
                 </a>
                 <span className="font-semibold">Profile</span>

@@ -22,8 +22,8 @@ import FormProfileSocialLink from "./profile-form-info/social-link";
 
 const ProfileInfoModal: React.FC<{
   toggle: () => void;
-  onProfileUdpated: () => void;
-}> = ({ toggle, onProfileUdpated }) => {
+  onProfileUpdated: () => void;
+}> = ({ toggle, onProfileUpdated }) => {
   const { profile } = useProfile();
   const [profileData, setProfileData] = useState<TProfileUser | null>(profile);
   const { roles, tags } = usePublicResource();
@@ -229,7 +229,7 @@ const ProfileInfoModal: React.FC<{
           err.message || "Failed to update profile",
       })
       .then(() => {
-        onProfileUdpated();
+        onProfileUpdated();
       })
       .catch((error) => {
         console.error("Profile update failed:", error);

@@ -2,13 +2,13 @@
 import SocialProfileGroup from "@/components/Buttons/Social/SocialProfileGroup";
 import LoadingPage from "@/components/Loading/LoadingPage";
 import ProfileInfoModal from "@/components/Modal/ProfileInfoModal";
-import ProfilePictureModal from "@/components/Modal/ProfilePictureModal";
 import { useProfile } from "@/context/ProfileContext";
 import { usePublicResource } from "@/context/PublicContext";
 import { TProfileModalState } from "@/types/profile";
 import { faCamera, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import ProfileImageModal from "@/components/Modal/ProfileImageModal";
 
 const ContentProfile: React.FC = () => {
   const { profile, refreshProfile, isLoading } = useProfile();
@@ -35,11 +35,11 @@ const ContentProfile: React.FC = () => {
     }));
   };
 
-  const handleProfileUpdated = () => {
+  const handleProfileUpdated = (modalName: keyof TProfileModalState) => {
     refreshProfile();
     refreshRoles();
     refreshTags();
-    toggleModal("profileInfo");
+    toggleModal(modalName);
   };
 
   if (isLoading) {
@@ -52,19 +52,23 @@ const ContentProfile: React.FC = () => {
         {/* COVER */}
         <div className="w-full mx-auto relative">
           <img
-            src="/assets/cover.jpg"
+            src={profile?.profile_cover || "/assets/cover.jpg"}
             alt="User Cover"
             className="w-full h-[10rem] lg:h-[14rem]"
           />
           <div className="absolute right-4 bottom-4 cursor-pointer bg-black bg-opacity-20 rounded-full p-2">
-            <FontAwesomeIcon icon={faCamera} className="text-white text-3xl" />
+            <FontAwesomeIcon
+              icon={faCamera}
+              className="text-white text-3xl"
+              onClick={() => toggleModal("profileCover")}
+            />
           </div>
         </div>
         {/* PROFILE */}
         <div className="w-full mx-auto h-[5rem] flex justify-center">
           <div className="relative">
             <img
-              src="/assets/avatar.png"
+              src={profile?.profile_picture || "/assets/avatar.png"}
               alt="User Profile"
               className="rounded-full object-cover w-[8rem] h-[8rem] bottom-[4rem] lg:w-[10rem] lg:h-[10rem] lg:bottom-[6rem] border-2 border-Navy shadow-xl relative"
             />
@@ -117,13 +121,21 @@ const ContentProfile: React.FC = () => {
           {modalState.profileInfo && (
             <ProfileInfoModal
               toggle={() => toggleModal("profileInfo")}
-              onProfileUdpated={handleProfileUpdated}
+              onProfileUpdated={() => handleProfileUpdated("profileInfo")}
             />
           )}
           {modalState.profilePicture && (
-            <ProfilePictureModal
+            <ProfileImageModal
               toggle={() => toggleModal("profilePicture")}
-              // onProfileUdpated={handleProfileUpdated}
+              onProfileUpdated={() => handleProfileUpdated("profilePicture")}
+              type="profile_picture"
+            />
+          )}
+          {modalState.profileCover && (
+            <ProfileImageModal
+              toggle={() => toggleModal("profileCover")}
+              onProfileUpdated={() => handleProfileUpdated("profileCover")}
+              type="profile_cover"
             />
           )}
         </div>

@@ -10,12 +10,6 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // lamaSky: "#C3EBFA",
-        // lamaSkyLight: "#EDF9FD",
-        // lamaPurple: "#CFCEFF",
-        // lamaPurpleLight: "#F1F0FF",
-        // lamaYellow: "#FAE27C",
-        // lamaYellowLight: "#FEFCE8",
         Purple: "#DCD6F7",
         PurpleLight: "#F4EEFF",
         NavyLight: "#A6B1E1",

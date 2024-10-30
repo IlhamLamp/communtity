@@ -65,7 +65,7 @@ const FormProfileContactInformation: React.FC<{
       <label className="mb-2 block text-sm font-semibold text-[#07074D] sm:text-xl">
         Contact Information
       </label>
-      <div className="gap-2 grid grid-cols-2 lg:grid-cols-3">
+      <div className="gap-2 grid grid-cols-1 lg:grid-cols-3">
         <div className="w-full">
           <label
             htmlFor="first_name"
