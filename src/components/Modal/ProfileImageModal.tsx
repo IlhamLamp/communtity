@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 import { UpdateUserProfile } from "@/service/profile";
 import { uploadImageToCloudinary } from "@/service/uploadDownload";
@@ -12,11 +13,14 @@ const ProfileImageModal: React.FC<{
   onProfileUpdated: () => void;
   type: "profile_picture" | "profile_cover";
 }> = ({ toggle, onProfileUpdated, type }) => {
+  const { verifyToken, clearAuthData } = useAuth();
   const { profile } = useProfile();
   const [profileData, setProfileData] = useState<TProfileUser | null>(profile);
   const [isChangeCoverBtnClicked, setIsChangeCoverBtnClicked] =
     useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const access_token = localStorage.getItem("access_token");
 
   useEffect(() => {
     setProfileData(profile);
@@ -41,7 +45,12 @@ const ProfileImageModal: React.FC<{
     try {
       setIsChangeCoverBtnClicked(true);
       const uploadResponse = await toast.promise(
-        uploadImageToCloudinary(formData),
+        uploadImageToCloudinary(
+          formData,
+          access_token,
+          verifyToken,
+          clearAuthData
+        ),
         {
           loading: "Uploading picture...",
           success: "🎉 Picture uploaded successfully!",

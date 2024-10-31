@@ -1,16 +1,21 @@
-import { TUploadImageResponse } from "@/types/cloudinary";
+import { fetchWithAuth } from "./fetchWithAuth";
 
 export const uploadImageToCloudinary = async (
-  formData: FormData
-): Promise<TUploadImageResponse> => {
-  const token = localStorage.getItem("access_token");
-  const response = await fetch("http://localhost:3100/api/v1/upload", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
+  formData: FormData,
+  accessToken: string | null,
+  verifyToken: () => Promise<boolean>,
+  clearAuthData: () => void
+) => {
+  const response = await fetchWithAuth(
+    "http://localhost:3100/api/v1/upload",
+    {
+      method: "POST",
+      body: formData,
     },
-    body: formData,
-  });
+    accessToken,
+    verifyToken,
+    clearAuthData
+  );
 
   if (!response.ok) {
     throw new Error("Failed to upload image");

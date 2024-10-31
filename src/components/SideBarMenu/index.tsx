@@ -12,7 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 
 const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
-  const { isLogin, setIsLogin } = useAuth();
+  const { isLogin, clearAuthData } = useAuth();
   const { setProfile } = useProfile();
 
   const router = useRouter();
@@ -26,7 +26,7 @@ const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
         duration: 4000,
       });
       setProfile(null);
-      setIsLogin(false);
+      clearAuthData();
       return router.push("/login");
     } else {
       return toast.dismiss();

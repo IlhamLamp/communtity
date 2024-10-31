@@ -19,7 +19,7 @@ interface AuthContextType {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthData: (data: { id: number; email: string }) => void;
   clearAuthData: () => void;
-  verifyToken: () => void;
+  verifyToken: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLogin(false);
   };
 
-  const verifyToken = useCallback(async () => {
+  const verifyToken = useCallback(async (): Promise<boolean> => {
     const access_token = localStorage.getItem("access_token");
     const refresh_token = localStorage.getItem("refresh_token");
 
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (data) {
         setAuthDataHandler({ id: data.data.id, email: data.data.email });
         setIsLoading(false);
-        return;
+        return true;
       }
       localStorage.removeItem("access_token");
     }
@@ -77,13 +77,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.setItem("access_token", data.token);
         setAuthDataHandler({ id: data.data.id, email: data.data.email });
         setIsLoading(false);
-        return;
+        return true;
       }
       clearAuthDataHandler();
     } else {
       clearAuthDataHandler();
     }
     setIsLoading(false);
+    return false;
   }, []);
 
   useEffect(() => {
@@ -97,6 +98,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       verifyToken();
     }
   }, [currentPath, isLogin, isLoading, router, verifyToken]);
+
+  // set every 5 minute verify token
+  useEffect(() => {
+    const interval = setInterval(() => {
+      verifyToken();
+    }, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [verifyToken]);
 
   useEffect(() => {
     const storedId = sessionStorage.getItem("id");
