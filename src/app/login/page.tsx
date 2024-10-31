@@ -2,12 +2,14 @@
 import LoginAccountForm from "@/components/Form/LoginAccountForm";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/ProfileContext";
 import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 const LoginPage: React.FC = () => {
+  const { profile, refreshProfile } = useProfile();
   const router = useRouter();
   const [formData, setFormData] = useState<TBasicLoginUser>({
     email: "",
@@ -47,6 +49,7 @@ const LoginPage: React.FC = () => {
         id: data.data.id,
         email: data.data.email,
       });
+      refreshProfile();
       router.push("/");
       return data;
     });

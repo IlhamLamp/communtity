@@ -9,9 +9,11 @@ import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { LogoutService } from "@/service/logout";
 import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/context/ProfileContext";
 
 const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
   const { isLogin, setIsLogin } = useAuth();
+  const { setProfile } = useProfile();
 
   const router = useRouter();
   const path = usePathname();
@@ -23,6 +25,7 @@ const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
       toast.success("Succesfully Logout!", {
         duration: 4000,
       });
+      setProfile(null);
       setIsLogin(false);
       return router.push("/login");
     } else {

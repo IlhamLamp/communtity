@@ -14,6 +14,8 @@ const ProfileImageModal: React.FC<{
 }> = ({ toggle, onProfileUpdated, type }) => {
   const { profile } = useProfile();
   const [profileData, setProfileData] = useState<TProfileUser | null>(profile);
+  const [isChangeCoverBtnClicked, setIsChangeCoverBtnClicked] =
+    useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -31,7 +33,13 @@ const ProfileImageModal: React.FC<{
     const formData = new FormData();
     formData.append("file", file);
 
+    const oldImageUrl = profileData[type];
+    if (oldImageUrl) {
+      formData.append("old_image_url", oldImageUrl);
+    }
+
     try {
+      setIsChangeCoverBtnClicked(true);
       const uploadResponse = await toast.promise(
         uploadImageToCloudinary(formData),
         {
@@ -59,6 +67,7 @@ const ProfileImageModal: React.FC<{
         .catch((error) => {
           console.error("Profile update failed:", error);
         });
+      setIsChangeCoverBtnClicked(false);
     } catch (error) {
       console.error("Profile update failed:", error);
     }
@@ -109,7 +118,11 @@ const ProfileImageModal: React.FC<{
           />
           <button
             onClick={handleButtonClick}
-            className="hover:shadow-form w-full rounded-md bg-PurpleLight hover:bg-Purple py-2 px-8 text-center text-sm font-semibold text-[#6A64F1] outline-none shadow-lg transition duration-100 ease-in-out"
+            className={`w-full rounded-md py-2 px-8 text-center text-sm font-semibold outline-none shadow-lg transition duration-100 ease-in-out ${
+              isChangeCoverBtnClicked
+                ? "cursor-not-allowed bg-gray-300 text-white"
+                : "cursor-pointer bg-PurpleLight hover:bg-Purple text-[#6A64F1]"
+            }`}
           >
             Change{" "}
             {type === "profile_picture" ? "Profile Picture" : "Cover Photo"}

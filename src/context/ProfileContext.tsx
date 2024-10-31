@@ -13,6 +13,7 @@ interface IProfileContext {
   profile: TProfileUser | null;
   isLoading: boolean;
   setProfile: React.Dispatch<React.SetStateAction<TProfileUser | null>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   refreshProfile: () => void;
 }
 
@@ -56,6 +57,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       profile,
       isLoading,
       setProfile,
+      setIsLoading,
       refreshProfile,
     }),
     [profile, isLoading]

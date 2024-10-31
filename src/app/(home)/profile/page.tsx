@@ -1,6 +1,5 @@
 "use client";
 import ContentProfile from "@/components/Content/profile";
-import { profileData } from "@/components/Content/profile/data";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 

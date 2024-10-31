@@ -24,7 +24,7 @@ const Header = () => {
   const [isNotifMobileClicked, setIsNotifMobileClicked] =
     useState<boolean>(false);
 
-  const { isLogin, isLoading } = useAuth();
+  const { isLogin } = useAuth();
 
   const displayNone = {
     display: path === "/signup" || path === "/login" ? "hidden" : "flex",
@@ -135,12 +135,14 @@ const Header = () => {
             </div>
           </div>
         )}
-        <div className="hidden md:flex-shrink-0 ml-2">
-          <img
-            src={profile?.profile_picture || "/assets/avatar.png"}
-            alt={profile?.first_name || "avatar"}
-            className="rounded-full object-cover w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] shadow-xl"
-          />
+        <div className="hidden md:block md:flex-shrink-0 ml-2 cursor-pointer">
+          <Link href={"/profile"}>
+            <img
+              src={profile?.profile_picture || "/assets/avatar.png"}
+              alt={profile?.first_name || "avatar"}
+              className="rounded-full object-cover w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] shadow-xl"
+            />
+          </Link>
         </div>
         {/* PROFILE ICON FOR MOBILE - TOGGLE MENU */}
         <div className="flex md:hidden items-center">
