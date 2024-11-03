@@ -106,7 +106,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [currentPath, isLogin, isLoading, router, verifyToken]);
 
-  // set every 5 minute verify token
   useEffect(() => {
     const interval = setInterval(() => {
       verifyToken();
@@ -126,7 +125,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  // Save to sessionStorage whenever authData changes
   useEffect(() => {
     if (authData.id && authData.email) {
       sessionStorage.setItem("id", String(authData.id));

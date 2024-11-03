@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 import { RegisterUserProfile } from "@/service/profile";
 import { TOAuthCallbackResponse, TOAuthUser } from "@/types/user";
+import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -32,7 +33,7 @@ const AuthLoginStatusRedirectPage = () => {
       if (!callback) return;
 
       const response = await fetch(
-        `http://localhost:3001/api/v1/auth/login/success?callback=${callback}`
+        `${API_AUTHENTICATION_SERVICE}login/success?callback=${callback}`
       );
 
       if (!response.ok) {

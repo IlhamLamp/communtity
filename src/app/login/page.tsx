@@ -4,6 +4,7 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
+import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -31,7 +32,7 @@ const LoginPage: React.FC = () => {
     ev.preventDefault();
     setIsLogin(false);
 
-    const loginPromise = fetch("http://localhost:3001/api/v1/auth/login", {
+    const loginPromise = fetch(`${API_AUTHENTICATION_SERVICE}login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

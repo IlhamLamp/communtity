@@ -1,6 +1,7 @@
 import { ProfileDefaultData } from "@/data/profile.default";
 import { TProfileLoggedInResponse, TProfileUser } from "@/types/profile";
 import { TOAuthUser, TRegisterUser } from "@/types/user";
+import { API_USER_PROFILE_SERVICE } from "@/utils/constant";
 
 const initalizeProfileData = (data: TRegisterUser | TOAuthUser) => {
   const randomString = Math.random().toString(36).substring(2, 8);
@@ -28,16 +29,13 @@ export const RegisterUserProfile = async (data: TRegisterUser | TOAuthUser) => {
   }
   const profileData = initalizeProfileData(data);
   try {
-    const response = await fetch(
-      "http://localhost:3002/api/v1/profile/register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(profileData),
-      }
-    );
+    const response = await fetch(`${API_USER_PROFILE_SERVICE}register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(profileData),
+    });
     if (!response.ok) {
       const errorData = await response.json();
       console.error(errorData.error);
@@ -55,7 +53,7 @@ export const UpdateUserProfile = async (data: TProfileUser) => {
   const token = localStorage.getItem("access_token");
   try {
     const response = await fetch(
-      `http://localhost:3002/api/v1/profile/update/${data.user_id}`,
+      `${API_USER_PROFILE_SERVICE}update/${data.user_id}`,
       {
         method: "PUT",
         headers: {
@@ -86,7 +84,7 @@ export const RefreshUserProfile = async (access_token?: string) => {
     return Promise.reject("Access token is required");
   }
   try {
-    const response = await fetch("http://localhost:3002/api/v1/profile/me", {
+    const response = await fetch(`${API_USER_PROFILE_SERVICE}me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +112,7 @@ export const SearchUserProfile = async (name: string) => {
   }
   try {
     const response = await fetch(
-      `http://localhost:3002/api/v1/profile/search?name=${name}`,
+      `${API_USER_PROFILE_SERVICE}search?name=${name}`,
       {
         method: "GET",
         headers: {

@@ -1,7 +1,9 @@
+import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
+
 export const LogoutService = async () => {
   try {
     const access_token = localStorage.getItem("access_token");
-    const response = await fetch("http://localhost:3001/api/v1/auth/logout", {
+    const response = await fetch(`${API_AUTHENTICATION_SERVICE}logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${access_token}`,

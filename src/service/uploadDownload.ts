@@ -1,3 +1,4 @@
+import { API_UPLOAD_DOWNLOAD_SERVICE } from "@/utils/constant";
 import { fetchWithAuth } from "./fetchWithAuth";
 
 export const uploadImageToCloudinary = async (
@@ -7,7 +8,7 @@ export const uploadImageToCloudinary = async (
   clearAuthData: () => void
 ) => {
   const response = await fetchWithAuth(
-    "http://localhost:3100/api/v1/upload",
+    `${API_UPLOAD_DOWNLOAD_SERVICE}upload`,
     {
       method: "POST",
       body: formData,
@@ -20,6 +21,5 @@ export const uploadImageToCloudinary = async (
   if (!response.ok) {
     throw new Error("Failed to upload image");
   }
-
   return await response.json();
 };

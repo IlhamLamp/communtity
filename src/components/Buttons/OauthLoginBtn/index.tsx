@@ -1,7 +1,9 @@
+import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
+
 const OauthLoginBtn: React.FC = () => {
   const handleGoogleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    window.open("http://localhost:3001/api/v1/auth/google", "_self");
+    window.open(`${API_AUTHENTICATION_SERVICE}google`, "_self");
   };
 
   return (

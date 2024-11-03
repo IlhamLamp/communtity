@@ -1,6 +1,6 @@
-'use client';
+"use client";
 import { useState, useEffect } from "react";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import { heroIntroCards } from "./data";
 import Link from "next/link";
 
@@ -12,7 +12,7 @@ const HeroIntroCard: React.FC = () => {
   useEffect(() => {
     const matchedCard = heroIntroCards.find((card) => card.path === pathname);
     if (matchedCard) {
-      setCurrentCard(matchedCard); 
+      setCurrentCard(matchedCard);
     }
   }, [pathname]);
 
@@ -20,7 +20,7 @@ const HeroIntroCard: React.FC = () => {
     setCurrentIndex(index);
   };
 
-   useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       if (currentCard) {
         setCurrentIndex((prevIndex) =>
@@ -35,12 +35,12 @@ const HeroIntroCard: React.FC = () => {
   if (!currentCard) return null;
 
   return (
-    <div 
+    <div
       className={`relative shadow-md rounded-xl p-4 flex items-center justify-between space-x-4 w-full max-w-full transition-all duration-500 ${currentCard.shadow}`}
       style={{
         backgroundImage: `url(${currentCard.image})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <div className="w-full flex flex-row justify-between my-4">
@@ -48,10 +48,17 @@ const HeroIntroCard: React.FC = () => {
           <div className="bg-Navy text-white rounded-full px-3 py-1 text-xs font-semibold mb-2">
             {currentCard.items[currentIndex].label}
           </div>
-          <h2 className="text-2xl font-bold text-white">{currentCard.items[currentIndex].title}</h2>
+          <h2 className="text-2xl font-bold text-white">
+            {currentCard.items[currentIndex].title}
+          </h2>
         </div>
         <div className="hidden lg:block">
-          <Link href={currentCard.items[currentIndex].link} className="px-2 py-1 rounded-full bg-white text-sm font-light hover:bg-Gray transition ease-linear duration-100">click here</Link>
+          <Link
+            href={currentCard.items[currentIndex].link}
+            className="px-2 py-1 rounded-full bg-white text-sm font-light hover:bg-Gray transition ease-linear duration-100"
+          >
+            click here
+          </Link>
         </div>
       </div>
       <div className="absolute bottom-4 left-1 w-20 flex justify-between">
@@ -59,7 +66,9 @@ const HeroIntroCard: React.FC = () => {
           <button
             key={index}
             onClick={() => changeCard(index)}
-            className={`w-2 h-2 rounded-full ${index === currentIndex ? 'bg-white' : 'bg-white/50'}`}
+            className={`w-2 h-2 rounded-full ${
+              index === currentIndex ? "bg-white" : "bg-white/50"
+            }`}
           />
         ))}
       </div>

@@ -1,5 +1,6 @@
 import { RegisterUserProfile } from "@/service/profile";
 import { TRegisterResponse, TRegisterUser } from "@/types/user";
+import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
@@ -49,7 +50,7 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
     const otp_code = otpValues.join("");
     if (!data || otp_code.length !== 6) return;
 
-    const verifyOtpPromise = fetch(`http://localhost:3001/api/v1/auth/verify`, {
+    const verifyOtpPromise = fetch(`${API_AUTHENTICATION_SERVICE}verify`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -88,19 +89,16 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
     setIsRequestOtpDisabled(true);
     setTimer(30);
 
-    const resendOtpPromise = fetch(
-      `http://localhost:3001/api/v1/auth/resend-otp`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          id: data.id,
-          email: data.email,
-        }),
-      }
-    ).then(async (response) => {
+    const resendOtpPromise = fetch(`${API_AUTHENTICATION_SERVICE}resend-otp`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        id: data.id,
+        email: data.email,
+      }),
+    }).then(async (response) => {
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Failed to resend OTP.");
