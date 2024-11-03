@@ -1,22 +1,32 @@
 import { ProfileDefaultData } from "@/data/profile.default";
 import { TProfileLoggedInResponse, TProfileUser } from "@/types/profile";
-import { TRegisterUser } from "@/types/user";
+import { TOAuthUser, TRegisterUser } from "@/types/user";
 
-export const RegisterUserProfile = async (data: TRegisterUser) => {
-  const { id, email } = data;
+const initalizeProfileData = (data: TRegisterUser | TOAuthUser) => {
+  const randomString = Math.random().toString(36).substring(2, 8);
+  const first_name =
+    "first_name" in data ? data.first_name : data.email?.split("@")[0];
+  const username = `${first_name}_${randomString}`;
+
+  const profileData = {
+    ...ProfileDefaultData,
+    user_id: data.id!,
+    first_name,
+    last_name: "last_name" in data ? data.last_name : "",
+    username,
+    profile_picture: "profile_picture" in data ? data.profile_picture : "",
+  };
+
+  return profileData;
+};
+
+export const RegisterUserProfile = async (data: TRegisterUser | TOAuthUser) => {
+  const { id } = data;
   if (!id) {
     console.error("User ID is missing from data");
     return Promise.reject("User ID is required");
   }
-  const randomString = Math.random().toString(36).substring(2, 8);
-  const first_name = email?.split("@")[0];
-  const username = `${first_name}_${randomString}`;
-  const profileData = {
-    ...ProfileDefaultData,
-    user_id: id,
-    first_name,
-    username,
-  };
+  const profileData = initalizeProfileData(data);
   try {
     const response = await fetch(
       "http://localhost:3002/api/v1/profile/register",

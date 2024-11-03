@@ -9,7 +9,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 const LoginPage: React.FC = () => {
-  const { profile, refreshProfile } = useProfile();
+  const { refreshProfile } = useProfile();
   const router = useRouter();
   const [formData, setFormData] = useState<TBasicLoginUser>({
     email: "",

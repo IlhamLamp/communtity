@@ -39,7 +39,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const publicRoutes = ["/login", "/", "/faqs", "/signup", "/forgot-password"];
+  const publicRoutes = [
+    "/login",
+    "/",
+    "/faqs",
+    "/signup",
+    "/forgot-password",
+    "/auth/login/success",
+  ];
 
   const setAuthDataHandler = (data: { id: number; email: string }) => {
     setAuthData(data);
