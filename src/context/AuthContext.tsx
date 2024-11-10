@@ -46,6 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     "/signup",
     "/forgot-password",
     "/auth/login/success",
+    "/auth/login/redirect",
   ];
 
   const setAuthDataHandler = (data: { id: number; email: string }) => {

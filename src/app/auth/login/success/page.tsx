@@ -6,27 +6,28 @@ import { RegisterUserProfile } from "@/service/profile";
 import { TOAuthCallbackResponse, TOAuthUser } from "@/types/user";
 import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-const AuthLoginStatusRedirectPage = () => {
+const AuthLoginSuccessCallbackPage: React.FC = () => {
   const searchParams = useSearchParams();
   const callback = searchParams.get("callback");
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const { isLoading, setIsLoading, isLogin, setIsLogin, setAuthData } =
     useAuth();
-
   const { refreshProfile } = useProfile();
 
   const handleUserProfile = async (data: TOAuthUser) => {
+    console.log("handle update/create");
     if (data.created) {
       await RegisterUserProfile(data);
     }
     refreshProfile();
   };
 
-  const fetchUserData = async (): Promise<void> => {
+  const fetchUserData = async () => {
     setIsLoading(true);
 
     try {
@@ -50,21 +51,24 @@ const AuthLoginStatusRedirectPage = () => {
         });
         await handleUserProfile(data.data);
         setIsLogin(true);
-        return;
       } else {
         throw new Error("Invalid data received");
       }
     } catch (error) {
       console.error("Error during login:", error);
+      throw error;
     } finally {
       setIsLoading(false);
+      setIsSubmitting(false);
       router.push("/");
     }
   };
 
   useEffect(() => {
-    if (!callback) return;
+    if (!callback || isSubmitting) return;
+    console.log("use effect test");
 
+    setIsSubmitting(true);
     const loginPromise = fetchUserData();
     toast.promise(loginPromise, {
       loading: "Logging in...",
@@ -73,18 +77,24 @@ const AuthLoginStatusRedirectPage = () => {
     });
   }, [callback]);
 
-  if (!isLoading && !isLogin) {
+  if (isLoading) {
     return <LoadingSpinner />;
-  } else {
+  }
+
+  if (!isLoading && isLogin) {
     return (
-      <div className="container mx-auto mt-14 bg-gray-100 lg:rounded-3xl">
-        <div className="h-screen flex justify-center text-center my-auto">
-          verification is complete, you are immediately redirected to the main
-          page
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="text-center">
+          <p className="text-xl font-semibold">Verification is complete</p>
+          <p className="text-gray-600">
+            You are being redirected to the main page
+          </p>
         </div>
       </div>
     );
   }
+
+  return null;
 };
 
-export default AuthLoginStatusRedirectPage;
+export default AuthLoginSuccessCallbackPage;
