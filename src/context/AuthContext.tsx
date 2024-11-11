@@ -1,5 +1,8 @@
 "use client";
-import { CheckAccessToken, RefreshToken } from "@/service/token";
+import {
+  CheckUserTokenService,
+  RefreshUserTokenService,
+} from "@/api/authentication";
 import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
@@ -70,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoading(true);
 
     if (access_token) {
-      const data = await CheckAccessToken(access_token);
+      const data = await CheckUserTokenService(access_token);
       if (data) {
         setAuthDataHandler({ id: data.data.id, email: data.data.email });
         setIsLoading(false);
@@ -80,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     if (refresh_token) {
-      const data = await RefreshToken(refresh_token);
+      const data = await RefreshUserTokenService(refresh_token);
       if (data) {
         localStorage.setItem("access_token", data.token);
         setAuthDataHandler({ id: data.data.id, email: data.data.email });

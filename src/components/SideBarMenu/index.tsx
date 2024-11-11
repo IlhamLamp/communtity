@@ -7,9 +7,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
-import { LogoutService } from "@/service/logout";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
+import { LogoutService } from "@/api/authentication";
 
 const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
   const { isLogin, clearAuthData } = useAuth();

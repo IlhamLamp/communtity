@@ -1,4 +1,4 @@
-import { RegisterUserProfile } from "@/service/profile";
+import { CreateUserProfileService } from "@/api/profile";
 import { TRegisterResponse, TRegisterUser } from "@/types/user";
 import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
@@ -66,7 +66,7 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
         return Promise.reject(responseData.message);
         // throw new Error(responseData.message);
       }
-      await RegisterUserProfile(data);
+      await CreateUserProfileService(data);
       return responseData;
     });
 

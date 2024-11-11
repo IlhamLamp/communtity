@@ -36,6 +36,7 @@ export type TBasicLoginResponse = {
 
 export type TOAuthUser = {
   id: number;
+  google_id: string;
   email: string;
   first_name: string;
   last_name: string;

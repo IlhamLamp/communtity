@@ -1,8 +1,8 @@
 "use client";
+import { RegisterUserAccountService } from "@/api/userAccount";
 import RegisterAccountForm from "@/components/Form/RegisterAccountForm";
 import VerifyOtpForm from "@/components/Form/VerifyOtpForm";
 import { TRegisterResponse, TRegisterUser } from "@/types/user";
-import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -24,25 +24,7 @@ const SignUpPage: React.FC = () => {
 
   const handleRegisterClick = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-
-    const registerPromise = fetch(`${API_AUTHENTICATION_SERVICE}register`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        email: formData.email,
-        password: formData.password,
-        confirmation_password: formData.confirmation_password,
-      }),
-    }).then(async (response) => {
-      const data: TRegisterResponse = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
-      }
-      return data.user;
-    });
-
+    const registerPromise = RegisterUserAccountService(formData);
     toast
       .promise(registerPromise, {
         loading: "Registering account...",
@@ -54,9 +36,9 @@ const SignUpPage: React.FC = () => {
       .then((data) => {
         setFormData((prevData) => ({
           ...prevData,
-          id: data?.id,
+          id: data?.user?.id ?? 0,
           otp_code: "",
-          is_verified: data?.is_verified,
+          is_verified: data?.user?.is_verified ?? false,
         }));
         setIsOtpStage(true);
       })

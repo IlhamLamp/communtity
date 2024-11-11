@@ -1,10 +1,10 @@
 "use client";
-import { TRoleResponse, TRoleUser } from "@/types/role";
-import { TTag, TTagResponse } from "@/types/tag";
 import {
-  API_PUBLIC_ROLE_SERVICE,
-  API_PUBLIC_TAG_SERVICE,
-} from "@/utils/constant";
+  GetAllAdditionalRoleService,
+  GetAllAdditionalTagService,
+} from "@/api/extras/additionalProfile";
+import { TRoleUser } from "@/types/role";
+import { TTag } from "@/types/tag";
 import React, {
   createContext,
   useContext,
@@ -35,9 +35,8 @@ export const PublicResourceProvider: React.FC<{
   const refreshRoles = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_PUBLIC_ROLE_SERVICE}`);
-      const data: TRoleResponse = await response.json();
-      setRoles(data.data);
+      const data = await GetAllAdditionalRoleService();
+      setRoles(data?.data);
     } catch (error) {
       console.error("Error fetching roles:", error);
       setRoles([]);
@@ -49,9 +48,8 @@ export const PublicResourceProvider: React.FC<{
   const refreshTags = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_PUBLIC_TAG_SERVICE}`);
-      const data: TTagResponse = await response.json();
-      setTags(data.data);
+      const data = await GetAllAdditionalTagService();
+      setTags(data?.data);
     } catch (error) {
       console.error("Error fetching tag:", error);
       setTags([]);

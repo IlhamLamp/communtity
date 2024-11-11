@@ -1,10 +1,10 @@
 "use client";
+import { OAuthGoogleLoginService } from "@/api/authentication";
+import { CreateUserProfileService } from "@/api/profile";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
-import { RegisterUserProfile } from "@/service/profile";
-import { TOAuthCallbackResponse, TOAuthUser } from "@/types/user";
-import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
+import { TOAuthUser } from "@/types/user";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -20,9 +20,8 @@ const AuthLoginSuccessCallbackPage: React.FC = () => {
   const { refreshProfile } = useProfile();
 
   const handleUserProfile = async (data: TOAuthUser) => {
-    console.log("handle update/create");
     if (data.created) {
-      await RegisterUserProfile(data);
+      await CreateUserProfileService(data);
     }
     refreshProfile();
   };
@@ -33,23 +32,15 @@ const AuthLoginSuccessCallbackPage: React.FC = () => {
     try {
       if (!callback) return;
 
-      const response = await fetch(
-        `${API_AUTHENTICATION_SERVICE}login/success?callback=${callback}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch user data");
-      }
-
-      const data: TOAuthCallbackResponse = await response.json();
-      if (data?.data) {
-        localStorage.setItem("access_token", data.data.token);
-        localStorage.setItem("refresh_token", data.data.refresh_token);
+      const result = await OAuthGoogleLoginService(callback);
+      if (result?.data) {
+        localStorage.setItem("access_token", result.data.token);
+        localStorage.setItem("refresh_token", result.data.refresh_token);
         setAuthData({
-          id: data.data.id,
-          email: data.data.email,
+          id: result.data.id,
+          email: result.data.email,
         });
-        await handleUserProfile(data.data);
+        await handleUserProfile(result.data);
         setIsLogin(true);
       } else {
         throw new Error("Invalid data received");

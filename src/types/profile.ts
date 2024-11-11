@@ -70,6 +70,14 @@ export type TProfileLoggedInResponse = {
   statusCode?: number;
 };
 
+export type TGetAllProfileResponse = {
+  status: any;
+  message: string;
+  data?: TProfileUser[];
+  error?: string;
+  statusCode?: number;
+};
+
 export type TProfileUpdateResponse = {
   status: number;
   message: string;

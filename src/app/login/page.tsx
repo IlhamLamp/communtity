@@ -1,10 +1,10 @@
 "use client";
+import { FormLoginService } from "@/api/authentication";
 import LoginAccountForm from "@/components/Form/LoginAccountForm";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
-import { TBasicLoginResponse, TBasicLoginUser } from "@/types/user";
-import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
+import { TBasicLoginUser } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -32,33 +32,27 @@ const LoginPage: React.FC = () => {
     ev.preventDefault();
     setIsLogin(false);
 
-    const loginPromise = fetch(`${API_AUTHENTICATION_SERVICE}login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    }).then(async (response) => {
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
+    const loginPromise = FormLoginService(formData).then((data) => {
+      if (data?.data) {
+        setIsLogin(true);
+        localStorage.setItem("access_token", data.data.token);
+        localStorage.setItem("refresh_token", data.data.refresh_token);
+        setAuthData({
+          id: data.data.id,
+          email: data.data.email,
+        });
+        refreshProfile();
+        router.push("/");
+        return data;
+      } else {
+        throw new Error("Login failed: Invalid response data");
       }
-      setIsLogin(true);
-      localStorage.setItem("access_token", data.data.token);
-      localStorage.setItem("refresh_token", data.data.refresh_token);
-      setAuthData({
-        id: data.data.id,
-        email: data.data.email,
-      });
-      refreshProfile();
-      router.push("/");
-      return data;
     });
 
     toast.promise(loginPromise, {
       loading: "Logging in...",
       success: "🎉 Login successful!",
-      error: (err: TBasicLoginResponse) => err.message,
+      error: (err: Error) => err.message,
     });
   };
 

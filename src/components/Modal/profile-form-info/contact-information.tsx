@@ -1,4 +1,4 @@
-import { SearchUserProfile } from "@/service/profile";
+import { SearchUserProfileService } from "@/api/profile";
 import { TProfileUser } from "@/types/profile";
 import {
   faAt,
@@ -39,8 +39,8 @@ const FormProfileContactInformation: React.FC<{
     }
 
     try {
-      const result = await SearchUserProfile(username);
-      if (result.data && result.data.length > 0) {
+      const result = await SearchUserProfileService(username);
+      if (result?.data && result.data.length > 0) {
         setIsUsernameAvailable(false);
       } else {
         setIsUsernameAvailable(true);

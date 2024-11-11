@@ -15,10 +15,10 @@ import React, { useEffect, useState } from "react";
 import FormProfileContactInformation from "./profile-form-info/contact-information";
 import FormProfileAddressDetails from "./profile-form-info/address-details";
 import FormProfileWorkingStatus from "./profile-form-info/working-status";
-import { UpdateUserProfile } from "@/service/profile";
 import toast from "react-hot-toast";
 import { useProfile } from "@/context/ProfileContext";
 import FormProfileSocialLink from "./profile-form-info/social-link";
+import { UpdateUserProfileService } from "@/api/profile";
 
 const ProfileInfoModal: React.FC<{
   toggle: () => void;
@@ -222,7 +222,7 @@ const ProfileInfoModal: React.FC<{
   const handleUpdateProfile = async () => {
     if (!profileData) return;
     toast
-      .promise(UpdateUserProfile(profileData), {
+      .promise(UpdateUserProfileService(profileData), {
         loading: "Updating profile...",
         success: "🎉 Profile updated successfully!",
         error: (err: TProfileUpdateResponse) =>

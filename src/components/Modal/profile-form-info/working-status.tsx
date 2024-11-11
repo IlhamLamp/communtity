@@ -1,4 +1,7 @@
-import { saveRoleToDatabase, saveTagToDatabase } from "@/service/public";
+import {
+  CreateAdditionalRoleService,
+  CreateAdditionalTagService,
+} from "@/api/extras/additionalProfile";
 import { TProfileUser } from "@/types/profile";
 import { TRoleResponse, TRoleUser } from "@/types/role";
 import { TTag, TTagResponse } from "@/types/tag";
@@ -53,8 +56,10 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
   ) => {
     try {
       const saveFunction =
-        itemType === "tags" ? saveTagToDatabase : saveRoleToDatabase;
-      const newItem: TTagResponse | TRoleResponse = await saveFunction(
+        itemType === "tags"
+          ? CreateAdditionalTagService
+          : CreateAdditionalRoleService;
+      const newItem: TTagResponse | TRoleResponse | null = await saveFunction(
         newItemName
       );
 

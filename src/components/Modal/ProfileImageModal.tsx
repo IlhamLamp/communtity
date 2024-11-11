@@ -1,7 +1,6 @@
-import { useAuth } from "@/context/AuthContext";
+import { UpdateUserProfileService } from "@/api/profile";
+import { UploadImageToCloudinaryService } from "@/api/upload/cloudinaryUpload";
 import { useProfile } from "@/context/ProfileContext";
-import { UpdateUserProfile } from "@/service/profile";
-import { uploadImageToCloudinary } from "@/service/uploadDownload";
 import { TProfileUpdateResponse, TProfileUser } from "@/types/profile";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,14 +12,13 @@ const ProfileImageModal: React.FC<{
   onProfileUpdated: () => void;
   type: "profile_picture" | "profile_cover";
 }> = ({ toggle, onProfileUpdated, type }) => {
-  const { verifyToken, clearAuthData } = useAuth();
   const { profile } = useProfile();
   const [profileData, setProfileData] = useState<TProfileUser | null>(profile);
   const [isChangeCoverBtnClicked, setIsChangeCoverBtnClicked] =
     useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const access_token = localStorage.getItem("access_token");
+  const access_token = localStorage.getItem("access_token") ?? "";
 
   useEffect(() => {
     setProfileData(profile);
@@ -45,12 +43,7 @@ const ProfileImageModal: React.FC<{
     try {
       setIsChangeCoverBtnClicked(true);
       const uploadResponse = await toast.promise(
-        uploadImageToCloudinary(
-          formData,
-          access_token,
-          verifyToken,
-          clearAuthData
-        ),
+        UploadImageToCloudinaryService(formData, access_token),
         {
           loading: "Uploading picture...",
           success: "🎉 Picture uploaded successfully!",
@@ -58,27 +51,26 @@ const ProfileImageModal: React.FC<{
         }
       );
 
+      if (uploadResponse === null) {
+        throw new Error("Failed to upload image");
+      }
+
       const updatedProfileData = {
         ...profileData,
         [type]: uploadResponse.secure_url,
       };
 
-      toast
-        .promise(UpdateUserProfile(updatedProfileData), {
-          loading: "Updating profile...",
-          success: "🎉 Profile updated successfully!",
-          error: (err: TProfileUpdateResponse) =>
-            err.message || "Failed to update profile",
-        })
-        .then(() => {
-          onProfileUpdated();
-        })
-        .catch((error) => {
-          console.error("Profile update failed:", error);
-        });
-      setIsChangeCoverBtnClicked(false);
+      await toast.promise(UpdateUserProfileService(updatedProfileData), {
+        loading: "Updating profile...",
+        success: "🎉 Profile updated successfully!",
+        error: (err: TProfileUpdateResponse) =>
+          err.message || "Failed to update profile",
+      });
+      onProfileUpdated();
     } catch (error) {
       console.error("Profile update failed:", error);
+    } finally {
+      setIsChangeCoverBtnClicked(false);
     }
   };
 

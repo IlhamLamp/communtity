@@ -1,5 +1,5 @@
 "use client";
-import { RefreshUserProfile } from "@/service/profile";
+import { RefreshUserProfileService } from "@/api/profile";
 import { TProfileUser } from "@/types/profile";
 import React, {
   createContext,
@@ -28,11 +28,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
   const refreshProfile = async () => {
     setIsLoading(true);
     try {
-      const accessToken = localStorage.getItem("access_token");
-      if (!accessToken) {
-        throw new Error("Access token not found");
-      }
-      const response = await RefreshUserProfile(accessToken);
+      const response = await RefreshUserProfileService();
       const profileData = response?.data;
       if (!profileData) throw new Error("Profile data is undefined");
       setProfile(profileData);
