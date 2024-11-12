@@ -8,6 +8,7 @@ Are you confused about how to get started?, Welcome to communtity, for everyone 
 
 - Desktop
   ![Demo_Desktop](public/assets/demo-desktop.png)
+
 - Mobile
   ![Demo_Mobile](public/assets/demo-mobile.png)
 
@@ -19,9 +20,9 @@ Are you confused about how to get started?, Welcome to communtity, for everyone 
 
 - **Authentication Service:** Node.js, Express, MySQL, Redis (for session and token management)
 - **Profile Service:** NestJS, MongoDB
-- **Upload-Download Service:** Node.js, Express, Cloudinary (file storage)
+- **Upload-Download Service:** Go, Gin, Cloudinary (file storage)
 - **Messaging:** RabbitMQ
-- **Containerization & Orchestration:** Docker, Docker Compose
+- **Containerization** Docker, Docker Compose
 - **CI/CD:** Jenkins
 
 ## Installation
