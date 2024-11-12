@@ -2,32 +2,55 @@
 import {
   faBell,
   faMagnifyingGlass,
+  faPowerOff,
   faRightFromBracket,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { navMenuItems } from "./data";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
+import { LogoutService } from "@/api/authentication";
+import toast from "react-hot-toast";
 
 const Header = () => {
+  const router = useRouter();
   const path = usePathname();
-  const { profile } = useProfile();
+  const { isLogin, clearAuthData } = useAuth();
+  const { profile, setProfile } = useProfile();
   const [inputSearchFocused, setInputSearchFocused] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isProfileMobileClicked, setIsProfileMobileClicked] =
     useState<boolean>(false);
-  const [isNotifMobileClicked, setIsNotifMobileClicked] =
-    useState<boolean>(false);
-
-  const { isLogin } = useAuth();
 
   const displayNone = {
     display: path === "/signup" || path === "/login" ? "hidden" : "flex",
+  };
+
+  const displayName = profile?.last_name
+    ? `${profile.first_name} ${profile.last_name}`
+    : profile?.first_name;
+
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("Apakah Anda yakin ingin logout?");
+    try {
+      if (confirmLogout) {
+        await LogoutService();
+        toast.success("Succesfully Logout!", {
+          duration: 4000,
+        });
+        setProfile(null);
+        clearAuthData();
+        return router.push("/login");
+      } else {
+        return toast.dismiss();
+      }
+    } finally {
+      setIsProfileMobileClicked(!isProfileMobileClicked);
+    }
   };
 
   useEffect(() => {
@@ -53,9 +76,12 @@ const Header = () => {
         padding: path === "/signup" || path === "/login" ? "py-4" : "py-2",
       }}
     >
-      <Link href="/" className="basis-1/5 flex items-center gap-2 lg:p-2">
-        <Image src="/assets/logo.png" alt="logo" width={32} height={32} />
-        <span className="font-bold text-lg">Communtity</span>
+      <Link href="/" className="basis-1/5 flex items-center">
+        <img
+          className="w-full scale-150 lg:scale-100 lg:w-1/2"
+          src="/assets/dark-logo-full.png"
+          alt="logo"
+        />
       </Link>
 
       {/* sembunyikan ini di tampilan mobile */}
@@ -111,7 +137,7 @@ const Header = () => {
                 className="text-lg lg:text-2xl"
                 style={{ color: "#424874" }}
               />
-              <div className="absolute -top-2 md:-top-3 -right-2 w-5 h-5 flex items-center justify-center bg-Yellow text-Navy font-semibold rounded-full text-xs">
+              <div className="absolute -top-2 -right-1 lg:-top-3 lg:-right-2  w-4 h-4 lg:w-5 lg:h-5 flex items-center justify-center bg-Yellow text-Navy font-semibold rounded-full text-xs">
                 1
               </div>
             </div>
@@ -145,7 +171,7 @@ const Header = () => {
           </Link>
         </div>
         {/* PROFILE ICON FOR MOBILE - TOGGLE MENU */}
-        <div className="flex md:hidden items-center">
+        <div className="flex w-full md:hidden items-center justify-end">
           <button
             onClick={() => setIsProfileMobileClicked(!isProfileMobileClicked)}
           >
@@ -171,35 +197,54 @@ const Header = () => {
                   <img
                     src={profile?.profile_picture || "/assets/avatar.png"}
                     alt={profile?.first_name || "avatar"}
-                    className="rounded-full object-cover w-[2rem] h-[2rem] shadow-xl"
+                    className="rounded-full object-cover w-[3rem] h-[3rem] shadow-xl"
                   />
                 </a>
-                <span className="font-semibold">Profile</span>
+                <span className="font-semibold">
+                  {displayName ?? "Please login"}
+                </span>
               </div>
               <nav className="flex flex-col gap-4 w-full p-2">
-                {navMenuItems.map((n) => (
+                {isLogin ? (
+                  <>
+                    {navMenuItems.map((n) => (
+                      <Link
+                        key={n.label}
+                        href={n.href}
+                        onClick={() => setIsProfileMobileClicked(false)}
+                        className="flex items-center gap-4 px-4 py-2"
+                      >
+                        <FontAwesomeIcon
+                          icon={n.icon}
+                          size="sm"
+                          style={{ color: "#424874" }}
+                        />
+                        <span className="text-sm">{n.label}</span>
+                      </Link>
+                    ))}
+                    <button
+                      onClick={handleLogout}
+                      type="submit"
+                      className="flex items-center gap-4 px-4 py-2"
+                    >
+                      <FontAwesomeIcon
+                        icon={faPowerOff}
+                        size="sm"
+                        style={{ color: "#D24545" }}
+                      />
+                      <span className="text-sm text-Red">Logout</span>
+                    </button>
+                  </>
+                ) : (
                   <Link
-                    key={n.label}
-                    href={n.href}
+                    href="/login"
                     onClick={() => setIsProfileMobileClicked(false)}
-                    className="flex items-center gap-4 px-4 py-2"
+                    className="flex items-center gap-4 px-4 py-2 text-gray-500"
                   >
-                    <FontAwesomeIcon
-                      icon={n.icon}
-                      size="sm"
-                      style={{ color: "#424874" }}
-                    />
-                    <span className="text-sm">{n.label}</span>
+                    <FontAwesomeIcon icon={faRightFromBracket} size="sm" />
+                    <span className="text-sm">Login</span>
                   </Link>
-                ))}
-                <Link href={"#"} className="flex items-center gap-4 px-4 py-2">
-                  <FontAwesomeIcon
-                    icon={faRightFromBracket}
-                    size="sm"
-                    style={{ color: "#D24545" }}
-                  />
-                  <span className="text-sm text-Red">Logout</span>
-                </Link>
+                )}
               </nav>
             </div>
           </div>

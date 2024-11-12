@@ -14,6 +14,7 @@ const AuthLoginSuccessCallbackPage: React.FC = () => {
   const callback = searchParams.get("callback");
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(5);
 
   const { isLoading, setIsLoading, isLogin, setIsLogin, setAuthData } =
     useAuth();
@@ -51,22 +52,34 @@ const AuthLoginSuccessCallbackPage: React.FC = () => {
     } finally {
       setIsLoading(false);
       setIsSubmitting(false);
-      router.push("/");
     }
   };
 
   useEffect(() => {
     if (!callback || isSubmitting) return;
-    console.log("use effect test");
 
     setIsSubmitting(true);
     const loginPromise = fetchUserData();
     toast.promise(loginPromise, {
       loading: "Logging in...",
-      success: "🎉 Login successful!",
+      success: "🎉 Login successfull!",
       error: (err: Error) => err.message || "An error occurred",
     });
   }, [callback]);
+
+  useEffect(() => {
+    if (isLogin) {
+      const countdownTimer = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+
+      if (countdown < 1) {
+        router.push("/");
+      }
+
+      return () => clearInterval(countdownTimer);
+    }
+  }, [isLogin, countdown, router]);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -78,7 +91,7 @@ const AuthLoginSuccessCallbackPage: React.FC = () => {
         <div className="text-center">
           <p className="text-xl font-semibold">Verification is complete</p>
           <p className="text-gray-600">
-            You are being redirected to the main page
+            You are being redirected to the main page in {countdown} seconds
           </p>
         </div>
       </div>

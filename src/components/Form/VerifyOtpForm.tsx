@@ -122,7 +122,7 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
           <div className="flex flex-row w-full justify-center items-center text-center gap-2">
             <FontAwesomeIcon
               icon={faEnvelope}
-              className="text-lg text-gray-600"
+              className="hidden lg:block text-lg text-gray-600"
             />
             <p className="text-gray-600 text-center text-sm">
               One Time Password (OTP) has been sent via Email to:
@@ -131,7 +131,7 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
           <span className="font-semibold text-sm">{data?.email}</span>
         </div>
         {/* OTP input fields */}
-        <div className="grid grid-cols-6 gap-x-4 my-6">
+        <div className="grid grid-cols-6 gap-x-2 lg:gap-x-4 my-6">
           {otpValues.map((value, index) => (
             <input
               key={index}
@@ -142,7 +142,7 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 handleOtpChange(e, index)
               }
-              className="rounded-lg bg-gray-100 cursor-text w-14 aspect-square text-center text-lg font-semibold"
+              className="rounded-lg bg-gray-100 cursor-text w-10 lg:w-14 aspect-square text-center text-lg font-semibold"
             />
           ))}
         </div>

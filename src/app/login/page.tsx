@@ -5,6 +5,7 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 import { TBasicLoginUser } from "@/types/user";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -57,7 +58,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto mt-14 bg-gray-100 lg:rounded-3xl">
+    <div className="container mx-auto mt-[3rem] lg:mt-[3.7rem] bg-gray-100 lg:rounded-3xl">
       {isLogin && <LoadingSpinner />}
       <div className="flex justify-center px-6 py-8 lg:py-2">
         <div className="w-full xl:w-3/4 lg:w-11/12 flex shadow-xl rounded-3xl">
@@ -75,20 +76,20 @@ const LoginPage: React.FC = () => {
             />
             <hr className="mb-6 border-t" />
             <div className="text-center">
-              <a
+              <Link
                 className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
                 href="/forgot-password"
               >
                 Forgot Password?
-              </a>
+              </Link>
             </div>
             <div className="text-center">
-              <a
+              <Link
                 className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
                 href="/signup"
               >
                 Don't have an account? Sign up!
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 "use client";
+import { UpdateUserAccountPasswordService } from "@/api/userAccount";
 import SetupNewPasswordForm from "@/components/Form/SetupNewPasswordForm";
-import { TOAuthCallbackResponse, TRegisterUser } from "@/types/user";
-import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
+import { TRegisterUser } from "@/types/user";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 const AuthLoginRedirectSetPasswordPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callback = searchParams.get("callback");
+  const callback = searchParams.get("callback") ?? "";
   const [formData, setFormData] = useState<TRegisterUser>({
     email: "",
     password: "",
@@ -26,30 +26,6 @@ const AuthLoginRedirectSetPasswordPage = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const updatePassword = async () => {
-    const regData = JSON.stringify({
-      email: formData.email,
-      password: formData.password,
-      confirmation_password: formData.confirmation_password,
-    });
-
-    const response = await fetch(
-      `${API_AUTHENTICATION_SERVICE}login/redirect?callback=${callback}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: regData,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to update user data");
-    }
-    return (await response.json()) as TOAuthCallbackResponse;
-  };
-
   const handleSavePasswordClick = async (
     ev?: React.FormEvent<HTMLFormElement>
   ) => {
@@ -57,7 +33,7 @@ const AuthLoginRedirectSetPasswordPage = () => {
     setIsSubmitting(true);
 
     try {
-      const data = await updatePassword();
+      const data = await UpdateUserAccountPasswordService(formData, callback);
       setCountdown(5);
       return data;
     } catch (error) {
@@ -83,7 +59,7 @@ const AuthLoginRedirectSetPasswordPage = () => {
   useEffect(() => {
     if (!callback || !isSubmitting) return;
 
-    const toastPromise = updatePassword();
+    const toastPromise = handleSavePasswordClick();
     toast.promise(toastPromise, {
       loading: "Updating...",
       success: "🎉 Successfully Updated New Password!",
@@ -94,7 +70,7 @@ const AuthLoginRedirectSetPasswordPage = () => {
   return (
     <div className="flex flex-1 mt-12 md:mt-14">
       <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-50 bg-gray-800 bg-opacity-50 px-2 lg:p-0">
-        <div className="relative mx-auto w-full max-w-[800px] bg-white p-8 rounded-lg text-center">
+        <div className="relative mx-auto w-full max-w-[600px] lg:max-w-[800px] bg-white p-8 rounded-lg text-center">
           <FontAwesomeIcon icon={faLock} bounce size="2xl" />
           <h1 className="font-semibold uppercase text-xl mt-4">
             Set your new Password

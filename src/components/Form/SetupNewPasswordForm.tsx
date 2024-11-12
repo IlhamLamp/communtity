@@ -58,7 +58,7 @@ const SetupNewPasswordForm: React.FC<{
   return (
     <form
       onSubmit={handleFormSubmit}
-      className="my-4 flex flex-col gap-2 mx-auto w-3/5"
+      className="my-4 flex flex-col gap-2 mx-auto w-full lg:w-3/5"
     >
       <div id="password">
         <div className="flex gap-2 items-center mb-2">

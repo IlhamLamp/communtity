@@ -3,6 +3,7 @@ import { RegisterUserAccountService } from "@/api/userAccount";
 import RegisterAccountForm from "@/components/Form/RegisterAccountForm";
 import VerifyOtpForm from "@/components/Form/VerifyOtpForm";
 import { TRegisterResponse, TRegisterUser } from "@/types/user";
+import Link from "next/link";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -47,7 +48,7 @@ const SignUpPage: React.FC = () => {
       });
   };
   return (
-    <div className="container mx-auto mt-14 bg-gray-100 lg:rounded-3xl h-auto lg:min-h-[560px]">
+    <div className="container mx-auto mt-[3rem] lg:mt-[3.7rem] bg-gray-100 lg:rounded-3xl h-auto lg:min-h-[560px]">
       <div className="flex justify-center items-center px-6 py-8 lg:py-2">
         <div className="w-full xl:w-3/4 lg:w-11/12 flex shadow-xl rounded-3xl">
           <div
@@ -69,12 +70,12 @@ const SignUpPage: React.FC = () => {
             )}
             <hr className="mb-6 border-t" />
             <div className="text-center">
-              <a
+              <Link
                 className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
                 href="/login"
               >
                 Already have an account? Login!
-              </a>
+              </Link>
             </div>
           </div>
         </div>

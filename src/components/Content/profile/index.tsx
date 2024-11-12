@@ -139,7 +139,6 @@ const ContentProfile: React.FC = () => {
             />
           )}
         </div>
-        <div>asd</div>
       </div>
     </section>
   );
