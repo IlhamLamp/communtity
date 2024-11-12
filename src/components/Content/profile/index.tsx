@@ -85,14 +85,14 @@ const ContentProfile: React.FC = () => {
         <div className="w-[90%] lg:w-[80%] mx-auto lg:px-8 flex flex-col gap-4 justify-center items-center">
           <div className="w-full flex justify-center relative">
             <div id="profileNameRole">
-              <h1 className="text-center text-slate-800 text-4xl">
+              <h1 className="text-center text-slate-800 text-3xl lg:text-4xl">
                 {fullName}
               </h1>
               <h5 className="text-center text-slate-600 text-xl">
                 {profile?.role?.name}
               </h5>
             </div>
-            <div className="absolute -top-2 lg:top-0 right-8 lg:right-0 p-2 cursor-pointer">
+            <div className="absolute -top-5 lg:top-0 right-0 p-2 cursor-pointer">
               <FontAwesomeIcon
                 icon={faPenToSquare}
                 className="text-slate-600 text-xl lg:text-2xl"

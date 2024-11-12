@@ -193,13 +193,18 @@ const Header = () => {
             </button>
             <div className="divide-y divide-slate-300 flex flex-col w-full">
               <div className="flex flex-row items-center gap-4 p-4">
-                <a href="/profile">
+                <Link
+                  href="/profile"
+                  onClick={() =>
+                    setIsProfileMobileClicked(!isProfileMobileClicked)
+                  }
+                >
                   <img
                     src={profile?.profile_picture || "/assets/avatar.png"}
                     alt={profile?.first_name || "avatar"}
                     className="rounded-full object-cover w-[3rem] h-[3rem] shadow-xl"
                   />
-                </a>
+                </Link>
                 <span className="font-semibold">
                   {displayName ?? "Please login"}
                 </span>
