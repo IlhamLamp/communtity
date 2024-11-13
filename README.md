@@ -23,7 +23,7 @@ Are you confused about how to get started?, Welcome to communtity, for everyone 
 - **Upload-Download Service:** Go, Gin, Cloudinary (file storage)
 - **Messaging:** RabbitMQ
 - **Containerization** Docker, Docker Compose
-- **CI/CD:** Jenkins
+- **CI/CD:** Github Actions
 
 ## Installation
 
