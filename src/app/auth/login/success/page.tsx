@@ -11,14 +11,19 @@ import toast from "react-hot-toast";
 
 const AuthLoginSuccessCallbackPage: React.FC = () => {
   const searchParams = useSearchParams();
-  const callback = searchParams.get("callback");
   const router = useRouter();
+  const [callback, setCallback] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(5);
 
   const { isLoading, setIsLoading, isLogin, setIsLogin, setAuthData } =
     useAuth();
   const { refreshProfile } = useProfile();
+
+  useEffect(() => {
+    const paramCallback = searchParams.get("callback") ?? "";
+    setCallback(paramCallback);
+  }, [searchParams]);
 
   const handleUserProfile = async (data: TOAuthUser) => {
     if (data.created) {

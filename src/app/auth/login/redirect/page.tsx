@@ -11,15 +11,20 @@ import toast from "react-hot-toast";
 const AuthLoginRedirectSetPasswordPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callback = searchParams.get("callback") ?? "";
   const [formData, setFormData] = useState<TRegisterUser>({
     email: "",
     password: "",
     confirmation_password: "",
   });
+  const [callback, setCallback] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number | null>(null);
+
+  useEffect(() => {
+    const paramCallback = searchParams.get("callback") ?? "";
+    setCallback(paramCallback);
+  }, [searchParams]);
 
   const handleInputChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = ev.target;
