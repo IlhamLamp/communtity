@@ -33,8 +33,8 @@ const ProjectsRightBar: React.FC = () => {
             Most Viewed
           </h1>
           <div className="flex flex-col mt-4 gap-4">
-            {mostViewedData.map((_) => (
-              <div className="flex items-center justify-between">
+            {mostViewedData.map((index: number) => (
+              <div className="flex items-center justify-between" key={index}>
                 <div className="flex items-center">
                   <img
                     src="/assets/avatar.png"
@@ -59,8 +59,8 @@ const ProjectsRightBar: React.FC = () => {
             Most Searched
           </h1>
           <div className="flex flex-wrap mt-4 gap-2">
-            {mostSearchedData.map((_) => (
-              <div className="group relative inline-flex">
+            {mostSearchedData.map((index: number) => (
+              <div className="group relative inline-flex" key={index}>
                 <div className="absolute transition-all duration-1000 opacity-40 -inset-px bg-gradient-to-r from-[#44BCFF] rounded-full blur-sm group-hover:opacity-80 group-hover:-inset-1 group-hover:duration-200 animate-pulse" />
                 <Link
                   href={"#"}

@@ -4,10 +4,24 @@ import { usePathname } from "next/navigation";
 import { heroIntroCards } from "./data";
 import Link from "next/link";
 
+type TCardItems = {
+  label: string;
+  title: string;
+  link: string;
+};
+
+type TCard = {
+  id: number;
+  path: string;
+  image: string;
+  shadow: string;
+  items: TCardItems[];
+};
+
 const HeroIntroCard: React.FC = () => {
   const pathname = usePathname();
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [currentCard, setCurrentCard] = useState<any | null>(null);
+  const [currentCard, setCurrentCard] = useState<TCard | null>(null);
 
   useEffect(() => {
     const matchedCard = heroIntroCards.find((card) => card.path === pathname);
@@ -62,7 +76,7 @@ const HeroIntroCard: React.FC = () => {
         </div>
       </div>
       <div className="absolute bottom-4 left-1 w-20 flex justify-between">
-        {currentCard.items.map((_: any, index: number) => (
+        {currentCard.items.map((data: TCardItems, index: number) => (
           <button
             key={index}
             onClick={() => changeCard(index)}

@@ -20,6 +20,8 @@ import { useProfile } from "@/context/ProfileContext";
 import FormProfileSocialLink from "./profile-form-info/social-link";
 import { UpdateUserProfileService } from "@/api/profile";
 
+type ItemType = "role" | "tags";
+
 const ProfileInfoModal: React.FC<{
   toggle: () => void;
   onProfileUpdated: () => void;
@@ -44,9 +46,7 @@ const ProfileInfoModal: React.FC<{
     [key: string]: boolean;
   }>({ role: false, tags: false });
   const [visibleItemCount, setVisibleItemCount] = useState<number>(10);
-  const [currentItemType, setCurrentItemType] = useState<"role" | "tags">(
-    "role"
-  );
+  const [currentItemType, setCurrentItemType] = useState<ItemType>("role");
 
   useEffect(() => {
     setProfileData(profile);
@@ -61,7 +61,7 @@ const ProfileInfoModal: React.FC<{
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      let itemsToFilter = currentItemType === "role" ? roles : tags;
+      const itemsToFilter = currentItemType === "role" ? roles : tags;
       const searchValue =
         currentItemType === "role" ? searchTerm.role : searchTerm.tags;
       if (itemsToFilter && searchTerm) {
@@ -167,7 +167,7 @@ const ProfileInfoModal: React.FC<{
 
   const handleSelectItem = (item: TRoleUser | TTag) => {
     if (!profileData) return;
-    const handlers: { [key: string]: (item: any) => void } = {
+    const handlers: { [key in ItemType]: (item: TRoleUser | TTag) => void } = {
       role: (item: TRoleUser) => {
         setProfileData((prevData) => ({
           ...prevData,

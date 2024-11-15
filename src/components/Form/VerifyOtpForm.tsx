@@ -148,7 +148,7 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
         </div>
         <div className="flex justify-center items-center space-x-2 mb-6">
           <p className="text-sm font-medium text-center rounded text-gray-500">
-            Didn't receive code?
+            Didn&apos;t receive code?
           </p>
           <button
             className={`text-sm font-medium text-center rounded ${

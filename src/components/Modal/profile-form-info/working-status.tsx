@@ -141,7 +141,7 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
                   className="cursor-pointer py-2 px-4 text-sm text-blue-600 hover:bg-gray-200"
                 >
                   <FontAwesomeIcon icon={faPlus} size="lg" className="pr-2" />
-                  Add "{searchTerm.role}" as new role
+                  Add &quot;{searchTerm.role}&quot; as new role
                 </li>
               )}
             </ul>
@@ -259,7 +259,7 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
                   className="cursor-pointer py-2 px-4 text-sm text-blue-600 hover:bg-gray-200"
                 >
                   <FontAwesomeIcon icon={faPlus} size="lg" className="pr-2" />
-                  Add "{searchTerm.tags}" as new tag
+                  Add &quot;{searchTerm.tags}&quot; as new tag
                 </li>
               )}
             </ul>

@@ -88,7 +88,7 @@ const LoginPage: React.FC = () => {
                 className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
                 href="/signup"
               >
-                Don't have an account? Sign up!
+                Don&apos;t have an account? Sign up!
               </Link>
             </div>
           </div>

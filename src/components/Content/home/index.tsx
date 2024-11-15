@@ -6,6 +6,22 @@ import { useState } from "react";
 import { workContentData } from "./data";
 import HomepageWorkCard from "@/components/Cards/HomepageWorkCard";
 
+type TWorkContentData = {
+  id: number;
+  company: string;
+  position: string;
+  date: string;
+  location: string;
+  username: string;
+  avatar: string;
+  types: string;
+  duration: string;
+  experience: string;
+  participation: string;
+  bg_color: string;
+  is_saved: boolean;
+};
+
 const ContentHome: React.FC = () => {
   const [selectedDropdown, setSelectedDropdown] = useState<number | null>(null);
   const [resetKey, setResetKey] = useState<number>(0);
@@ -64,7 +80,7 @@ const ContentHome: React.FC = () => {
         <div className="flex lg:hidden w-full"></div>
         <div className="flex w-full items-center">
           <div className="w-full grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {workContentData.map((data: any) => (
+            {workContentData.map((data: TWorkContentData) => (
               <HomepageWorkCard key={data?.id} data={data} />
             ))}
           </div>

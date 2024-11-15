@@ -8,10 +8,20 @@ import { useState } from "react";
 import { filterData } from "./data";
 import ProjectCard from "@/components/Cards/ProjectCard";
 
+type TFilterData = {
+  types: string;
+  tags: { label: string; color: string }[];
+  role: string;
+  location: string;
+  duration: string;
+  participation: string;
+  experience: string;
+};
+
 const ContentProjects: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<any>(filterData);
-  const [visibleProjects, setVisibleProjects] = useState<number>(5); // State to track visible project cards
+  const [filters, setFilters] = useState<TFilterData>(filterData);
+  const [visibleProjects, setVisibleProjects] = useState<number>(5);
   const allProjects = Array(15).fill(null);
 
   const filterCount = Object.values(filters).filter((value) => {
@@ -21,7 +31,7 @@ const ContentProjects: React.FC = () => {
     return value !== "";
   }).length;
 
-  const handleApplyFilters = (newFilters: any) => {
+  const handleApplyFilters = (newFilters: TFilterData) => {
     setFilters(newFilters);
     toggleModal();
   };

@@ -4,7 +4,7 @@ import { heroCategoryGroupData } from "./data";
 type THeroCategoryGroupData = {
   id: number;
   name: string;
-  link: any;
+  link: string;
 };
 
 const HeroCategoryGroup: React.FC = () => {

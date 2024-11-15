@@ -2,8 +2,19 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
+type TOptions = {
+  id: number;
+  name: string;
+};
+
+type THeroFilterData = {
+  id: number;
+  name: string;
+  options: TOptions[];
+};
+
 const HeroFilterBtn: React.FC<{
-  data: any;
+  data: THeroFilterData;
   isOpen: boolean;
   toggleDropdown: () => void;
   resetKey: number;
