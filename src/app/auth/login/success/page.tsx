@@ -4,26 +4,21 @@ import { CreateUserProfileService } from "@/api/profile";
 import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
+import useCallbackParam from "@/hooks/useCallbackParam";
 import { TOAuthUser } from "@/types/user";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const AuthLoginSuccessCallbackPage: React.FC = () => {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const [callback, setCallback] = useState<string>("");
+  const callback = useCallbackParam();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(5);
 
   const { isLoading, setIsLoading, isLogin, setIsLogin, setAuthData } =
     useAuth();
   const { refreshProfile } = useProfile();
-
-  useEffect(() => {
-    const paramCallback = searchParams.get("callback") ?? "";
-    setCallback(paramCallback);
-  }, [searchParams]);
 
   const handleUserProfile = async (data: TOAuthUser) => {
     if (data.created) {
@@ -92,14 +87,16 @@ const AuthLoginSuccessCallbackPage: React.FC = () => {
 
   if (!isLoading && isLogin) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="text-center">
-          <p className="text-xl font-semibold">Verification is complete</p>
-          <p className="text-gray-600">
-            You are being redirected to the main page in {countdown} seconds
-          </p>
+      <Suspense fallback={<LoadingSpinner />}>
+        <div className="flex items-center justify-center h-screen bg-gray-100">
+          <div className="text-center">
+            <p className="text-xl font-semibold">Verification is complete</p>
+            <p className="text-gray-600">
+              You are being redirected to the main page in {countdown} seconds
+            </p>
+          </div>
         </div>
-      </div>
+      </Suspense>
     );
   }
 
