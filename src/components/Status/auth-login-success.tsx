@@ -7,7 +7,7 @@ import { useProfile } from "@/context/ProfileContext";
 import useCallbackParam from "@/hooks/useCallbackParam";
 import { TOAuthUser } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const StatusAuthLoginSuccess: React.FC = () => {
