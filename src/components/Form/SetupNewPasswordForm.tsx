@@ -54,6 +54,12 @@ const SetupNewPasswordForm: React.FC<{
   };
 
   const errors = validate();
+  const disableSaveButton =
+    data.password === "" ||
+    data.confirmation_password === "" ||
+    isSubmitting ||
+    isVerified ||
+    Object.values(errors).some((err) => err !== "");
 
   return (
     <form
@@ -141,12 +147,12 @@ const SetupNewPasswordForm: React.FC<{
       <div className="mb-3 text-center">
         <button
           className={`${
-            isSubmitting || isVerified
+            disableSaveButton
               ? "cursor-not-allowed bg-gray-100"
               : "bg-blue-500 hover:bg-blue-700"
           } w-full px-4 py-2 font-bold text-white rounded-full focus:outline-none focus:shadow-outline`}
           type="submit"
-          disabled={isSubmitting || isVerified}
+          disabled={disableSaveButton}
         >
           {isSubmitting ? "Updating password..." : "Save"}
         </button>

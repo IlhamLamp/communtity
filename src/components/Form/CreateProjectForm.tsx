@@ -6,6 +6,7 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 
@@ -130,7 +131,7 @@ const CreateProjectForm: React.FC = () => {
         const fileURL = URL.createObjectURL(file);
         setPreviewImgSrc(fileURL);
 
-        const imageElement = new Image();
+        const imageElement = new window.Image();
         imageElement.src = fileURL;
         imageElement.onload = () => {
           URL.revokeObjectURL(fileURL);
@@ -233,11 +234,13 @@ const CreateProjectForm: React.FC = () => {
               </h2>
               <div className="flex flex-row space-x-6 items-start">
                 <div className="relative flex-shrink-0 my-2">
-                  <img
+                  <Image
                     id="preview_img"
                     className="h-[7rem] w-[7rem] object-cover rounded-full"
                     src={previewImgSrc}
                     alt="Current profile photo"
+                    width={500}
+                    height={100}
                   />
                   <label
                     htmlFor="img-projects-upload"
@@ -324,11 +327,13 @@ const CreateProjectForm: React.FC = () => {
               </h2>
               <div className="flex flex-row space-x-6 items-start">
                 <div className="relative flex-shrink-0 my-2">
-                  <img
+                  <Image
                     id="preview_img"
                     className="h-[7rem] w-[7rem] object-cover rounded-full"
                     src={previewImgSrc}
                     alt="Current profile photo"
+                    width={500}
+                    height={100}
                   />
                   <label
                     htmlFor="img-projects-upload"
@@ -589,6 +594,8 @@ const CreateProjectForm: React.FC = () => {
                     className="h-[7rem] w-[7rem] object-cover rounded-full"
                     src={previewImgSrc}
                     alt="Current profile photo"
+                    width={500}
+                    height={100}
                   />
                   <label
                     htmlFor="img-projects-upload"

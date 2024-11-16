@@ -1,23 +1,16 @@
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-
-let cache: string | null = null;
-let promise: Promise<void> | null = null;
 
 const useCallbackParam = (): string => {
   const searchParams = useSearchParams();
+  const [callback, setCallback] = useState<string>("");
 
-  if (cache) return cache;
+  useEffect(() => {
+    const param = searchParams.get("callback") ?? "";
+    setCallback(param);
+  }, [searchParams]);
 
-  if (!promise) {
-    promise = new Promise<void>((resolve) => {
-      setTimeout(() => {
-        cache = searchParams.get("callback") ?? "";
-        resolve();
-      }, 500);
-    });
-  }
-
-  throw promise;
+  return callback;
 };
 
 export default useCallbackParam;

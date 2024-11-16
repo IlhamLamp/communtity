@@ -1,5 +1,6 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 
 const ProjectsRightBar: React.FC = () => {
@@ -33,13 +34,15 @@ const ProjectsRightBar: React.FC = () => {
             Most Viewed
           </h1>
           <div className="flex flex-col mt-4 gap-4">
-            {mostViewedData.map((index: number) => (
+            {mostViewedData.map((_: any, index: number) => (
               <div className="flex items-center justify-between" key={index}>
                 <div className="flex items-center">
-                  <img
+                  <Image
                     src="/assets/avatar.png"
                     alt="avatar"
                     className="rounded-full w-10 h-10"
+                    width={200}
+                    height={200}
                   />
                   <div className="ml-4">
                     <h3 className="text-white text-sm font-semibold">Role</h3>
@@ -59,7 +62,7 @@ const ProjectsRightBar: React.FC = () => {
             Most Searched
           </h1>
           <div className="flex flex-wrap mt-4 gap-2">
-            {mostSearchedData.map((index: number) => (
+            {mostSearchedData.map((_: any, index: number) => (
               <div className="group relative inline-flex" key={index}>
                 <div className="absolute transition-all duration-1000 opacity-40 -inset-px bg-gradient-to-r from-[#44BCFF] rounded-full blur-sm group-hover:opacity-80 group-hover:-inset-1 group-hover:duration-200 animate-pulse" />
                 <Link

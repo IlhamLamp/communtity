@@ -15,6 +15,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
 import { LogoutService } from "@/api/authentication";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const Header = () => {
   const router = useRouter();
@@ -77,10 +78,12 @@ const Header = () => {
       }}
     >
       <Link href="/" className="basis-1/5 flex items-center">
-        <img
+        <Image
           className="w-full scale-150 lg:scale-100 lg:w-1/2"
           src="/assets/dark-logo-full.png"
           alt="logo"
+          width={200}
+          height={100}
         />
       </Link>
 
@@ -163,10 +166,12 @@ const Header = () => {
         )}
         <div className="hidden md:block md:flex-shrink-0 ml-2 cursor-pointer">
           <Link href={"/profile"}>
-            <img
+            <Image
               src={profile?.profile_picture || "/assets/avatar.png"}
               alt={profile?.first_name || "avatar"}
               className="rounded-full object-cover w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] shadow-xl"
+              width={200}
+              height={100}
             />
           </Link>
         </div>
@@ -175,10 +180,12 @@ const Header = () => {
           <button
             onClick={() => setIsProfileMobileClicked(!isProfileMobileClicked)}
           >
-            <img
+            <Image
               src={profile?.profile_picture || "/assets/avatar.png"}
               alt={profile?.first_name || "avatar"}
               className="rounded-full object-cover w-[2rem] h-[2rem] shadow-xl"
+              width={200}
+              height={100}
             />
           </button>
         </div>
@@ -199,10 +206,12 @@ const Header = () => {
                     setIsProfileMobileClicked(!isProfileMobileClicked)
                   }
                 >
-                  <img
+                  <Image
                     src={profile?.profile_picture || "/assets/avatar.png"}
                     alt={profile?.first_name || "avatar"}
                     className="rounded-full object-cover w-[3rem] h-[3rem] shadow-xl"
+                    width={200}
+                    height={100}
                   />
                 </Link>
                 <span className="font-semibold">

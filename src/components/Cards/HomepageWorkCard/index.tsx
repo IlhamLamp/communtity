@@ -1,5 +1,6 @@
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 const HomepageWorkCard: React.FC<{ data: any }> = ({ data }) => {
   return (
@@ -25,11 +26,11 @@ const HomepageWorkCard: React.FC<{ data: any }> = ({ data }) => {
             </h3>
           </div>
           <div className="basis-1/3 flex mx-auto justify-end">
-            <img
+            <Image
               src="/assets/avatar.png"
               className="rounded-full"
-              width="50px"
-              height="10px"
+              width={50}
+              height={10}
               alt="test"
             />
           </div>

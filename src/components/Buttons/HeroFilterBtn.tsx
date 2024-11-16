@@ -23,7 +23,7 @@ const HeroFilterBtn: React.FC<{
 
   useEffect(() => {
     setSelectedOption(data?.name);
-  }, [resetKey]);
+  }, [resetKey, data]);
 
   const handleOptionClick = (optionName: string) => {
     setSelectedOption(optionName);

@@ -7,8 +7,9 @@ import { usePublicResource } from "@/context/PublicContext";
 import { TProfileModalState } from "@/types/profile";
 import { faCamera, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProfileImageModal from "@/components/Modal/ProfileImageModal";
+import Image from "next/image";
 
 const ContentProfile: React.FC = () => {
   const { profile, refreshProfile, isLoading } = useProfile();
@@ -18,10 +19,14 @@ const ContentProfile: React.FC = () => {
     profilePicture: false,
     profileCover: false,
   });
+  const hasFetchedProfile = useRef<boolean>(false);
 
   useEffect(() => {
-    refreshProfile();
-  }, []);
+    if (!hasFetchedProfile.current) {
+      refreshProfile();
+      hasFetchedProfile.current = true;
+    }
+  }, [refreshProfile]);
 
   const fullName =
     profile?.first_name && profile?.last_name
@@ -51,10 +56,12 @@ const ContentProfile: React.FC = () => {
       <div className="w-full mx-auto">
         {/* COVER */}
         <div className="w-full mx-auto relative">
-          <img
+          <Image
             src={profile?.profile_cover || "/assets/cover.jpg"}
             alt="User Cover"
             className="w-full h-[10rem] lg:h-[14rem]"
+            width={1000}
+            height={160}
           />
           <div className="absolute right-4 bottom-4 cursor-pointer bg-black bg-opacity-20 rounded-full p-2">
             <FontAwesomeIcon
@@ -67,10 +74,12 @@ const ContentProfile: React.FC = () => {
         {/* PROFILE */}
         <div className="w-full mx-auto h-[5rem] flex justify-center">
           <div className="relative">
-            <img
+            <Image
               src={profile?.profile_picture || "/assets/avatar.png"}
               alt="User Profile"
               className="rounded-full object-cover w-[8rem] h-[8rem] bottom-[4rem] lg:w-[10rem] lg:h-[10rem] lg:bottom-[6rem] border-2 border-Navy shadow-xl relative"
+              width={500}
+              height={128}
             />
             <div className="absolute top-4 right-0 cursor-pointer bg-black bg-opacity-50 rounded-full p-2">
               <FontAwesomeIcon

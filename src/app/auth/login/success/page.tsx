@@ -5,9 +5,11 @@ import StatusAuthLoginSuccess from "@/components/Status/auth-login-success";
 import { Suspense } from "react";
 
 const AuthLoginSuccessCallbackPage = () => {
-  <Suspense fallback={<LoadingSpinner />}>
-    <StatusAuthLoginSuccess />
-  </Suspense>;
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <StatusAuthLoginSuccess />
+    </Suspense>
+  );
 };
 
 export default AuthLoginSuccessCallbackPage;

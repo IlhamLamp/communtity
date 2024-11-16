@@ -1,5 +1,6 @@
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 
 const ProjectCard: React.FC = () => {
@@ -8,8 +9,9 @@ const ProjectCard: React.FC = () => {
       <div className="flex flex-row gap-4 lg:gap-6 items-center">
         <div className="w-[20%] lg:w-[15%] items-center">
           <div className="flex bg-gray-500 bg-opacity-30 rounded-lg justify-center p-2">
-            <img
+            <Image
               src="/assets/avatar.png"
+              alt="avatar"
               className="rounded-full w-20 h-10 lg:h-20"
               width={32}
               height={32}

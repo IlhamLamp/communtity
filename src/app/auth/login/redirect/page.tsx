@@ -5,9 +5,11 @@ import LoadingSpinner from "@/components/Loading/LoadingSpinner";
 import { Suspense } from "react";
 
 const AuthLoginRedirectSetPasswordPage = () => {
-  <Suspense fallback={<LoadingSpinner />}>
-    <ContentResetPassword />
-  </Suspense>;
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <ContentResetPassword />
+    </Suspense>
+  );
 };
 
 export default AuthLoginRedirectSetPasswordPage;

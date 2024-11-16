@@ -54,7 +54,7 @@ const ContentResetPassword = () => {
     } else {
       router.push(`/auth/login/success?callback=${callback}`);
     }
-  }, [countdown]);
+  }, [countdown, callback, router]);
 
   useEffect(() => {
     if (!callback || !isSubmitting) return;
@@ -65,7 +65,7 @@ const ContentResetPassword = () => {
       success: "🎉 Successfully Updated New Password!",
       error: "An error occurred while updating the password",
     });
-  }, [callback, isSubmitting]);
+  }, [callback, isSubmitting, handleSavePasswordClick]);
 
   return (
     <div className="flex flex-1 mt-12 md:mt-14">

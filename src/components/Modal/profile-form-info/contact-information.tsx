@@ -31,7 +31,7 @@ const FormProfileContactInformation: React.FC<{
     };
   };
 
-  const validateUsername = async (username: string) => {
+  const validateUsername = useCallback(async (username: string) => {
     if (!username || username === "") {
       console.error("Username can't be empty");
       setIsUsernameAvailable(false);
@@ -46,13 +46,13 @@ const FormProfileContactInformation: React.FC<{
         setIsUsernameAvailable(true);
       }
     } catch (error) {
-      console.error("An error occurred while validate username profile");
+      console.error("An error occurred while validating username profile");
     }
-  };
+  }, []);
 
   const debouncedValidateUsername = useCallback(
     debounce(validateUsername, 500),
-    []
+    [validateUsername]
   );
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

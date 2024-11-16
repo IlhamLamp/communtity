@@ -4,6 +4,7 @@ import { useProfile } from "@/context/ProfileContext";
 import { TProfileUpdateResponse, TProfileUser } from "@/types/profile";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -92,7 +93,7 @@ const ProfileImageModal: React.FC<{
         </button>
         <div className="max-h-[70vh] overflow-y-auto pr-2">
           <div className="w-full mx-auto flex justify-center">
-            <img
+            <Image
               src={
                 type === "profile_picture"
                   ? profileData?.profile_picture || "/assets/avatar.png"
@@ -106,6 +107,8 @@ const ProfileImageModal: React.FC<{
                   ? "w-[8rem] h-[8rem] lg:w-1/2 lg:h-[20rem]"
                   : "w-full h-[20rem] lg:h-[30rem]"
               }`}
+              width={1000}
+              height={500}
             />
           </div>
         </div>
