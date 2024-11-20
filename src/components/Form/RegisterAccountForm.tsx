@@ -178,12 +178,12 @@ const RegisterAccountForm: React.FC<{
       <div className="mb-3 text-center">
         <button
           className={`${
-            isSubmitting
+            disableRegisterButton
               ? "cursor-not-allowed bg-gray-100"
               : "bg-blue-500 hover:bg-blue-700"
           } w-full px-4 py-2 font-bold text-white rounded-full focus:outline-none focus:shadow-outline`}
           type="submit"
-          disabled={isSubmitting}
+          disabled={disableRegisterButton}
         >
           {isSubmitting ? "Registering..." : "Register Account"}
         </button>

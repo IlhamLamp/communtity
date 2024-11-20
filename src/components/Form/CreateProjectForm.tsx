@@ -589,7 +589,7 @@ const CreateProjectForm: React.FC = () => {
               </h2>
               <div className="flex flex-row space-x-6 items-start">
                 <div className="relative flex-shrink-0 my-2">
-                  <img
+                  <Image
                     id="preview_img"
                     className="h-[7rem] w-[7rem] object-cover rounded-full"
                     src={previewImgSrc}
