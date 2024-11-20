@@ -4,7 +4,7 @@ export const validateRegInput = (data: TRegisterUser): TRegisterUser => {
   return {
     email: data?.email?.includes("@") ? "" : "Invalid email address",
     password:
-      data?.password && data.password.length < 8
+      data?.password && data.password.length >= 8
         ? ""
         : "Password must be at least 8 characters",
     confirmation_password:
