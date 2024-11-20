@@ -1,3 +1,4 @@
+import { validateRegInput } from "@/helpers/validateRegInput";
 import { TRegisterUser } from "@/types/user";
 import {
   faEye,
@@ -6,7 +7,7 @@ import {
   faShieldHalved,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SetupNewPasswordForm: React.FC<{
   data: TRegisterUser;
@@ -23,10 +24,14 @@ const SetupNewPasswordForm: React.FC<{
     confirmation_password: false,
   });
 
-  const [errors, setErrors] = useState<{
-    password: string;
-    confirmation_password: string;
-  }>({ password: "", confirmation_password: "" });
+  const [errors, setErrors] = useState<TRegisterUser>({
+    password: "",
+    confirmation_password: "",
+  });
+
+  useEffect(() => {
+    setErrors(validateRegInput(data, ["password", "confirmation_password"]));
+  }, [data]);
 
   const toggleShowPassword = (
     ev: React.MouseEvent<HTMLButtonElement>,
@@ -36,32 +41,23 @@ const SetupNewPasswordForm: React.FC<{
     setShowInputField((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-  const validate = () => {
-    const newErrors = {
-      password:
-        data?.password && data.password.length < 8
-          ? "Password must be at least 8 characters"
-          : "",
-      confirmation_password:
-        data?.password !== data.confirmation_password
-          ? "Passwords do not match"
-          : "",
-    };
+  const validate = (): boolean => {
+    const newErrors = validateRegInput(data, [
+      "password",
+      "confirmation_password",
+    ]);
     setErrors(newErrors);
-    return newErrors;
+    return Object.values(newErrors).every((err) => !err);
   };
 
   const handleFormSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    const currentErrors = validate();
-    if (!Object.values(currentErrors).some((error) => error !== "")) {
+    if (validate()) {
       handleSavePassword(ev);
     }
   };
 
   const disableSaveButton =
-    data.password === "" ||
-    data.confirmation_password === "" ||
     isSubmitting ||
     isVerified ||
     Object.values(errors).some((err) => err !== "");
