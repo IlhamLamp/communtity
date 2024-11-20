@@ -6,8 +6,9 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OauthLoginBtn from "../Buttons/OauthLoginBtn";
+import { validateRegInput } from "@/helpers/validateRegInput";
 
 const RegisterAccountForm: React.FC<{
   data: TRegisterUser;
@@ -25,6 +26,10 @@ const RegisterAccountForm: React.FC<{
   }>({ password: false, confirmation_password: false });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  useEffect(() => {
+    setErrors(validateRegInput(data));
+  }, [data]);
+
   const toggleShowPassword = (
     ev: React.MouseEvent<HTMLButtonElement>,
     field: "password" | "confirmation_password"
@@ -34,27 +39,13 @@ const RegisterAccountForm: React.FC<{
   };
 
   const validate = (): boolean => {
-    const newErrors: TRegisterUser = {
-      email: data?.email?.includes("@") ? "" : "Invalid email address",
-      password:
-        data?.password && data.password.length >= 8
-          ? ""
-          : "Password must be at least 8 characters",
-      confirmation_password:
-        data.password === data.confirmation_password
-          ? ""
-          : "Passwords do not match",
-    };
-
+    const newErrors = validateRegInput(data);
     setErrors(newErrors);
-    return !Object.values(newErrors).some((err) => err !== "");
+    return Object.values(newErrors).every((err) => !err);
   };
 
   const disableRegisterButton =
-    Object.values(errors).some((err) => err !== "") ||
-    !data.email ||
-    !data.password ||
-    !data.confirmation_password;
+    Object.values(errors).some((err) => err) || isSubmitting;
 
   const handleFormSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
