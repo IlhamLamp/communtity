@@ -1,6 +1,7 @@
+import { ResendOTPService, VerifyOTPService } from "@/api/otp";
 import { CreateUserProfileService } from "@/api/profile";
-import { TRegisterResponse, TRegisterUser } from "@/types/user";
-import { API_AUTHENTICATION_SERVICE } from "@/utils/constant";
+import { TOTPResponse } from "@/types/otp";
+import { TRegisterUser } from "@/types/user";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
@@ -50,32 +51,19 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
     const otp_code = otpValues.join("");
     if (!data || otp_code.length !== 6) return;
 
-    const verifyOtpPromise = fetch(`${API_AUTHENTICATION_SERVICE}verify`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        id: data.id,
-        email: data.email,
-        otp_code,
-      }),
-    }).then(async (response) => {
-      const responseData: TRegisterResponse = await response.json();
-      if (!response.ok) {
-        return Promise.reject(responseData.message);
-        // throw new Error(responseData.message);
+    const verifyOtpPromise = VerifyOTPService(data, otp_code).then(
+      async (response) => {
+        await CreateUserProfileService(data);
+        return response;
       }
-      await CreateUserProfileService(data);
-      return responseData;
-    });
+    );
 
     toast
       .promise(verifyOtpPromise, {
         loading: "Verifying OTP...",
         success:
           "🎉 OTP verified successfully! redirects to the login page within 5 seconds",
-        error: (err: TRegisterResponse) => err.message || "invalid otp",
+        error: (err: TOTPResponse) => err.message || "invalid otp",
       })
       .then(() => {
         setIsVerified(true);
@@ -89,27 +77,12 @@ const VerifyOtpForm: React.FC<{ data: TRegisterUser }> = ({ data }) => {
     setIsRequestOtpDisabled(true);
     setTimer(30);
 
-    const resendOtpPromise = fetch(`${API_AUTHENTICATION_SERVICE}resend-otp`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        id: data.id,
-        email: data.email,
-      }),
-    }).then(async (response) => {
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to resend OTP.");
-      }
-      return data;
-    });
+    const resendOtpPromise = ResendOTPService(data);
 
     toast.promise(resendOtpPromise, {
       loading: "Resending OTP...",
       success: "🎉 OTP has been resent to your email!",
-      error: (err: TRegisterResponse) => err.message || "Failed to resend OTP.",
+      error: (err: TOTPResponse) => err.message || "Failed to resend OTP.",
     });
   };
 

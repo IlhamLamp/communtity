@@ -23,6 +23,11 @@ const SetupNewPasswordForm: React.FC<{
     confirmation_password: false,
   });
 
+  const [errors, setErrors] = useState<{
+    password: string;
+    confirmation_password: string;
+  }>({ password: "", confirmation_password: "" });
+
   const toggleShowPassword = (
     ev: React.MouseEvent<HTMLButtonElement>,
     field: "password" | "confirmation_password"
@@ -32,7 +37,7 @@ const SetupNewPasswordForm: React.FC<{
   };
 
   const validate = () => {
-    const errors = {
+    const newErrors = {
       password:
         data?.password && data.password.length < 8
           ? "Password must be at least 8 characters"
@@ -42,18 +47,18 @@ const SetupNewPasswordForm: React.FC<{
           ? "Passwords do not match"
           : "",
     };
-    return errors;
+    setErrors(newErrors);
+    return newErrors;
   };
 
   const handleFormSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    const errors = validate();
-    if (!Object.values(errors).some((error) => error !== "")) {
+    const currentErrors = validate();
+    if (!Object.values(currentErrors).some((error) => error !== "")) {
       handleSavePassword(ev);
     }
   };
 
-  const errors = validate();
   const disableSaveButton =
     data.password === "" ||
     data.confirmation_password === "" ||

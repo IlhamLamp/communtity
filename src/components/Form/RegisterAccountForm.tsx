@@ -19,47 +19,54 @@ const RegisterAccountForm: React.FC<{
     password: "",
     confirmation_password: "",
   });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
+  const [showInputField, setShowInputField] = useState<{
+    password: boolean;
+    confirmation_password: boolean;
+  }>({ password: false, confirmation_password: false });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const toggleShowPassword = (ev: React.MouseEvent<HTMLButtonElement>) => {
-    ev.preventDefault();
-    setShowPassword(!showPassword);
-  };
-
-  const toggleShowConfirmPassword = (
-    ev: React.MouseEvent<HTMLButtonElement>
+  const toggleShowPassword = (
+    ev: React.MouseEvent<HTMLButtonElement>,
+    field: "password" | "confirmation_password"
   ) => {
     ev.preventDefault();
-    setShowConfirmPassword(!showConfirmPassword);
+    setShowInputField((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-  const validate = () => {
-    const newErrors = { email: "", password: "", confirmation_password: "" };
-    if (!data.email?.includes("@")) {
-      newErrors.email = "Invalid email address";
-    }
-    if (data?.password && data.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-    if (data.password !== data.confirmation_password) {
-      newErrors.confirmation_password = "Passwords do not match";
-    }
+  const validate = (): boolean => {
+    const newErrors: TRegisterUser = {
+      email: data?.email?.includes("@") ? "" : "Invalid email address",
+      password:
+        data?.password && data.password.length >= 8
+          ? ""
+          : "Password must be at least 8 characters",
+      confirmation_password:
+        data.password === data.confirmation_password
+          ? ""
+          : "Passwords do not match",
+    };
+
     setErrors(newErrors);
-    return Object.values(newErrors).every((error) => error === "");
+    return !Object.values(newErrors).some((err) => err !== "");
   };
 
-  const handleFormSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
+  const disableRegisterButton =
+    Object.values(errors).some((err) => err !== "") ||
+    !data.email ||
+    !data.password ||
+    !data.confirmation_password;
+
+  const handleFormSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    if (validate()) {
-      setIsSubmitting(true);
-      try {
-        handleRegister(ev);
-      } finally {
-        setIsSubmitting(false);
-      }
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    try {
+      await handleRegister(ev);
+    } catch (error) {
+      console.error("Registration failed:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -110,18 +117,18 @@ const RegisterAccountForm: React.FC<{
                 errors.password ? "border-red-500" : "border-gray-100"
               }`}
               id="password"
-              type={showPassword ? "text" : "password"}
+              type={showInputField.password ? "text" : "password"}
               name="password"
               value={data.password}
               onChange={handleInput}
               placeholder="******************"
             />
             <button
-              onClick={toggleShowPassword}
+              onClick={(ev) => toggleShowPassword(ev, "password")}
               className="absolute right-2 top-2 cursor-pointer"
             >
               <FontAwesomeIcon
-                icon={showPassword ? faEyeSlash : faEye}
+                icon={showInputField.password ? faEyeSlash : faEye}
                 className="text-sm text-gray-700"
               />
             </button>
@@ -145,18 +152,18 @@ const RegisterAccountForm: React.FC<{
                   : "border-gray-100"
               }`}
               id="confirmation_password"
-              type={showConfirmPassword ? "text" : "password"}
+              type={showInputField.confirmation_password ? "text" : "password"}
               name="confirmation_password"
               value={data.confirmation_password}
               onChange={handleInput}
               placeholder="******************"
             />
             <button
-              onClick={toggleShowConfirmPassword}
+              onClick={(ev) => toggleShowPassword(ev, "confirmation_password")}
               className="absolute right-2 top-2 cursor-pointer"
             >
               <FontAwesomeIcon
-                icon={showConfirmPassword ? faEyeSlash : faEye}
+                icon={showInputField.confirmation_password ? faEyeSlash : faEye}
                 className="text-sm text-gray-700"
               />
             </button>
