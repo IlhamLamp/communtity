@@ -87,10 +87,12 @@ const StatusAuthLoginSuccess: React.FC = () => {
 
   if (!isLoading && isLogin) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="text-center">
-          <p className="text-xl font-semibold">Verification is complete</p>
-          <p className="text-gray-600">
+      <div className="flex mt-12 md:mt-14 items-center justify-center h-screen bg-gray-100">
+        <div className="text-center px-2 lg:p-0">
+          <p className="text-lg lg:text-xl font-semibold">
+            Verification is complete
+          </p>
+          <p className="text-sm lg:text-md text-gray-600">
             You are being redirected to the main page in {countdown} seconds
           </p>
         </div>
