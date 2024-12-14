@@ -87,7 +87,7 @@ const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
         {isLogin ? (
           <button
             onClick={handleLogout}
-            className={`flex items-center gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-Gray hover:text-Navy ${
+            className={`flex w-full items-center gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-Gray hover:text-Navy ${
               isExpanded ? "justify-start" : "justify-center"
             }`}
           >
@@ -100,7 +100,7 @@ const SideBarMenu: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => {
           <Link
             href={"/login"}
             key={"Login"}
-            className={`flex items-center gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-Gray hover:text-Navy ${
+            className={`flex w-full items-center gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-Gray hover:text-Navy ${
               isExpanded ? "justify-start" : "justify-center"
             }`}
           >

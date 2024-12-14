@@ -15,7 +15,8 @@ export default function HomeLayout({
   const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  const validPath = pathname === "/projects" || pathname === "/group";
+  const validPath =
+    pathname === "/project" || pathname === "/group" || pathname === "/event";
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -53,7 +54,7 @@ export default function HomeLayout({
       {/* RIGHT-BAR */}
       {validPath && (
         <div className="hidden md:block w-[20%] bg-gray-300 fixed top-14 right-0 h-[calc(100%-3.5rem)]">
-          <RightBarMenu />
+          <RightBarMenu path={pathname} />
         </div>
       )}
     </div>

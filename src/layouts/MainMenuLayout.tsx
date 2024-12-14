@@ -1,12 +1,10 @@
 "use client";
-
-import HeroIntroCard from "@/components/Cards/HeroIntroCard";
 import FilterContentModal from "@/components/Modal/FilterContentModal";
 import { faSliders } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { filterData } from "./data";
 import ProjectCard from "@/components/Cards/ProjectCard";
+import HeroIntroCard from "@/components/Cards/HeroIntroCard";
 
 type TFilterData = {
   types: string;
@@ -18,11 +16,19 @@ type TFilterData = {
   experience: string;
 };
 
-const ContentProjects: React.FC = () => {
+type TMainMenuLayoutProps = {
+  filterData: TFilterData;
+  title: string;
+};
+
+const MainMenuLayout: React.FC<TMainMenuLayoutProps> = ({
+  filterData,
+  title,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<TFilterData>(filterData);
-  const [visibleProjects, setVisibleProjects] = useState<number>(5);
-  const allProjects = Array(15).fill(null);
+  const [filters, setFilters] = useState(filterData);
+  const [visibleItemData, setVisibleItemData] = useState<number>(5);
+  const allItemData = Array(15).fill(null);
 
   const filterCount = Object.values(filters).filter((value) => {
     if (Array.isArray(value)) {
@@ -42,7 +48,7 @@ const ContentProjects: React.FC = () => {
 
   const showMoreProjects = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setVisibleProjects((prevVisibleProjects) => prevVisibleProjects + 5);
+    setVisibleItemData((prevVisibleItemData) => prevVisibleItemData + 5);
   };
 
   return (
@@ -52,13 +58,16 @@ const ContentProjects: React.FC = () => {
       </div>
       <div id="mainProjectsContent" className="mt-6">
         <div id="projects" className="w-full">
-          <h1 className="text-white text-2xl font-semibold tracking-wider">
-            YOUR PROJECTS
+          <h1 className="text-white text-2xl font-semibold tracking-wider uppercase">
+            your {title}
           </h1>
           <div className="flex justify-between mt-4">
             <div className="flex flex-row gap-2">
               <button className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none">
                 All
+              </button>
+              <button className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none">
+                Active
               </button>
               <button className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none">
                 Applied
@@ -86,11 +95,11 @@ const ContentProjects: React.FC = () => {
             </div>
           </div>
           <div className="flex flex-col gap-2 mt-4">
-            {allProjects.slice(0, visibleProjects).map((_, index) => (
+            {allItemData.slice(0, visibleItemData).map((_, index) => (
               <ProjectCard key={index} />
             ))}
           </div>
-          {visibleProjects < allProjects.length && (
+          {visibleItemData < allItemData.length && (
             <div className="flex justify-center mt-4">
               <button
                 className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none hover:bg-gray-200"
@@ -113,4 +122,4 @@ const ContentProjects: React.FC = () => {
   );
 };
 
-export default ContentProjects;
+export default MainMenuLayout;

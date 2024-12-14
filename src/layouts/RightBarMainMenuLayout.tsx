@@ -2,13 +2,22 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const ProjectsRightBar: React.FC = () => {
+type TRBarMainMenuLayoutProps = {
+  bgColor: string;
+};
+
+const RightBarMainMenuLayout: React.FC<TRBarMainMenuLayoutProps> = ({
+  bgColor,
+}) => {
+  const path = usePathname();
+
   const mostViewedData = Array(5).fill(null);
   const mostSearchedData = Array(6).fill(null);
 
   return (
-    <div className="bg-Navy h-screen p-4">
+    <div className={`${bgColor} h-screen p-4`}>
       <div className="flex flex-col gap-6">
         {/* CREATE */}
         <div id="createProject">
@@ -19,8 +28,8 @@ const ProjectsRightBar: React.FC = () => {
             <div className="relative inline-flex group w-full justify-center">
               <div className="absolute transition-all duration-1000 opacity-40 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-lg blur-lg group-hover:opacity-80 group-hover:-inset-1 group-hover:duration-200 animate-pulse" />
               <Link
-                href={"/projects/create/"}
-                className="relative flex gap-2 w-full items-center justify-center px-4 py-2 text-sm bg-black opacity-20 text-gray-300 hover:text-gray-100 hover:opacity-70 transition-all duration-200 rounded-lg ease-linear"
+                href={path + "/create"}
+                className="relative flex gap-2 w-full items-center justify-center px-4 py-2 text-sm bg-slate-800 opacity-70 text-gray-300 hover:text-gray-100 hover:opacity-20 transition-all duration-200 rounded-lg ease-linear"
               >
                 <span>Create</span>
                 <FontAwesomeIcon icon={faPlus} />
@@ -81,4 +90,4 @@ const ProjectsRightBar: React.FC = () => {
   );
 };
 
-export default ProjectsRightBar;
+export default RightBarMainMenuLayout;

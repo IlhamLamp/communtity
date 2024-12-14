@@ -12,6 +12,7 @@ const config: Config = {
       colors: {
         Purple: "#DCD6F7",
         PurpleLight: "#F4EEFF",
+        PurpleDark: "#640D5F",
         NavyLight: "#A6B1E1",
         Navy: "#424874",
         Yellow: "#FAE27C",
@@ -24,7 +25,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [
-  ],
+  plugins: [],
 };
 export default config;

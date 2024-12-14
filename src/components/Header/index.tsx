@@ -98,7 +98,7 @@ const Header = () => {
                 key={n.label}
                 href={n.href}
                 className={`w-1/5 flex justify-center p-4 border-b-[6px] ${
-                  isActive ? "border-Navy" : "border-transparent"
+                  isActive ? n.borderColor : "border-transparent"
                 }`}
               >
                 <FontAwesomeIcon

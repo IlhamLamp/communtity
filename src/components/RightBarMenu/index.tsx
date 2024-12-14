@@ -1,29 +1,16 @@
-'use client';
+import RightBarMainMenuLayout from "@/layouts/RightBarMainMenuLayout";
 
-import { usePathname } from "next/navigation";
-import ProjectsRightBar from "../Content/projects/right-bar";
-
-const RightBarMenu: React.FC = () => {
-  const path = usePathname();
-  
-  const WhichLayout = () => {
-    switch (path) {
-      case '/projects':
-        return <ProjectsRightBar />;
-      case '/community':
-        return 'Community';
-      case '/group':
-        return 'Group';
-      default:
-        break;
-    }
+const RightBarMenu: React.FC<{ path: string }> = ({ path }) => {
+  switch (path) {
+    case "/project":
+      return <RightBarMainMenuLayout bgColor="bg-Navy" />;
+    case "/group":
+      return <RightBarMainMenuLayout bgColor="bg-PurpleDark" />;
+    case "/event":
+      return <RightBarMainMenuLayout bgColor="bg-yellow-600" />;
+    default:
+      break;
   }
-
-  return (
-    <div>
-        <WhichLayout />
-    </div>
-  )
-}
+};
 
 export default RightBarMenu;

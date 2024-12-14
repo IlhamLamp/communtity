@@ -45,6 +45,8 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     const token = localStorage.getItem("access_token");
     if (token) {
       refreshProfile();
+    } else {
+      setProfile(null);
     }
   }, []);
 

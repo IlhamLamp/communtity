@@ -10,20 +10,24 @@ export const navMenuItems = [
     icon: faHouse,
     label: "Home",
     href: "/",
+    borderColor: "border-Navy",
   },
   {
     icon: faBriefcase,
-    label: "Projects",
-    href: "/projects",
+    label: "Project",
+    href: "/project",
+    borderColor: "border-Navy",
   },
   {
     icon: faPeopleRoof,
     label: "Group",
     href: "/group",
+    borderColor: "border-PurpleDark",
   },
   {
     icon: faHandHoldingHeart,
-    label: "Events",
-    href: "/events",
+    label: "Event",
+    href: "/event",
+    borderColor: "border-PurpleDark",
   },
 ];

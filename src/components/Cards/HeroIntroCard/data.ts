@@ -1,7 +1,7 @@
 export const heroIntroCards = [
   {
     id: 1,
-    path: "/projects",
+    path: "/project",
     image: "/assets/projects-hero.jpg",
     shadow: "shadow-blue-300",
     items: [

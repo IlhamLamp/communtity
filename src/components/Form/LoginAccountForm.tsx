@@ -22,7 +22,7 @@ const LoginAccountForm: React.FC<{
     setShowPassword(!showPassword);
   };
 
-  const handleFromSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
 
     if (!data.email || !data.password) {
@@ -31,7 +31,7 @@ const LoginAccountForm: React.FC<{
     handleLogin(ev);
   };
   return (
-    <form className="px-8 py-6 bg-white rounded" onSubmit={handleFromSubmit}>
+    <form className="px-8 py-6 bg-white rounded" onSubmit={handleFormSubmit}>
       <div className="mb-4">
         <div className="flex gap-2 items-center mb-2">
           <FontAwesomeIcon icon={faAt} />
@@ -78,6 +78,11 @@ const LoginAccountForm: React.FC<{
             name="password"
             value={data.password}
             onChange={handleInput}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleFormSubmit(e as any);
+              }
+            }}
             placeholder="******************"
           />
           <button
