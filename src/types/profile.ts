@@ -61,7 +61,6 @@ export type TProfileModalState = {
 };
 
 // RESPONSE
-
 export type TProfileLoggedInResponse = {
   status: any;
   message: string;

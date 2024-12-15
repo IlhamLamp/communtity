@@ -1,5 +1,5 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
-import CreateProjectForm from "@/components/Form/CreateProjectForm";
+import MainMenuEditableForm from "@/components/Form/MainMenuEditableForm";
 
 const CreateProjectsPage: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const CreateProjectsPage: React.FC = () => {
         <Breadcrumbs />
       </div>
       <div id="createProjectsContent" className="mx-8">
-        <CreateProjectForm />
+        <MainMenuEditableForm />
       </div>
     </section>
   );
