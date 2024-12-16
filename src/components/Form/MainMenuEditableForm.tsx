@@ -533,15 +533,15 @@ const MainMenuEditableForm: React.FC = () => {
                                 className="border rounded-md w-full p-2"
                                 placeholder="Enter member role"
                                 value={member.role_id}
-                                onChange={(
-                                  e: React.FormEvent<HTMLInputElement>
-                                ) =>
-                                  updatedMember(
-                                    index,
-                                    "role",
-                                    (e.target as HTMLInputElement).value
-                                  )
-                                }
+                                // onChange={(
+                                //   e: React.FormEvent<HTMLInputElement>
+                                // ) =>
+                                //   updatedMember(
+                                //     index,
+                                //     "role",
+                                //     (e.target as HTMLInputElement).value
+                                //   )
+                                // }
                               />
                             </div>
                             <div className="w-full">
@@ -549,15 +549,7 @@ const MainMenuEditableForm: React.FC = () => {
                               <select
                                 className="cursor-pointer border rounded-md w-full p-2"
                                 value={member.experience}
-                                onChange={(
-                                  e: React.FormEvent<HTMLSelectElement>
-                                ) =>
-                                  updatedMember(
-                                    index,
-                                    "experience",
-                                    (e.target as HTMLSelectElement).value
-                                  )
-                                }
+                                //
                               >
                                 <option value="no_experience" selected>
                                   No Experience
