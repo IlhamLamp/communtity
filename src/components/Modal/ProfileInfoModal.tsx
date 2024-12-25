@@ -1,6 +1,4 @@
-import { usePublicResource } from "@/context/PublicContext";
 import {
-  TAddress,
   TAddressFieldInputProfile,
   TExperience,
   TProfileUpdateResponse,
@@ -19,6 +17,7 @@ import toast from "react-hot-toast";
 import { useProfile } from "@/context/ProfileContext";
 import FormProfileSocialLink from "./profile-form-info/social-link";
 import { UpdateUserProfileService } from "@/api/profile";
+import { useFilter } from "@/context/FilterContext";
 
 type ItemType = "role" | "tags";
 
@@ -28,25 +27,19 @@ const ProfileInfoModal: React.FC<{
 }> = ({ toggle, onProfileUpdated }) => {
   const { profile } = useProfile();
   const [profileData, setProfileData] = useState<TProfileUser | null>(profile);
-  const { roles, tags } = usePublicResource();
 
-  // shared-state
-  const [searchTerm, setSearchTerm] = useState<{
-    role: string;
-    tags: string;
-  }>({
-    role: "",
-    tags: "",
-  });
-
-  const [filteredItems, setFilteredItems] = useState<
-    TRoleUser[] | TTag[] | null
-  >(null);
-  const [isInputFocused, setIsInputFocused] = useState<{
-    [key: string]: boolean;
-  }>({ role: false, tags: false });
-  const [visibleItemCount, setVisibleItemCount] = useState<number>(10);
-  const [currentItemType, setCurrentItemType] = useState<ItemType>("role");
+  const {
+    currentItemType,
+    setCurrentItemType,
+    searchTerm,
+    setSearchTerm,
+    filteredItems,
+    setFilteredItems,
+    isInputFocused,
+    setIsInputFocused,
+    visibleItemCount,
+    setVisibleItemCount,
+  } = useFilter();
 
   useEffect(() => {
     setProfileData(profile);
@@ -59,25 +52,23 @@ const ProfileInfoModal: React.FC<{
     }));
   }, [profileData]);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      const itemsToFilter = currentItemType === "role" ? roles : tags;
-      const searchValue =
-        currentItemType === "role" ? searchTerm.role : searchTerm.tags;
-      if (itemsToFilter && searchTerm) {
-        const filtered = itemsToFilter.filter((item) =>
-          item.name?.toLowerCase().includes(searchValue.toLowerCase())
-        );
-        setFilteredItems(filtered);
-      } else {
-        setFilteredItems(itemsToFilter || []);
-      }
-    }, 300);
+  const updateProfileData = (field: keyof TProfileUser, value: any) => {
+    setProfileData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchTerm, currentItemType, roles, tags]);
+  const updateNestedField = (field: string, value: any) => {
+    const [mainField, subField] = field.split(".");
+    setProfileData((prevData) => ({
+      ...prevData,
+      [mainField]: {
+        ...(prevData?.[mainField as keyof TProfileUser] as any),
+        [subField]: subField === "zip_code" ? Number(value) : value,
+      },
+    }));
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -100,26 +91,13 @@ const ProfileInfoModal: React.FC<{
       }));
     };
 
-    const updateAddressField = (addressField: keyof TAddress) => {
-      setProfileData((prevData) => ({
-        ...prevData,
-        address: {
-          ...prevData?.address,
-          [addressField]: addressField === "zip_code" ? Number(value) : value,
-        },
-      }));
-    };
-
     const updateExperienceField = () => {
       const experienceOptions: Record<string, TExperience> = {
         no_experience: { value: "no_experience", label: "No Experience" },
         less_than_year: { value: "less_than_year", label: "< 1 year" },
         more_than_year: { value: "more_than_year", label: "> 1 year" },
       };
-      setProfileData((prevData) => ({
-        ...prevData,
-        experience: experienceOptions[value],
-      }));
+      updateProfileData("experience", experienceOptions[value]);
     };
 
     setSearchTerm((prev) => ({
@@ -140,27 +118,19 @@ const ProfileInfoModal: React.FC<{
         setCurrentItemType("tags");
         break;
       case "birthday":
-        const dateValue = new Date(value);
-        setProfileData((prevData) => ({
-          ...prevData,
-          [field]: dateValue,
-        }));
+        updateProfileData(field, new Date(value));
         break;
       case "address.street":
       case "address.city":
       case "address.state":
       case "address.zip_code":
-        const addressField = field.split(".")[1];
-        updateAddressField(addressField as keyof TAddress);
+        updateNestedField(field, value);
         break;
       case "experience":
         updateExperienceField();
         break;
       default:
-        setProfileData((prevData) => ({
-          ...prevData,
-          [field as keyof TProfileUser]: value,
-        }));
+        updateProfileData(field as keyof TProfileUser, value);
         break;
     }
   };
@@ -168,19 +138,11 @@ const ProfileInfoModal: React.FC<{
   const handleSelectItem = (item: TRoleUser | TTag) => {
     if (!profileData) return;
     const handlers: { [key in ItemType]: (item: TRoleUser | TTag) => void } = {
-      role: (item: TRoleUser) => {
-        setProfileData((prevData) => ({
-          ...prevData,
-          role: item,
-        }));
-      },
+      role: (item: TRoleUser) => updateProfileData("role", item),
       tags: (item: TTag) => {
         const isTagExist = profileData.tags?.find((t) => t.name === item.name);
         if (!isTagExist) {
-          setProfileData((prevData) => ({
-            ...prevData,
-            tags: [...(prevData?.tags || []), item],
-          }));
+          updateProfileData("tags", [...(profileData?.tags || []), item]);
         } else {
           return alert("You have already added");
         }
