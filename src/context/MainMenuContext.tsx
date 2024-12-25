@@ -1,21 +1,33 @@
 import { ProjectDefaultData } from "@/data/project.default";
 import { TProjectMemberFieldInput, TProjects } from "@/types/project";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { usePublicResource } from "./PublicContext";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import { TAddress, TAddressFieldInputProfile } from "@/types/profile";
-import { TRoleUser } from "@/types/role";
-import { TTag } from "@/types/tag";
+import { useFilter } from "./FilterContext";
 
 type ItemDataType = TProjects;
-type PublicItemType = "role" | "tags";
 
 interface MainMenuContextProps {
-  loadFileImg: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleDurationDate: (date: Date | null, field: string) => void;
-  previewImgSrc: string;
-  setPreviewImgSrc: React.Dispatch<React.SetStateAction<string>>;
   itemData: ItemDataType;
   setItemData: React.Dispatch<React.SetStateAction<ItemDataType>>;
+  previewImgSrc: string;
+  setPreviewImgSrc: React.Dispatch<React.SetStateAction<string>>;
+  loadFileImg: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleDurationDate: (
+    date: Date | null,
+    field: "start_date" | "end_date"
+  ) => void;
+  handleSelectionApproval: (value: "yes" | "no") => void;
+  handleAddMember: () => void;
+  handleDeleteMember: (index: number) => void;
+  handleInputChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+    field:
+      | keyof TProjects
+      | TAddressFieldInputProfile
+      | TProjectMemberFieldInput
+  ) => void;
 }
 
 const MainMenuContext = createContext<MainMenuContextProps | undefined>(
@@ -25,49 +37,11 @@ const MainMenuContext = createContext<MainMenuContextProps | undefined>(
 export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // context
-  const { roles, tags } = usePublicResource();
+  const { setSearchTerm } = useFilter();
 
-  // shared-state
   const [previewImgSrc, setPreviewImgSrc] =
     useState<string>("/assets/avatar.png");
   const [itemData, setItemData] = useState<ItemDataType>(ProjectDefaultData);
-
-  const [searchTerm, setSearchTerm] = useState<{
-    role: string;
-    tags: string;
-  }>({
-    role: "",
-    tags: "",
-  });
-
-  const [filteredItems, setFilteredItems] = useState<
-    TRoleUser[] | TTag[] | null
-  >(null);
-  const [isInputFocused, setIsInputFocused] = useState<{
-    [key: string]: boolean;
-  }>({ role: false, tags: false });
-  const [visibleItemCount, setVisibleItemCount] = useState<number>(10);
-  const [currentItemType, setCurrentItemType] =
-    useState<PublicItemType>("role");
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      const itemsToFilter = currentItemType === "role" ? roles : tags;
-      const searchValue =
-        currentItemType === "role" ? searchTerm.role : searchTerm.tags;
-      if (itemsToFilter && searchTerm) {
-        const filtered = itemsToFilter.filter((item) =>
-          item.name?.toLowerCase().includes(searchValue.toLowerCase())
-        );
-        setFilteredItems(filtered);
-      } else {
-        setFilteredItems(itemsToFilter || []);
-      }
-    }, 300);
-
-    return () => clearTimeout(handler);
-  }, [searchTerm, currentItemType, roles, tags]);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -147,13 +121,6 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const handleDurationDate = (date: Date | null, field: string) => {
-    setItemData((prevData: any) => ({
-      ...prevData,
-      [field]: date,
-    }));
-  };
-
   const handleDurationDate = (
     date: Date | null,
     field: "start_date" | "end_date"
@@ -193,17 +160,34 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   };
 
+  const mainMenuMemo = useMemo(
+    () => ({
+      itemData,
+      setItemData,
+      previewImgSrc,
+      setPreviewImgSrc,
+      loadFileImg,
+      handleDurationDate,
+      handleSelectionApproval,
+      handleAddMember,
+      handleDeleteMember,
+      handleInputChange,
+    }),
+    [
+      itemData,
+      setItemData,
+      previewImgSrc,
+      setPreviewImgSrc,
+      loadFileImg,
+      handleDurationDate,
+      handleSelectionApproval,
+      handleAddMember,
+      handleDeleteMember,
+      handleInputChange,
+    ]
+  );
   return (
-    <MainMenuContext.Provider
-      value={{
-        loadFileImg,
-        handleDurationDate,
-        previewImgSrc,
-        setPreviewImgSrc,
-        itemData,
-        setItemData,
-      }}
-    >
+    <MainMenuContext.Provider value={mainMenuMemo}>
       {children}
     </MainMenuContext.Provider>
   );
