@@ -5,7 +5,6 @@ import {
   TProfileUser,
   TSocialLinksFieldInputProfile,
 } from "@/types/profile";
-import { TRoleUser } from "@/types/role";
 import { TTag } from "@/types/tag";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,8 +18,6 @@ import FormProfileSocialLink from "./profile-form-info/social-link";
 import { UpdateUserProfileService } from "@/api/profile";
 import { useFilter } from "@/context/FilterContext";
 
-type ItemType = "role" | "tags";
-
 const ProfileInfoModal: React.FC<{
   toggle: () => void;
   onProfileUpdated: () => void;
@@ -28,18 +25,7 @@ const ProfileInfoModal: React.FC<{
   const { profile } = useProfile();
   const [profileData, setProfileData] = useState<TProfileUser | null>(profile);
 
-  const {
-    currentItemType,
-    setCurrentItemType,
-    searchTerm,
-    setSearchTerm,
-    filteredItems,
-    setFilteredItems,
-    isInputFocused,
-    setIsInputFocused,
-    visibleItemCount,
-    setVisibleItemCount,
-  } = useFilter();
+  const { setCurrentItemType, setSearchTerm } = useFilter();
 
   useEffect(() => {
     setProfileData(profile);
@@ -135,38 +121,6 @@ const ProfileInfoModal: React.FC<{
     }
   };
 
-  const handleSelectItem = (item: TRoleUser | TTag) => {
-    if (!profileData) return;
-    const handlers: { [key in ItemType]: (item: TRoleUser | TTag) => void } = {
-      role: (item: TRoleUser) => updateProfileData("role", item),
-      tags: (item: TTag) => {
-        const isTagExist = profileData.tags?.find((t) => t.name === item.name);
-        if (!isTagExist) {
-          updateProfileData("tags", [...(profileData?.tags || []), item]);
-        } else {
-          return alert("You have already added");
-        }
-      },
-    };
-    const handler = handlers[currentItemType];
-    if (handler) {
-      handler(item);
-    }
-    setSearchTerm((prev) => ({
-      ...prev,
-      [currentItemType]: "",
-    }));
-    setIsInputFocused({ ...isInputFocused, [currentItemType]: false });
-    setFilteredItems(null);
-  };
-
-  const handleScrollRole = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    if (scrollTop + clientHeight >= scrollHeight) {
-      setVisibleItemCount((prevCount) => prevCount + 10);
-    }
-  };
-
   const handleRemoveTag = (
     tag: TTag,
     e: React.MouseEvent<HTMLButtonElement>
@@ -221,17 +175,9 @@ const ProfileInfoModal: React.FC<{
             />
             <FormProfileWorkingStatus
               data={profileData}
-              filteredItems={filteredItems}
               handleInputChange={handleInputChange}
+              handleUpdateData={updateProfileData}
               handleRemoveTag={handleRemoveTag}
-              handleScrollRole={handleScrollRole}
-              handleSelectItem={handleSelectItem}
-              isInputFocused={isInputFocused}
-              searchTerm={searchTerm}
-              setCurrentItemType={setCurrentItemType}
-              setIsInputFocused={setIsInputFocused}
-              setVisibleItemCount={setVisibleItemCount}
-              visibleItemCount={visibleItemCount}
             />
             <FormProfileSocialLink
               data={profileData}
