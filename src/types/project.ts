@@ -1,4 +1,5 @@
 import { TAddress } from "./profile";
+import { TRoleUser } from "./role";
 import { TTag } from "./tag";
 
 export type TProjectMemberFieldInput = {
@@ -11,12 +12,13 @@ export type TProjectsMember = {
   id?: number;
   project_id?: number;
   profile_id?: string;
-  role_id?: string;
+  role: TRoleUser;
   experience?: string;
 };
 
 export type TProjects = {
   id?: number;
+  logo?: string;
   owner?: string;
   title?: string;
   company?: string;

@@ -1,4 +1,5 @@
 export const ProjectDefaultData = {
+  logo: "/assets/avatar.png",
   owner: "",
   title: "",
   company: "",
@@ -14,7 +15,14 @@ export const ProjectDefaultData = {
     street: "",
   },
   approval: "no",
-  member: [],
+  member: [
+    {
+      project_id: 0,
+      profile_id: "",
+      role: {},
+      experience: "no_experience",
+    },
+  ],
   description: "",
   tags: [],
   salary: 0,
