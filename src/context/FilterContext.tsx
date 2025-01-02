@@ -7,14 +7,14 @@ import React, {
   useMemo,
   useEffect,
   useContext,
+  useCallback,
 } from "react";
 import { usePublicResource } from "./PublicContext";
 import { usePathname } from "next/navigation";
 
 type PublicItemType = "role" | "tags";
 type TSearchTerm = {
-  role: string;
-  tags: string;
+  [key: string]: string;
 };
 
 interface IFilterContext {
@@ -35,6 +35,8 @@ interface IFilterContext {
   currentItemType: PublicItemType;
   setCurrentItemType: React.Dispatch<React.SetStateAction<PublicItemType>>;
   handleScrollRole: (e: React.UIEvent<HTMLUListElement, UIEvent>) => void;
+  updateSearchTerm: (key: string, value: string) => void;
+  resetSearchTerm: (key: string) => void;
 }
 
 const FilterContext = createContext<IFilterContext | undefined>(undefined);
@@ -45,10 +47,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const pathname = usePathname();
   const { roles, tags } = usePublicResource();
 
-  const [searchTerm, setSearchTerm] = useState<TSearchTerm>({
-    role: "",
-    tags: "",
-  });
+  const [searchTerm, setSearchTerm] = useState<TSearchTerm>({});
   const [filteredItems, setFilteredItems] = useState<
     TRoleUser[] | TTag[] | null
   >(null);
@@ -61,10 +60,24 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      const itemsToFilter = currentItemType === "role" ? roles : tags;
-      const searchValue =
-        currentItemType === "role" ? searchTerm.role : searchTerm.tags;
-      if (itemsToFilter && searchTerm) {
+      console.log(searchTerm);
+      let itemsToFilter: TRoleUser[] | TTag[] | undefined = undefined;
+      let searchValue = "";
+      const arrKey = Object.keys(searchTerm);
+      console.log("array key", arrKey);
+
+      for (const key of arrKey) {
+        if (key.endsWith(currentItemType) || key.startsWith(currentItemType)) {
+          searchValue = searchTerm[key] || "";
+          itemsToFilter = (currentItemType === "role" ? roles : tags) as
+            | TRoleUser[]
+            | TTag[];
+          break;
+        }
+      }
+
+      console.log(itemsToFilter, searchValue);
+      if (searchValue && itemsToFilter) {
         const filtered = itemsToFilter.filter((item) =>
           item.name?.toLowerCase().includes(searchValue.toLowerCase())
         );
@@ -77,17 +90,31 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [searchTerm, currentItemType, roles, tags]);
 
   useEffect(() => {
-    setSearchTerm({ role: "", tags: "" });
+    setSearchTerm({});
     setIsInputFocused({});
-    console.log("pathname", pathname);
   }, [pathname]);
 
-  const handleScrollRole = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    if (scrollTop + clientHeight >= scrollHeight) {
-      setVisibleItemCount((prevCount) => prevCount + 10);
-    }
-  };
+  const handleScrollRole = useCallback(
+    (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
+      const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+      if (scrollTop + clientHeight >= scrollHeight) {
+        setVisibleItemCount((prevCount) => prevCount + 10);
+      }
+    },
+    []
+  );
+
+  const updateSearchTerm = useCallback((key: string, value: string) => {
+    setSearchTerm((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  const resetSearchTerm = useCallback((key: string) => {
+    setSearchTerm((prev) => {
+      const updated = { ...prev };
+      delete updated[key];
+      return updated;
+    });
+  }, []);
 
   const filterMemo = useMemo(
     () => ({
@@ -102,6 +129,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       currentItemType,
       setCurrentItemType,
       handleScrollRole,
+      updateSearchTerm,
+      resetSearchTerm,
     }),
     [
       searchTerm,
@@ -115,6 +144,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       currentItemType,
       setCurrentItemType,
       handleScrollRole,
+      updateSearchTerm,
+      resetSearchTerm,
     ]
   );
 
