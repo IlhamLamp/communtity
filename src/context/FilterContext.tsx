@@ -20,9 +20,9 @@ type TSearchTerm = {
 interface IFilterContext {
   searchTerm: TSearchTerm;
   setSearchTerm: React.Dispatch<React.SetStateAction<TSearchTerm>>;
-  filteredItems: TRoleUser[] | TTag[] | null;
+  filteredItems: { [key: string]: TRoleUser[] | TTag[] | null };
   setFilteredItems: React.Dispatch<
-    React.SetStateAction<TRoleUser[] | TTag[] | null>
+    React.SetStateAction<{ [key: string]: TRoleUser[] | TTag[] | null }>
   >;
   isInputFocused: {
     [key: string]: boolean;
@@ -36,7 +36,7 @@ interface IFilterContext {
   setCurrentItemType: React.Dispatch<React.SetStateAction<PublicItemType>>;
   handleScrollRole: (e: React.UIEvent<HTMLUListElement, UIEvent>) => void;
   updateSearchTerm: (key: string, value: string) => void;
-  resetSearchTerm: (key: string) => void;
+  deleteSearchTerm: (key: string) => void;
 }
 
 const FilterContext = createContext<IFilterContext | undefined>(undefined);
@@ -48,9 +48,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const { roles, tags } = usePublicResource();
 
   const [searchTerm, setSearchTerm] = useState<TSearchTerm>({});
-  const [filteredItems, setFilteredItems] = useState<
-    TRoleUser[] | TTag[] | null
-  >(null);
+  const [filteredItems, setFilteredItems] = useState<{
+    [key: string]: TRoleUser[] | TTag[] | null;
+  }>({});
   const [isInputFocused, setIsInputFocused] = useState<{
     [key: string]: boolean;
   }>({});
@@ -60,31 +60,29 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      console.log(searchTerm);
-      let itemsToFilter: TRoleUser[] | TTag[] | undefined = undefined;
-      let searchValue = "";
       const arrKey = Object.keys(searchTerm);
-      console.log("array key", arrKey);
+
+      const updatedFilteredItems: {
+        [key: string]: TRoleUser[] | TTag[] | null;
+      } = {};
 
       for (const key of arrKey) {
-        if (key.endsWith(currentItemType) || key.startsWith(currentItemType)) {
-          searchValue = searchTerm[key] || "";
-          itemsToFilter = (currentItemType === "role" ? roles : tags) as
-            | TRoleUser[]
-            | TTag[];
-          break;
+        const itemsToFilter = (currentItemType === "role" ? roles : tags) as
+          | TRoleUser[]
+          | TTag[];
+        const searchValue = searchTerm[key] || "";
+
+        if (searchValue && itemsToFilter) {
+          const filtered = itemsToFilter.filter((item) =>
+            item.name?.toLowerCase().includes(searchValue.toLowerCase())
+          );
+          updatedFilteredItems[key] = filtered;
+        } else {
+          updatedFilteredItems[key] = itemsToFilter || [];
         }
       }
 
-      console.log(itemsToFilter, searchValue);
-      if (searchValue && itemsToFilter) {
-        const filtered = itemsToFilter.filter((item) =>
-          item.name?.toLowerCase().includes(searchValue.toLowerCase())
-        );
-        setFilteredItems(filtered);
-      } else {
-        setFilteredItems(itemsToFilter || []);
-      }
+      setFilteredItems(updatedFilteredItems);
     }, 300);
     return () => clearTimeout(handler);
   }, [searchTerm, currentItemType, roles, tags]);
@@ -92,6 +90,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     setSearchTerm({});
     setIsInputFocused({});
+    setFilteredItems({});
   }, [pathname]);
 
   const handleScrollRole = useCallback(
@@ -108,11 +107,23 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     setSearchTerm((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const resetSearchTerm = useCallback((key: string) => {
+  const deleteSearchTerm = useCallback((key: string) => {
     setSearchTerm((prev) => {
       const updated = { ...prev };
       delete updated[key];
-      return updated;
+
+      const newSearchTerm: TSearchTerm = {};
+      Object.keys(updated).forEach((k) => {
+        const [field, index, subField] = k.split(/[-.]/);
+        const currentIndex = parseInt(index, 10);
+        const deletedIndex = parseInt(key.split(/[-.]/)[1], 10);
+        const newIndex =
+          currentIndex > deletedIndex ? currentIndex - 1 : currentIndex;
+        const newKey = `${field}-${newIndex}.${subField}`;
+        newSearchTerm[newKey] = updated[k];
+      });
+
+      return newSearchTerm;
     });
   }, []);
 
@@ -130,7 +141,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentItemType,
       handleScrollRole,
       updateSearchTerm,
-      resetSearchTerm,
+      deleteSearchTerm,
     }),
     [
       searchTerm,
@@ -145,7 +156,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentItemType,
       handleScrollRole,
       updateSearchTerm,
-      resetSearchTerm,
+      deleteSearchTerm,
     ]
   );
 
