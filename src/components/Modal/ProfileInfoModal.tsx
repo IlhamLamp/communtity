@@ -9,14 +9,14 @@ import { TTag } from "@/types/tag";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import FormProfileContactInformation from "./profile-form-info/contact-information";
-import FormProfileAddressDetails from "./profile-form-info/address-details";
-import FormProfileWorkingStatus from "./profile-form-info/working-status";
 import toast from "react-hot-toast";
 import { useProfile } from "@/context/ProfileContext";
-import FormProfileSocialLink from "./profile-form-info/social-link";
 import { UpdateUserProfileService } from "@/api/profile";
 import { useFilter } from "@/context/FilterContext";
+import FormProfileContactInformation from "../Form/profile-form-info/contact-information";
+import FormProfileAddressDetails from "../Form/profile-form-info/address-details";
+import FormProfileWorkingStatus from "../Form/profile-form-info/working-status";
+import FormProfileSocialLink from "../Form/profile-form-info/social-link";
 
 const ProfileInfoModal: React.FC<{
   toggle: () => void;
@@ -38,7 +38,10 @@ const ProfileInfoModal: React.FC<{
     }));
   }, [profileData]);
 
-  const updateProfileData = (field: keyof TProfileUser, value: any) => {
+  const updateProfileData = <T extends object>(
+    field: keyof T | string,
+    value: any
+  ) => {
     setProfileData((prevData) => ({
       ...prevData,
       [field]: value,
@@ -83,7 +86,7 @@ const ProfileInfoModal: React.FC<{
         less_than_year: { value: "less_than_year", label: "< 1 year" },
         more_than_year: { value: "more_than_year", label: "> 1 year" },
       };
-      updateProfileData("experience", experienceOptions[value]);
+      updateProfileData<TProfileUser>("experience", experienceOptions[value]);
     };
 
     setSearchTerm((prev) => ({
@@ -104,7 +107,7 @@ const ProfileInfoModal: React.FC<{
         setCurrentItemType("tags");
         break;
       case "birthday":
-        updateProfileData(field, new Date(value));
+        updateProfileData<TProfileUser>(field, new Date(value));
         break;
       case "address.street":
       case "address.city":
@@ -116,7 +119,7 @@ const ProfileInfoModal: React.FC<{
         updateExperienceField();
         break;
       default:
-        updateProfileData(field as keyof TProfileUser, value);
+        updateProfileData<TProfileUser>(field as keyof TProfileUser, value);
         break;
     }
   };
@@ -176,7 +179,7 @@ const ProfileInfoModal: React.FC<{
             <FormProfileWorkingStatus
               data={profileData}
               handleInputChange={handleInputChange}
-              handleUpdateData={updateProfileData}
+              handleUpdateData={updateProfileData<TProfileUser>}
               handleRemoveTag={handleRemoveTag}
             />
             <FormProfileSocialLink

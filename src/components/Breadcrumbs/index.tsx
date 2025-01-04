@@ -5,14 +5,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const Breadcrumbs: React.FC = () => {
-  const path = usePathname().split("/");
+  const fullPath = usePathname();
+  const path = fullPath.split("/");
   return (
     <ul className="gap-4 items-center font-medium text-sm flex">
       {path &&
         path.map((_, index) => (
           <>
             <li key={path[index]}>
-              <Link href={`/${path[index]}`} className="text-Gray capitalize">
+              <Link
+                href={
+                  index + 1 === path.length ? `${fullPath}` : `/${path[index]}`
+                }
+                className="text-Gray capitalize"
+              >
                 {path[index] === "" ? "Home" : path[index]}
               </Link>
             </li>

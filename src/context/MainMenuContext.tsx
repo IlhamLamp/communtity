@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import { TAddress, TAddressFieldInputProfile } from "@/types/profile";
 import { useFilter } from "./FilterContext";
+import { TTag } from "@/types/tag";
 
 type ItemDataType = TProjects;
 
@@ -20,6 +21,7 @@ interface MainMenuContextProps {
   previewImgSrc: string;
   setPreviewImgSrc: React.Dispatch<React.SetStateAction<string>>;
   loadFileImg: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemoveTag: (tag: TTag, e: React.MouseEvent<HTMLButtonElement>) => void;
   handleDurationDate: (
     date: Date | null,
     field: "start_date" | "end_date"
@@ -45,7 +47,7 @@ const MainMenuContext = createContext<MainMenuContextProps | undefined>(
 export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { setSearchTerm, deleteSearchTerm } = useFilter();
+  const { setSearchTerm, setCurrentItemType, deleteSearchTerm } = useFilter();
 
   const [previewImgSrc, setPreviewImgSrc] =
     useState<string>("/assets/avatar.png");
@@ -59,6 +61,7 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const handleUpdateItem = useCallback(
     (field: keyof ItemDataType | string, value: any) => {
+      console.log("field", field, "value", value);
       setItemData((prevData) => {
         if (typeof field === "string" && field.includes("-")) {
           // field-[index].subfield
@@ -132,6 +135,9 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       switch (field) {
+        case "tags":
+          setCurrentItemType("tags");
+          break;
         case "address.street":
         case "address.city":
         case "address.state":
@@ -173,6 +179,19 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     },
     []
+  );
+
+  const handleRemoveTag = useCallback(
+    (tag: TTag, e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      const updatedTags =
+        itemData.tags?.filter((t) => t.name !== tag.name) || [];
+      setItemData((prevData) => ({
+        ...prevData,
+        tags: updatedTags,
+      }));
+    },
+    [itemData.tags]
   );
 
   const handleDurationDate = useCallback(
@@ -220,6 +239,7 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
       previewImgSrc,
       setPreviewImgSrc,
       loadFileImg,
+      handleRemoveTag,
       handleDurationDate,
       handleAddMember,
       handleDeleteMember,
@@ -232,6 +252,7 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
       previewImgSrc,
       setPreviewImgSrc,
       loadFileImg,
+      handleRemoveTag,
       handleDurationDate,
       handleAddMember,
       handleDeleteMember,

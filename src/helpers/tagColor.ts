@@ -15,3 +15,22 @@ export const bgTagColors = [
 export const getRandomBgColor = () => {
   return bgTagColors[Math.floor(Math.random() * bgTagColors.length)];
 };
+
+export const toasterStatusColor = {
+  loading: {
+    style: {
+      background: "#FCE38A",
+    },
+  },
+  success: {
+    style: {
+      background: "#95E1D3",
+    },
+  },
+  error: {
+    style: {
+      background: "#F38181",
+      color: "white",
+    },
+  },
+};

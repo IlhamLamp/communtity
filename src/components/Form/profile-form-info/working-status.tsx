@@ -19,7 +19,7 @@ interface FormProfileWorkingStatusProps {
     >,
     field: keyof TProfileUser
   ) => void;
-  handleUpdateData: (field: keyof TProfileUser, value: any) => void;
+  handleUpdateData: (field: keyof TProfileUser | string, value: any) => void;
   handleRemoveTag: (tag: TTag, e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -55,9 +55,9 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
             <span>Role</span>
           </label>
           <input
-            type="text"
-            name="role"
             id="role"
+            name="role"
+            type="text"
             placeholder="Type to add role"
             value={searchTerm.role || ""}
             onChange={(e) => handleInputChange(e, "role")}
@@ -78,6 +78,7 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
             <SearchResult<TProfileUser>
               data={data}
               handleUpdateData={handleUpdateData}
+              inputKey="role"
             />
           )}
         </div>
@@ -159,6 +160,7 @@ const FormProfileWorkingStatus: React.FC<FormProfileWorkingStatusProps> = ({
             <SearchResult<TProfileUser>
               data={data}
               handleUpdateData={handleUpdateData}
+              inputKey="tags"
             />
           )}
         </div>

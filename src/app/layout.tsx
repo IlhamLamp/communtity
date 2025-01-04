@@ -8,6 +8,9 @@ import Header from "@/components/Header";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProfileProvider } from "@/context/ProfileContext";
 import { PublicResourceProvider } from "@/context/PublicContext";
+import { FilterProvider } from "@/context/FilterContext";
+import { toasterStatusColor } from "@/helpers/tagColor";
+import { MainMenuProvider } from "@/context/MainMenuContext";
 config.autoAddCss = false;
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
@@ -32,32 +35,17 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={poppins.className}>
         <PublicResourceProvider>
-          <AuthProvider>
-            <ProfileProvider>
-              <Toaster
-                toastOptions={{
-                  loading: {
-                    style: {
-                      background: "#FCE38A",
-                    },
-                  },
-                  success: {
-                    style: {
-                      background: "#95E1D3",
-                    },
-                  },
-                  error: {
-                    style: {
-                      background: "#F38181",
-                      color: "white",
-                    },
-                  },
-                }}
-              />
-              <Header />
-              <main>{children}</main>
-            </ProfileProvider>
-          </AuthProvider>
+          <FilterProvider>
+            <MainMenuProvider>
+              <AuthProvider>
+                <ProfileProvider>
+                  <Toaster toastOptions={toasterStatusColor} />
+                  <Header />
+                  <main>{children}</main>
+                </ProfileProvider>
+              </AuthProvider>
+            </MainMenuProvider>
+          </FilterProvider>
         </PublicResourceProvider>
       </body>
     </html>

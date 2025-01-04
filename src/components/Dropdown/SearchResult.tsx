@@ -6,18 +6,21 @@ import {
 import { useFilter } from "@/context/FilterContext";
 import { TRoleResponse, TRoleUser } from "@/types/role";
 import { TTag, TTagResponse } from "@/types/tag";
+import { searchResultValidation } from "@/validation/searchResult.validation";
 import React from "react";
 
 type ItemType = "role" | "tags";
 
 interface SearchResultProps<T extends { role?: TRoleUser; tags?: TTag[] }> {
   data: T;
-  handleUpdateData: (field: keyof T, value: any) => void;
+  handleUpdateData: (field: keyof T | string, value: any) => void;
+  inputKey: string;
 }
 
 const SearchResult = <T extends { role?: TRoleUser; tags?: TTag[] }>({
   data,
   handleUpdateData,
+  inputKey,
 }: SearchResultProps<T>) => {
   const {
     searchTerm,
@@ -32,22 +35,28 @@ const SearchResult = <T extends { role?: TRoleUser; tags?: TTag[] }>({
   } = useFilter();
 
   const handleSelectItem = (item: TRoleUser | TTag) => {
-    if (!data) return null;
+    const validate = searchResultValidation({
+      data,
+      inputKey,
+      isInputFocused,
+      currentItemType,
+      item,
+    });
 
-    if (currentItemType === "role" && !(item as TRoleUser)._id) {
-      console.error("Invalid role item selected.");
-      return;
-    }
-    if (currentItemType === "tags" && !(item as TTag).name) {
-      console.error("Invalid tag item selected.");
-      return;
-    }
-    const handlers: { [key in ItemType]: (item: TRoleUser | TTag) => void } = {
-      role: (item: TRoleUser) => handleUpdateData("role", item),
+    if (!validate) return;
+
+    const handlers: {
+      [key in ItemType]: (item: TRoleUser | TTag) => void;
+    } = {
+      role: (item: TRoleUser) => {
+        handleUpdateData(inputKey, item);
+        setSearchTerm((prev) => ({ ...prev, [inputKey]: item.name || "" }));
+      },
       tags: (item: TTag) => {
         const isTagExist = data.tags?.find((t: any) => t.name === item.name);
         if (!isTagExist) {
           handleUpdateData("tags", [...(data?.tags || []), item]);
+          setSearchTerm({ ...searchTerm, [inputKey]: "" });
         } else {
           return alert("You have already added");
         }
@@ -57,12 +66,8 @@ const SearchResult = <T extends { role?: TRoleUser; tags?: TTag[] }>({
     if (handler) {
       handler(item);
     }
-    setSearchTerm((prev) => ({
-      ...prev,
-      [currentItemType]: "",
-    }));
-    setIsInputFocused((prev) => ({ ...prev, [currentItemType]: false }));
-    setFilteredItems(null);
+    setIsInputFocused((prev) => ({ ...prev, [inputKey]: false }));
+    setFilteredItems({});
   };
 
   const handleAddNewItem = async (
@@ -90,14 +95,21 @@ const SearchResult = <T extends { role?: TRoleUser; tags?: TTag[] }>({
 
   const isTags = currentItemType === "tags";
   const filteredData = isTags
-    ? filteredItems &&
-      filteredItems?.filter(
+    ? Array.isArray(filteredItems[inputKey]) &&
+      filteredItems[inputKey].filter(
         (tag) =>
-          !(data?.tags || []).some((selectedTag) => selectedTag._id === tag._id)
+          // !(data?.tags || []).some((selectedTag) => selectedTag._id === tag._id)
+          Array.isArray(data?.tags) &&
+          !data.tags.some((selectedTag) => selectedTag._id === tag._id)
       )
-    : filteredItems;
+    : filteredItems[inputKey];
 
-  if (isInputFocused[currentItemType] && filteredData) {
+  console.log("data.tags", data.tags);
+  console.log("currentItemType", currentItemType);
+  console.log("filteredData", filteredData);
+  console.log("filteredItems", filteredItems);
+
+  if (isInputFocused[inputKey] && filteredData) {
     return (
       <ul
         className="bg-white border border-[#e0e0e0] rounded-md shadow-lg mt-1 max-h-40 overflow-y-auto absolute z-10 w-full"
@@ -105,7 +117,9 @@ const SearchResult = <T extends { role?: TRoleUser; tags?: TTag[] }>({
         onScroll={handleScrollRole}
       >
         {/* FILTER SUGGESTIONS */}
-        {filteredData.length > 0 &&
+        {Array.isArray(filteredData) &&
+          filteredData.length > 0 &&
+          Array.isArray(filteredData) &&
           filteredData.slice(0, visibleItemCount).map((item) => (
             <li
               key={item._id}
@@ -116,15 +130,14 @@ const SearchResult = <T extends { role?: TRoleUser; tags?: TTag[] }>({
             </li>
           ))}
         {/* OTHER THAN SUGGESTIONS */}
-        {filteredData.length === 0 && searchTerm[currentItemType] && (
+        {filteredData.length === 0 && searchTerm[inputKey] && (
           <li
             onClick={() =>
-              handleAddNewItem(searchTerm[currentItemType], currentItemType)
+              handleAddNewItem(searchTerm[inputKey], currentItemType)
             }
             className="cursor-pointer py-2 px-4 text-sm text-blue-600 hover:bg-gray-200"
           >
-            Add &quot;{searchTerm[currentItemType]}&quot; as new{" "}
-            {currentItemType}
+            Add &quot;{searchTerm[inputKey]}&quot; as new {currentItemType}
           </li>
         )}
       </ul>
