@@ -1,20 +1,15 @@
+import { AvatarUpload } from "@/components/Cards/AvatarUpload";
 import SearchResult from "@/components/Dropdown/SearchResult";
 import { useFilter } from "@/context/FilterContext";
 import { useMainMenu } from "@/context/MainMenuContext";
 import { TProjects } from "@/types/project";
-import { faPenToSquare, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import React from "react";
 
 export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
-  const {
-    previewImgSrc,
-    loadFileImg,
-    handleRemoveTag,
-    handleInputChange,
-    handleUpdateItem,
-  } = useMainMenu();
+  const { handleRemoveTag, handleInputChange, handleUpdateItem } =
+    useMainMenu();
 
   const {
     searchTerm,
@@ -30,29 +25,7 @@ export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
         Tags & Extras
       </h2>
       <div className="flex flex-row space-x-6 items-start">
-        <div className="relative flex-shrink-0 my-2">
-          <Image
-            id="preview_img"
-            className="h-[7rem] w-[7rem] object-cover rounded-full"
-            src={previewImgSrc}
-            alt="Current profile photo"
-            width={500}
-            height={100}
-          />
-          <label
-            htmlFor="img-projects-upload"
-            className="absolute bottom-0 right-0 bg-purple-600 py-1 px-2 rounded-full cursor-pointer hover:bg-purple-800"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} className="text-white" />
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={loadFileImg}
-            className="hidden"
-            id="img-projects-upload"
-          />
-        </div>
+        <AvatarUpload />
         <div className="w-full grid grid-cols-2 gap-2 text-sm">
           <div className="w-full relative col-span-2">
             <label htmlFor="tags" className="block mb-1">

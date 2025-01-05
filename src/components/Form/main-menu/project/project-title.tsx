@@ -1,16 +1,13 @@
+import { AvatarUpload } from "@/components/Cards/AvatarUpload";
 import { useMainMenu } from "@/context/MainMenuContext";
 import { useProfile } from "@/context/ProfileContext";
 import { TProjects } from "@/types/project";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import React from "react";
 import DatePicker from "react-datepicker";
 
 export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
   const { profile } = useProfile();
-  const { previewImgSrc, loadFileImg, handleDurationDate, handleInputChange } =
-    useMainMenu();
+  const { handleDurationDate, handleInputChange } = useMainMenu();
   return (
     <div id="projectFormStepOne">
       <span className="text-sm font-light text-gray-500">Step 1</span>
@@ -18,30 +15,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
         Project Title
       </h2>
       <div className="flex flex-row space-x-6 items-start">
-        <div className="relative flex-shrink-0 my-2">
-          <Image
-            id="preview_img"
-            className="h-[7rem] w-[7rem] object-cover rounded-full"
-            src={previewImgSrc}
-            alt="Current profile photo"
-            width={500}
-            height={100}
-          />
-          <label
-            htmlFor="logo"
-            className="absolute bottom-0 right-0 bg-purple-600 py-1 px-2 rounded-full cursor-pointer hover:bg-purple-800"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} className="text-white" />
-          </label>
-          <input
-            id="logo"
-            name="logo"
-            type="file"
-            accept="image/*"
-            onChange={loadFileImg}
-            className="hidden"
-          />
-        </div>
+        <AvatarUpload />
         <div className="w-full grid grid-cols-2 gap-2 text-sm">
           <div className="w-full col-span-2">
             <label htmlFor="owner" className="block mb-1">

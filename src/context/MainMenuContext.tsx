@@ -57,6 +57,7 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
     if (itemData.logo) {
       setPreviewImgSrc(itemData.logo);
     }
+    console.log(itemData.logo);
   }, [itemData.logo]);
 
   const handleUpdateItem = useCallback(
@@ -163,19 +164,17 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file) {
-        const fileType = file.type;
-        if (fileType.startsWith("image/")) {
-          const fileURL = URL.createObjectURL(file);
-          setPreviewImgSrc(fileURL);
-
-          const imageElement = new window.Image();
-          imageElement.src = fileURL;
-          imageElement.onload = () => {
-            URL.revokeObjectURL(fileURL);
-          };
-        } else {
-          alert("Please upload a valid image file.");
-        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (reader.result) {
+            setPreviewImgSrc(reader.result as string);
+            setItemData((prevData) => ({
+              ...prevData,
+              logo: reader.result as string,
+            }));
+          }
+        };
+        reader.readAsDataURL(file);
       }
     },
     []
