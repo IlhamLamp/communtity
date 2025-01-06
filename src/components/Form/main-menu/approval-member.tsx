@@ -33,9 +33,13 @@ const ApprovalMember: React.FC = () => {
         <div className="w-full grid grid-cols-1 gap-2 text-xs max-h-[300px] overflow-y-auto">
           {Array.isArray(itemData?.member) &&
             itemData?.member?.map((user, index) => (
-              <div key={`member-${index}`} className="flex flex-row gap-2 pb-1">
-                <div className="w-1/5 text-left">
-                  <span>{index + 1}</span>
+              <div
+                key={`member-${index}`}
+                className="flex flex-col lg:flex-row gap-2 pb-1"
+              >
+                <div className="w-1/5 text-left flex">
+                  <span className="block lg:hidden">No. </span>
+                  {index + 1}
                 </div>
                 <div className="w-full relative">
                   <label htmlFor="role" className="block mb-1 text-[#07074D]">
@@ -111,7 +115,7 @@ const ApprovalMember: React.FC = () => {
                     Actions
                   </label>
                   <div
-                    className={`w-1/2 flex flex-row h-10 gap-2 items-center relative text-xl ${
+                    className={`w-1/2 flex flex-row h-10 gap-2 items-center relative text-lg lg:text-xl ${
                       itemData.member && itemData.member.length > 1
                         ? "justify-between"
                         : "justify-center"
@@ -142,6 +146,7 @@ const ApprovalMember: React.FC = () => {
                     </button>
                   </div>
                 </div>
+                <hr className="h-2 border-gray-300" />
               </div>
             ))}
         </div>

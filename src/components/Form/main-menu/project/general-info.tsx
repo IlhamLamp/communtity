@@ -26,12 +26,12 @@ export const ProjectFormStep2: React.FC<{ data: TProjects }> = ({ data }) => {
       </h2>
       <div className="flex flex-row space-x-6 items-start">
         <AvatarUpload />
-        <div className="w-full grid grid-cols-3 gap-2 text-xs">
+        <div className="w-full flex flex-col lg:grid lg:grid-cols-3 gap-2 text-xs">
           <div className="w-full">
             <label htmlFor="types" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faLayerGroup}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Types</span>
             </label>
@@ -51,7 +51,7 @@ export const ProjectFormStep2: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="duration" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faCalendarWeek}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Duration</span>
             </label>
@@ -74,7 +74,7 @@ export const ProjectFormStep2: React.FC<{ data: TProjects }> = ({ data }) => {
             >
               <FontAwesomeIcon
                 icon={faChalkboardUser}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Participation</span>
             </label>
@@ -95,7 +95,7 @@ export const ProjectFormStep2: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="city" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faCity}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>City</span>
             </label>
@@ -113,7 +113,7 @@ export const ProjectFormStep2: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="state" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faFlag}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>State</span>
             </label>
@@ -131,7 +131,7 @@ export const ProjectFormStep2: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="zip_code" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faEnvelopesBulk}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>ZIP</span>
             </label>
@@ -149,7 +149,7 @@ export const ProjectFormStep2: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="street" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faRoad}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Street</span>
             </label>
@@ -171,7 +171,7 @@ export const ProjectFormStep2: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="description" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faNoteSticky}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Description</span>
             </label>

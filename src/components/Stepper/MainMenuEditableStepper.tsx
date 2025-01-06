@@ -69,7 +69,7 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
         ))}
       </div>
       {/* STEPPER CONTENT */}
-      <div className="flex max-w-[70%] mx-auto justify-center">
+      <div className="flex max-w-[95%] lg:max-w-[70%] mx-auto mt-6 lg:mt-0 justify-center">
         <form action="" className="w-full bg-gray-100 p-4 rounded-lg shadow-lg">
           {/* Content */}
           {children}

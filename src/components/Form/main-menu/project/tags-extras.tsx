@@ -31,12 +31,12 @@ export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
       </h2>
       <div className="flex flex-row space-x-6 items-start">
         <AvatarUpload />
-        <div className="w-full grid grid-cols-2 gap-2 text-xs">
+        <div className="w-full flex flex-col lg:grid lg:grid-cols-2 gap-2 text-xs">
           <div className="w-full relative col-span-2">
             <label htmlFor="tags" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faTags}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Tags</span>
             </label>
@@ -92,7 +92,7 @@ export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="salary" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faSackDollar}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Salary</span>
             </label>

@@ -8,7 +8,7 @@ const Breadcrumbs: React.FC = () => {
   const fullPath = usePathname();
   const path = fullPath.split("/");
   return (
-    <ul className="gap-1 items-center font-medium text-sm flex">
+    <ul className="gap-1 items-center font-medium text-xs lg:text-sm flex">
       {path &&
         path.map((_, index) => (
           <li key={index} className="flex items-center">

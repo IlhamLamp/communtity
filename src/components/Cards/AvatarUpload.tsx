@@ -6,10 +6,10 @@ import Image from "next/image";
 export const AvatarUpload: React.FC = () => {
   const { previewImgSrc, loadFileImg } = useMainMenu();
   return (
-    <div className="relative flex-shrink-0 my-2">
+    <div className="relative flex-shrink-0 lg:my-2">
       <Image
         id="preview_img"
-        className="h-[6rem] w-[6rem] object-cover rounded-full"
+        className="h-[4rem] lg:h-[6rem] w-[4rem] lg:w-[6rem] object-cover rounded-full"
         src={previewImgSrc}
         alt="Current profile photo"
         width={300}

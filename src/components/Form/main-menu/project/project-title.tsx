@@ -23,12 +23,12 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
       </h2>
       <div className="flex flex-row space-x-6 items-start">
         <AvatarUpload />
-        <div className="w-full grid grid-cols-2 gap-2 text-xs">
+        <div className="w-full flex flex-col lg:grid lg:grid-cols-2 gap-2 text-xs">
           <div className="w-full col-span-2">
             <label htmlFor="owner" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faUserTie}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Owner</span>
             </label>
@@ -46,7 +46,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="title" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faPencil}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Project Title</span>
             </label>
@@ -64,7 +64,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="company" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faBuildingUser}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Company</span>
             </label>
@@ -82,7 +82,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
             <label htmlFor="start_date" className="block mb-1 text-[#07074D]">
               <FontAwesomeIcon
                 icon={faCalendar}
-                className="pr-2 text-sm text-gray-600"
+                className="pr-2 text-xs lg:text-sm text-gray-600"
               />
               <span>Start Date</span>
             </label>
@@ -93,7 +93,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
               onChange={(date) => handleDurationDate(date, "start_date")}
               selectsStart
               startDate={data?.start_date}
-              className="cursor-pointer border rounded-md w-full lg:w-[270px] p-2"
+              className="cursor-pointer border rounded-md w-[250px] lg:w-[270px] p-2"
               placeholderText="Select start date"
               dateFormat="dd/MM/yyyy"
             />
@@ -110,7 +110,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
               selectsStart
               startDate={data?.end_date}
               minDate={new Date()}
-              className="cursor-pointer border rounded-md w-full lg:w-[270px] p-2"
+              className="cursor-pointer border rounded-md w-[250px] lg:w-[270px] p-2"
               placeholderText="Select end date"
               dateFormat="dd/MM/yyyy"
             />

@@ -21,12 +21,12 @@ const MainMenuEditableForm: React.FC<MainMenuEditableFormProps> = ({
   const currentChildIndex = currentStep - 1;
 
   return (
-    <section className="py-2 px-10">
+    <section className="py-4 lg:py-2 lg:px-10">
       {/* Header */}
-      <h1 className="text-center text-2xl font-medium text-gray-200">
+      <h1 className="text-center text-xl lg:text-2xl font-medium text-gray-200">
         {title}
       </h1>
-      <p className="text-center text-gray-400 text-sm font-light">
+      <p className="text-center text-gray-400 text-xs max-w-[280px] lg:max-w-full mx-auto lg:text-sm font-light">
         {description}
       </p>
       {/* Stepper */}

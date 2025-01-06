@@ -124,7 +124,7 @@ const SearchResult = <T extends { role?: TRoleUser; tags?: TTag[] }>({
             <li
               key={item._id}
               onClick={() => handleSelectItem(item)}
-              className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-sm"
+              className="cursor-pointer py-2 px-4 hover:bg-gray-200 text-xs lg:text-sm"
             >
               {item.name}
             </li>
@@ -135,7 +135,7 @@ const SearchResult = <T extends { role?: TRoleUser; tags?: TTag[] }>({
             onClick={() =>
               handleAddNewItem(searchTerm[inputKey], currentItemType)
             }
-            className="cursor-pointer py-2 px-4 text-sm text-blue-600 hover:bg-gray-200"
+            className="cursor-pointer py-2 px-4 text-xs lg:text-sm text-blue-600 hover:bg-gray-200"
           >
             Add &quot;{searchTerm[inputKey]}&quot; as new {currentItemType}
           </li>
