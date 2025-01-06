@@ -9,10 +9,10 @@ export const AvatarUpload: React.FC = () => {
     <div className="relative flex-shrink-0 my-2">
       <Image
         id="preview_img"
-        className="h-[7rem] w-[7rem] object-cover rounded-full"
+        className="h-[6rem] w-[6rem] object-cover rounded-full"
         src={previewImgSrc}
         alt="Current profile photo"
-        width={500}
+        width={300}
         height={100}
       />
       <label

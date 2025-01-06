@@ -21,14 +21,30 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
     e.preventDefault();
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
+
+  const goToStep = (stepIndex: number) => {
+    if (stepIndex + 1 !== currentStep) {
+      setCurrentStep(stepIndex + 1);
+    }
+  };
+
   return (
     <>
       {/* STEPPER */}
       <div className="hidden lg:flex justify-center items-center my-6">
         {steps.map((step, index) => (
-          <>
+          <button
+            key={step}
+            className="flex items-center"
+            onClick={() => goToStep(index)}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                goToStep(index);
+              }
+            }}
+          >
             <div
-              key={index}
               className={`flex gap-2 items-center border-2 text-gray-300 rounded-full px-2 py-1 ${
                 currentStep > index ? "border-purple-600" : "border-gray-400"
               }`}
@@ -42,14 +58,14 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
               </span>
               <span>{step}</span>
             </div>
-            <hr
-              className={`
-                border w-[40px] rounded-full 
-                ${currentStep > index ? "border-purple-600" : "border-gray-400"}
-                ${index + 1 < steps.length ? "block" : "hidden"}
-            `}
-            />
-          </>
+            {index + 1 < steps.length && (
+              <hr
+                className={`border w-[40px] rounded-full ${
+                  currentStep > index ? "border-purple-600" : "border-gray-400"
+                }`}
+              />
+            )}
+          </button>
         ))}
       </div>
       {/* STEPPER CONTENT */}
@@ -59,7 +75,7 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
           {children}
           {/* Navigation Buttons */}
           <div
-            className={`flex mt-4 ${
+            className={`flex mt-4 text-xs ${
               currentStep === 1 ? "justify-end" : "justify-between"
             }`}
           >

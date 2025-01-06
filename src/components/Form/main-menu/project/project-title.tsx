@@ -2,6 +2,13 @@ import { AvatarUpload } from "@/components/Cards/AvatarUpload";
 import { useMainMenu } from "@/context/MainMenuContext";
 import { useProfile } from "@/context/ProfileContext";
 import { TProjects } from "@/types/project";
+import {
+  faBuildingUser,
+  faCalendar,
+  faPencil,
+  faUserTie,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import DatePicker from "react-datepicker";
 
@@ -16,10 +23,14 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
       </h2>
       <div className="flex flex-row space-x-6 items-start">
         <AvatarUpload />
-        <div className="w-full grid grid-cols-2 gap-2 text-sm">
+        <div className="w-full grid grid-cols-2 gap-2 text-xs">
           <div className="w-full col-span-2">
-            <label htmlFor="owner" className="block mb-1">
-              Owner
+            <label htmlFor="owner" className="block mb-1 text-[#07074D]">
+              <FontAwesomeIcon
+                icon={faUserTie}
+                className="pr-2 text-sm text-gray-600"
+              />
+              <span>Owner</span>
             </label>
             <input
               id="owner"
@@ -32,8 +43,12 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
             />
           </div>
           <div className="w-full">
-            <label htmlFor="title" className="block mb-1">
-              Project Title
+            <label htmlFor="title" className="block mb-1 text-[#07074D]">
+              <FontAwesomeIcon
+                icon={faPencil}
+                className="pr-2 text-sm text-gray-600"
+              />
+              <span>Project Title</span>
             </label>
             <input
               id="title"
@@ -46,8 +61,12 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
             />
           </div>
           <div className="w-full">
-            <label htmlFor="company" className="block mb-1">
-              Company
+            <label htmlFor="company" className="block mb-1 text-[#07074D]">
+              <FontAwesomeIcon
+                icon={faBuildingUser}
+                className="pr-2 text-sm text-gray-600"
+              />
+              <span>Company</span>
             </label>
             <input
               id="company"
@@ -60,8 +79,12 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
             />
           </div>
           <div className="w-full">
-            <label htmlFor="start_date" className="block mb-1">
-              Start Date
+            <label htmlFor="start_date" className="block mb-1 text-[#07074D]">
+              <FontAwesomeIcon
+                icon={faCalendar}
+                className="pr-2 text-sm text-gray-600"
+              />
+              <span>Start Date</span>
             </label>
             <DatePicker
               id="start_date"
@@ -70,13 +93,13 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
               onChange={(date) => handleDurationDate(date, "start_date")}
               selectsStart
               startDate={data?.start_date}
-              className="cursor-pointer border rounded-md w-full p-2"
+              className="cursor-pointer border rounded-md w-full lg:w-[270px] p-2"
               placeholderText="Select start date"
               dateFormat="dd/MM/yyyy"
             />
           </div>
           <div className="w-full">
-            <label htmlFor="end_date" className="block mb-1">
+            <label htmlFor="end_date" className="block mb-1 text-[#07074D]">
               End Date
             </label>
             <DatePicker
@@ -87,7 +110,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
               selectsStart
               startDate={data?.end_date}
               minDate={new Date()}
-              className="cursor-pointer border rounded-md w-full p-2"
+              className="cursor-pointer border rounded-md w-full lg:w-[270px] p-2"
               placeholderText="Select end date"
               dateFormat="dd/MM/yyyy"
             />

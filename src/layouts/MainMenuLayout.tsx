@@ -56,7 +56,7 @@ const MainMenuLayout: React.FC<TMainMenuLayoutProps> = ({
       <div id="projectsHero" className="w-full">
         <HeroIntroCard />
       </div>
-      <div id="mainProjectsContent" className="mt-6">
+      <div id="mainProjectsContent" className="mt-4">
         <div id="projects" className="w-full">
           <h1 className="text-white text-2xl font-semibold tracking-wider uppercase">
             your {title}

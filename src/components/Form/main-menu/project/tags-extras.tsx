@@ -1,9 +1,14 @@
 import { AvatarUpload } from "@/components/Cards/AvatarUpload";
 import SearchResult from "@/components/Dropdown/SearchResult";
+import PriorityWarnColor from "@/components/Icons/PriorityWarnColor";
 import { useFilter } from "@/context/FilterContext";
 import { useMainMenu } from "@/context/MainMenuContext";
 import { TProjects } from "@/types/project";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSackDollar,
+  faTags,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
@@ -26,10 +31,14 @@ export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
       </h2>
       <div className="flex flex-row space-x-6 items-start">
         <AvatarUpload />
-        <div className="w-full grid grid-cols-2 gap-2 text-sm">
+        <div className="w-full grid grid-cols-2 gap-2 text-xs">
           <div className="w-full relative col-span-2">
-            <label htmlFor="tags" className="block mb-1">
-              Tags
+            <label htmlFor="tags" className="block mb-1 text-[#07074D]">
+              <FontAwesomeIcon
+                icon={faTags}
+                className="pr-2 text-sm text-gray-600"
+              />
+              <span>Tags</span>
             </label>
             <div className="border border-[#e0e0e0] rounded-md p-2 flex flex-wrap items-center gap-2 bg-white">
               {Array.isArray(data?.tags) &&
@@ -39,7 +48,7 @@ export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
                     key={tag._id}
                     className={`curoser-default py-1 px-3 text-sm rounded-full flex items-center ${tag.color}`}
                   >
-                    <span className="text-sm text-[#07074D]">{tag.name}</span>
+                    <span className="text-xs text-[#07074D]">{tag.name}</span>
                     <button
                       type="button"
                       onClick={(e) => handleRemoveTag(tag, e)}
@@ -68,7 +77,7 @@ export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
                   setVisibleItemCount(10);
                 }}
                 placeholder="Type to add tags"
-                className="flex-grow outline-none text-sm font-medium bg-transparent"
+                className="flex-grow outline-none text-xs font-medium bg-transparent"
               />
             </div>
             {isInputFocused.tags && data && (
@@ -80,11 +89,15 @@ export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
             )}
           </div>
           <div className="w-full">
-            <label htmlFor="salary" className="block mb-1">
-              Salary
+            <label htmlFor="salary" className="block mb-1 text-[#07074D]">
+              <FontAwesomeIcon
+                icon={faSackDollar}
+                className="pr-2 text-sm text-gray-600"
+              />
+              <span>Salary</span>
             </label>
             <div className="flex">
-              <span className="inline-flex items-center px-3 rounded-l-md border border-[#e0e0e0] bg-gray-100 text-gray-600 text-sm">
+              <span className="inline-flex items-center px-3 rounded-l-md border border-[#e0e0e0] bg-gray-100 text-gray-600 text-xs">
                 Rp
               </span>
               <input
@@ -101,8 +114,9 @@ export const ProjectFormStep3: React.FC<{ data: TProjects }> = ({ data }) => {
             </div>
           </div>
           <div className="w-full">
-            <label htmlFor="priority" className="block mb-1">
-              Priority
+            <label htmlFor="priority" className="block mb-1 text-[#07074D]">
+              <PriorityWarnColor status={data.priority || ""} />
+              <span>Priority</span>
             </label>
             <select
               id="priority"

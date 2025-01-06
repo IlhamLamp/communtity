@@ -53,7 +53,7 @@ const SignUpPage: React.FC = () => {
         <div className="w-full xl:w-3/4 lg:w-11/12 flex shadow-xl rounded-3xl">
           <div
             className="w-full h-auto lg:min-h-[550px] bg-gray-400 hidden lg:block lg:w-5/12 bg-cover rounded-l-3xl"
-            style={{ backgroundImage: "url('./assets/signup.jpg')" }}
+            style={{ backgroundImage: "url('/assets/signup.jpg')" }}
           />
           <div className="w-full lg:w-7/12 bg-white p-5 lg:rounded-r-3xl h-auto">
             <h3 className="text-2xl text-center">
