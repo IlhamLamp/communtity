@@ -93,7 +93,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
               onChange={(date) => handleDurationDate(date, "start_date")}
               selectsStart
               startDate={data?.start_date}
-              className="cursor-pointer border rounded-md w-[250px] lg:w-[270px] p-2"
+              className="cursor-pointer border rounded-md w-[250px] lg:w-full p-2"
               placeholderText="Select start date"
               dateFormat="dd/MM/yyyy"
             />
@@ -110,7 +110,7 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
               selectsStart
               startDate={data?.end_date}
               minDate={new Date()}
-              className="cursor-pointer border rounded-md w-[250px] lg:w-[270px] p-2"
+              className="cursor-pointer border rounded-md w-[250px] lg:w-full p-2"
               placeholderText="Select end date"
               dateFormat="dd/MM/yyyy"
             />

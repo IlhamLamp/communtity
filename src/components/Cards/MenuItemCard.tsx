@@ -1,16 +1,18 @@
+import { TProjects } from "@/types/project";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 
-const ProjectCard: React.FC = () => {
+const MenuItemCard: React.FC<{ data: TProjects }> = ({ data }) => {
   return (
     <div className="bg-gray-800 bg-opacity-50 rounded-lg p-3 lg:p-4 hover:shadow-lg hover:shadow-gray-700 transition ease-linear">
       <div className="flex flex-row gap-4 lg:gap-6 items-center">
         <div className="w-[20%] lg:w-[15%] items-center">
           <div className="flex bg-gray-500 bg-opacity-30 rounded-lg justify-center p-2">
             <Image
-              src="/assets/avatar.png"
+              id="logo"
+              src={data.logo || ""}
               alt="avatar"
               className="rounded-full w-20 h-10 lg:h-20"
               width={32}
@@ -20,7 +22,7 @@ const ProjectCard: React.FC = () => {
         </div>
         <div className="w-full max-w-[80%] lg:max-w-[85%] lg:py-2 items-center flex flex-row">
           <div className="w-full max-w-[2/5]">
-            <h1 className="text-white text-sm lg:text-md">DevOps Engineer</h1>
+            <h1 className="text-white text-sm lg:text-md">role appears here</h1>
             <div className="flex flex-row gap-2 text-xs lg:text-sm text-gray-500">
               <h5>Company</h5>
               <span>&#8226;</span>
@@ -77,4 +79,4 @@ const ProjectCard: React.FC = () => {
   );
 };
 
-export default ProjectCard;
+export default MenuItemCard;

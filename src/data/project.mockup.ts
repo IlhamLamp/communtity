@@ -1,0 +1,131 @@
+export const ProjectMockData = [
+  {
+    logo: "/assets/avatar.png",
+    owner: "John Doe",
+    title: "AI Research Project",
+    company: "Tech Innovators Inc.",
+    start_date: new Date("2023-01-01"),
+    end_date: new Date("2023-12-31"),
+    types: "research",
+    duration: "year",
+    participation: "remote",
+    address: {
+      city: "San Francisco",
+      state: "CA",
+      zip_code: 94107,
+      street: "123 Market Street",
+    },
+    approval: "yes",
+    member: [
+      {
+        project_id: 1,
+        profile_id: "P001",
+        role: { id: 1, name: "Lead Researcher" }, // Example role object
+        experience: "5 years of AI development",
+      },
+      {
+        project_id: 1,
+        profile_id: "P002",
+        role: { id: 2, name: "Data Scientist" },
+        experience: "3 years in data analysis",
+      },
+    ],
+    description:
+      "An advanced AI project focusing on natural language processing.",
+    tags: [
+      { id: 1, name: "AI" },
+      { id: 2, name: "NLP" },
+    ], // Example tags
+    salary: 120000,
+    priority: "high",
+    status: "approved",
+    created_at: new Date("2022-12-01"),
+    updated_at: new Date("2023-01-15"),
+  },
+  {
+    logo: "/assets/avatar.png",
+    owner: "Jane Smith",
+    title: "E-commerce Platform",
+    company: "Retail Solutions Ltd.",
+    start_date: new Date("2023-03-01"),
+    end_date: new Date("2023-09-30"),
+    types: "development",
+    duration: "month",
+    participation: "hybrid",
+    address: {
+      city: "New York",
+      state: "NY",
+      zip_code: 10001,
+      street: "456 Broadway",
+    },
+    approval: "no",
+    member: [
+      {
+        project_id: 2,
+        profile_id: "P003",
+        role: { id: 3, name: "Frontend Developer" },
+        experience: "2 years in React.js",
+      },
+      {
+        project_id: 2,
+        profile_id: "P004",
+        role: { id: 4, name: "Backend Developer" },
+        experience: "4 years in Node.js and database design",
+      },
+    ],
+    description:
+      "Developing a scalable e-commerce platform for online retailers.",
+    tags: [
+      { id: 3, name: "E-commerce" },
+      { id: 4, name: "Web Development" },
+    ],
+    salary: 80000,
+    priority: "medium",
+    status: "pending",
+    created_at: new Date("2023-02-15"),
+    updated_at: new Date("2023-03-05"),
+  },
+  {
+    logo: "/assets/avatar.png",
+    owner: "Alice Johnson",
+    title: "Green Energy Initiative",
+    company: "Sustainable Future",
+    start_date: new Date("2024-01-01"),
+    end_date: new Date("2024-06-30"),
+    types: "sustainability",
+    duration: "month",
+    participation: "onsite",
+    address: {
+      city: "Seattle",
+      state: "WA",
+      zip_code: 98101,
+      street: "789 Pine Street",
+    },
+    approval: "yes",
+    member: [
+      {
+        project_id: 3,
+        profile_id: "P005",
+        role: { id: 5, name: "Project Manager" },
+        experience: "8 years in project management",
+      },
+      {
+        project_id: 3,
+        profile_id: "P006",
+        role: { id: 6, name: "Environmental Scientist" },
+        experience: "6 years in renewable energy projects",
+      },
+    ],
+    description:
+      "Promoting green energy adoption through community initiatives.",
+    tags: [
+      { id: 5, name: "Energy" },
+      { id: 6, name: "Sustainability" },
+    ],
+    salary: 90000,
+    priority: "high",
+    status: "approved",
+    created_at: new Date("2023-12-01"),
+    updated_at: new Date("2024-01-10"),
+  },
+];

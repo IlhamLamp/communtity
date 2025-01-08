@@ -1,12 +1,14 @@
 "use client";
 import FilterContentModal from "@/components/Modal/FilterContentModal";
-import { faSliders } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import ProjectCard from "@/components/Cards/ProjectCard";
 import HeroIntroCard from "@/components/Cards/HeroIntroCard";
 import Membership from "@/components/Cards/Membership";
 import SummaryMenuItem from "@/components/Cards/SummaryMenuItem";
+import Link from "next/link";
+import MenuItemCard from "@/components/Cards/MenuItemCard";
+import { TProjects } from "@/types/project";
 
 type TFilterData = {
   types: string;
@@ -19,18 +21,19 @@ type TFilterData = {
 };
 
 type TMainMenuLayoutProps = {
+  data: TProjects[];
   filterData: TFilterData;
   title: string;
 };
 
 const MainMenuLayout: React.FC<TMainMenuLayoutProps> = ({
+  data,
   filterData,
   title,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [filters, setFilters] = useState(filterData);
   const [visibleItemData, setVisibleItemData] = useState<number>(5);
-  const allItemData = Array(15).fill(null);
 
   const filterCount = Object.values(filters).filter((value) => {
     if (Array.isArray(value)) {
@@ -111,11 +114,11 @@ const MainMenuLayout: React.FC<TMainMenuLayoutProps> = ({
             maxHeight: "calc(100vh - 300px)",
           }}
         >
-          {allItemData.slice(0, visibleItemData).map((_, index) => (
-            <ProjectCard key={index} />
+          {data.slice(0, visibleItemData).map((user, index) => (
+            <MenuItemCard data={user} key={index} />
           ))}
         </div>
-        {visibleItemData < allItemData.length && (
+        {visibleItemData < data.length && (
           <div className="flex justify-center mt-4">
             <button
               className="inline-block text-xs lg:text-sm bg-white text-black font-semibold py-1 lg:py-2 px-2 lg:px-4 rounded-full focus:outline-none hover:bg-gray-200"
@@ -125,7 +128,7 @@ const MainMenuLayout: React.FC<TMainMenuLayoutProps> = ({
             </button>
           </div>
         )}
-        {visibleItemData === allItemData.length && (
+        {visibleItemData === data.length && (
           <div className="flex justify-center mt-4">
             <button
               className="inline-block text-xs lg:text-sm bg-white text-black font-semibold py-1 lg:py-2 px-2 lg:px-4 rounded-full focus:outline-none hover:bg-gray-200"
@@ -135,6 +138,49 @@ const MainMenuLayout: React.FC<TMainMenuLayoutProps> = ({
             </button>
           </div>
         )}
+      </div>
+
+      <div className="flex lg:hidden items-center justify-center">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="relative">
+            <div
+              className="absolute inset-0 flex items-center"
+              aria-hidden="true"
+            >
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="px-3 text-lg font-medium text-gray-400">Or</span>
+            </div>
+          </div>
+
+          <div className="mt-2 text-center">
+            <p className="text-sm text-gray-300 mb-4">
+              come up with a new idea?
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-row space-x-6 items-center">
+            <div className="rounded-md shadow">
+              <a
+                href="#"
+                className="w-full flex gap-2 items-center justify-center px-6 py-1 text-xs leading-6 font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 hover:text-white focus:ring ring-offset-2 ring-gray-400 focus:outline-none transition duration-150 ease-in-out"
+              >
+                <FontAwesomeIcon icon={faSearch} className="text-xs" />
+                <span>explore</span>
+              </a>
+            </div>
+            <div className="">
+              <Link
+                href="/project/create"
+                className="w-full flex gap-2 items-center justify-center px-6 py-1 text-xs leading-6 font-medium rounded-md text-gray-700 dark:text-gray-700 bg-gray-100 hover:bg-gray-50 hover:text-gray-600 focus:ring ring-offset-2 ring-gray-100 focus:outline-none transition duration-150 ease-in-out"
+              >
+                <FontAwesomeIcon icon={faPlus} className="text-sm" />
+                <span>create</span>
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="summaryItemContent">

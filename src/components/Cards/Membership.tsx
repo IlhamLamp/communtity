@@ -53,9 +53,7 @@ const Membership = () => {
                       ></path>
                     </svg>
                   </div>
-                  <p className="ml-3 text-white">
-                    Early access upcoming events
-                  </p>
+                  <p className="ml-3 text-white">Followers member badge</p>
                 </li>
                 <li className="flex items-start lg:col-span-1">
                   <div className="flex-shrink-0">
@@ -101,7 +99,7 @@ const Membership = () => {
               Pay once, own it forever
             </p>
             <div className="mt-2 flex items-center justify-center text-2xl font-extrabold text-white">
-              <span>$19.99</span>
+              <span>$4.99</span>
               <span className="ml-3 text-xl font-medium text-gray-50">USD</span>
             </div>
             <div className="mt-2">
