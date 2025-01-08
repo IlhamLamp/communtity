@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import ProjectCard from "@/components/Cards/ProjectCard";
 import HeroIntroCard from "@/components/Cards/HeroIntroCard";
+import Membership from "@/components/Cards/Membership";
+import SummaryMenuItem from "@/components/Cards/SummaryMenuItem";
 
 type TFilterData = {
   types: string;
@@ -51,41 +53,48 @@ const MainMenuLayout: React.FC<TMainMenuLayoutProps> = ({
     setVisibleItemData((prevVisibleItemData) => prevVisibleItemData + 5);
   };
 
+  const showLessProjects = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setVisibleItemData(5);
+  };
+
   return (
     <section className="w-full p-4">
       <div id="projectsHero" className="w-full">
         <HeroIntroCard />
       </div>
-      <div id="mainProjectsContent" className="mt-4">
-        <div id="projects" className="w-full">
-          <h1 className="text-white text-2xl font-semibold tracking-wider uppercase">
+      <div id="mainItemContent" className="mt-4">
+        <div id="itemHeader" className="w-full">
+          <h1 className="text-white text-xl lg:text-2xl font-semibold tracking-wider uppercase">
             your {title}
           </h1>
           <div className="flex justify-between mt-4">
             <div className="flex flex-row gap-2">
-              <button className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none">
+              <button className="inline-block text-xs lg:text-sm bg-white text-black font-semibold py-1 lg:py-2 px-2 lg:px-4 rounded-full focus:outline-none">
                 All
               </button>
-              <button className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none">
+              <button className="inline-block text-xs lg:text-sm bg-white text-black font-semibold py-1 lg:py-2 px-2 lg:px-4 rounded-full focus:outline-none">
                 Active
               </button>
-              <button className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none">
+              <button className="inline-block text-xs lg:text-sm bg-white text-black font-semibold py-1 lg:py-2 px-2 lg:px-4 rounded-full focus:outline-none">
                 Applied
               </button>
-              <button className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none">
+              <button className="inline-block text-xs lg:text-sm bg-white text-black font-semibold py-1 lg:py-2 px-2 lg:px-4 rounded-full focus:outline-none">
                 Saved
               </button>
             </div>
             <div className="relative">
               <button
-                className="flex gap-2 bg-white rounded-full py-2 px-4 items-center hover:bg-Gray transition ease-linear"
+                className="flex gap-2 bg-white rounded-full py-1 lg:py-2 px-2 lg:px-4 items-center hover:bg-Gray transition ease-linear"
                 onClick={toggleModal}
               >
                 <FontAwesomeIcon
                   icon={faSliders}
-                  className="font-semibold text-lg"
+                  className="font-semibold text-xs lg:text-lg"
                 />
-                <span className="text-sm font-semibold">filters</span>
+                <span className="text-xs lg:text-sm font-semibold">
+                  filters
+                </span>
               </button>
               {filterCount > 0 && (
                 <span className="absolute top-0 right-1 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-full">
@@ -94,23 +103,50 @@ const MainMenuLayout: React.FC<TMainMenuLayoutProps> = ({
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-2 mt-4">
-            {allItemData.slice(0, visibleItemData).map((_, index) => (
-              <ProjectCard key={index} />
-            ))}
-          </div>
-          {visibleItemData < allItemData.length && (
-            <div className="flex justify-center mt-4">
-              <button
-                className="inline-block text-sm bg-white text-black font-semibold py-2 px-4 rounded-full focus:outline-none hover:bg-gray-200"
-                onClick={showMoreProjects}
-              >
-                Show More
-              </button>
-            </div>
-          )}
         </div>
+        <div
+          id="cardContent"
+          className="flex flex-col gap-2 mt-4 overflow-y-auto"
+          style={{
+            maxHeight: "calc(100vh - 300px)",
+          }}
+        >
+          {allItemData.slice(0, visibleItemData).map((_, index) => (
+            <ProjectCard key={index} />
+          ))}
+        </div>
+        {visibleItemData < allItemData.length && (
+          <div className="flex justify-center mt-4">
+            <button
+              className="inline-block text-xs lg:text-sm bg-white text-black font-semibold py-1 lg:py-2 px-2 lg:px-4 rounded-full focus:outline-none hover:bg-gray-200"
+              onClick={showMoreProjects}
+            >
+              Show More
+            </button>
+          </div>
+        )}
+        {visibleItemData === allItemData.length && (
+          <div className="flex justify-center mt-4">
+            <button
+              className="inline-block text-xs lg:text-sm bg-white text-black font-semibold py-1 lg:py-2 px-2 lg:px-4 rounded-full focus:outline-none hover:bg-gray-200"
+              onClick={showLessProjects}
+            >
+              Show Less
+            </button>
+          </div>
+        )}
       </div>
+
+      <div id="summaryItemContent">
+        <div id="summaryHeader" className="w-full mt-4">
+          <h1 className="text-white text-2xl font-semibold tracking-wider uppercase">
+            summary
+          </h1>
+        </div>
+        <SummaryMenuItem />
+        <Membership />
+      </div>
+
       {isModalOpen && (
         <FilterContentModal
           data={filters}

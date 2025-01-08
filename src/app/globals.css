@@ -13,3 +13,28 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+#cardContent {
+  overflow-y: auto;
+  scrollbar-width: thin; /* Membuat scrollbar lebih tipis (Firefox) */
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Warna track dan thumb untuk Firefox */
+}
+
+#cardContent::-webkit-scrollbar {
+  width: 8px; /* Lebar scrollbar */
+  height: 8px; /* Tinggi scrollbar horizontal (opsional) */
+}
+
+#cardContent::-webkit-scrollbar-track {
+  background: transparent; /* Warna track (latar belakang scrollbar) */
+  border-radius: 10px; /* Membuat track lebih halus */
+}
+
+#cardContent::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.8); /* Thumb dengan warna semi-transparan */
+  border-radius: 10px; /* Membuat thumb lebih rounded */
+}
+
+#cardContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 61, 160, 0.9); /* Warna thumb saat di-hover */
+}
