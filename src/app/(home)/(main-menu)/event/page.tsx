@@ -1,3 +1,4 @@
+import { ProjectMockData } from "@/data/project.mockup";
 import MainMenuLayout from "@/layouts/MainMenuLayout";
 
 const EventsPage: React.FC = () => {
@@ -12,7 +13,11 @@ const EventsPage: React.FC = () => {
   };
   return (
     <div className="bg-PurpleDark">
-      <MainMenuLayout filterData={filterData} title="Events" />
+      <MainMenuLayout
+        data={ProjectMockData}
+        filterData={filterData}
+        title="Events"
+      />
     </div>
   );
 };

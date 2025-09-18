@@ -1,3 +1,4 @@
+import { ProjectMockData } from "@/data/project.mockup";
 import MainMenuLayout from "@/layouts/MainMenuLayout";
 
 const GroupsPage: React.FC = () => {
@@ -12,7 +13,11 @@ const GroupsPage: React.FC = () => {
   };
   return (
     <div className="bg-PurpleDark">
-      <MainMenuLayout filterData={filterData} title="Groups" />
+      <MainMenuLayout
+        data={ProjectMockData}
+        filterData={filterData}
+        title="Groups"
+      />
     </div>
   );
 };
