@@ -14,11 +14,11 @@ const RightBarMainMenuLayout: React.FC<TRBarMainMenuLayoutProps> = ({
   const path = usePathname();
 
   const mostViewedData = Array(5).fill(null);
-  const mostSearchedData = Array(6).fill(null);
+  const mostSearchedData = Array(3).fill(null);
 
   return (
     <div className={`${bgColor} h-screen p-4`}>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         {/* CREATE */}
         <div id="createProject">
           <h1 className="text-white text-xl font-semibold uppercase tracking-wider text-left">
@@ -42,23 +42,30 @@ const RightBarMainMenuLayout: React.FC<TRBarMainMenuLayoutProps> = ({
           <h1 className="text-white text-xl font-semibold uppercase tracking-wider text-left">
             Most Viewed
           </h1>
-          <div className="flex flex-col mt-4 gap-4">
+          <div className="flex flex-col mt-4 gap-2">
             {mostViewedData.map((_: any, index: number) => (
-              <div className="flex items-center justify-between" key={index}>
+              <div
+                className="group flex items-center justify-between p-1 rounded-xl cursor-pointer transition-all duration-100 hover:bg-gray-300"
+                key={index}
+              >
                 <div className="flex items-center">
                   <Image
                     src="/assets/avatar.png"
                     alt="avatar"
-                    className="rounded-full w-10 h-10"
+                    className="rounded-full w-10 h-w-10"
                     width={200}
                     height={200}
                   />
-                  <div className="ml-4">
-                    <h3 className="text-white text-sm font-semibold">Role</h3>
-                    <p className="text-gray-400 text-sm">duration</p>
+                  <div className="ml-4 px-2">
+                    <h3 className="text-white text-sm font-semibold group-hover:text-black">
+                      Role
+                    </h3>
+                    <p className="text-gray-400 text-sm group-hover:text-black">
+                      duration
+                    </p>
                   </div>
                 </div>
-                <button className="bg-black opacity-50 text-white p-2 rounded-full text-xs hover:opacity-75 focus:outline-none">
+                <button className="bg-black bg-opacity-50 hover:bg-opacity-100 text-white p-2 rounded-full text-xs focus:outline-none transition">
                   Apply
                 </button>
               </div>
@@ -78,7 +85,7 @@ const RightBarMainMenuLayout: React.FC<TRBarMainMenuLayoutProps> = ({
                   href={"#"}
                   className="relative flex gap-2 w-full items-center justify-center px-2 py-1 text-xs bg-black opacity-20 text-gray-300 hover:text-gray-100 hover:opacity-70 transition-all duration-200 rounded-full ease-linear"
                 >
-                  <span>Tech</span>
+                  <span>Test</span>
                   <FontAwesomeIcon icon={faPlus} />
                 </Link>
               </div>
