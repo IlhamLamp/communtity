@@ -12,6 +12,7 @@ import React, {
 import { TAddress, TAddressFieldInputProfile } from "@/types/profile";
 import { useFilter } from "./FilterContext";
 import { TTag } from "@/types/tag";
+import { useProfile } from "./ProfileContext";
 
 type ItemDataType = TProjects;
 
@@ -48,10 +49,20 @@ export const MainMenuProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { setSearchTerm, setCurrentItemType, deleteSearchTerm } = useFilter();
+  const { profile } = useProfile();
 
   const [previewImgSrc, setPreviewImgSrc] =
     useState<string>("/assets/avatar.png");
   const [itemData, setItemData] = useState<ItemDataType>(ProjectDefaultData);
+
+  useEffect(() => {
+    if (itemData.owner == "" && profile?.username) {
+      setItemData((prev) => ({
+        ...prev,
+        owner: profile.username,
+      }));
+    }
+  }, [itemData.owner, profile?.username, setItemData]);
 
   useEffect(() => {
     if (itemData.logo) {

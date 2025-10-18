@@ -2,6 +2,13 @@ import { TAddress } from "./profile";
 import { TRoleUser } from "./role";
 import { TTag } from "./tag";
 
+export type TProjectResponse = {
+  message: string;
+  error?: string;
+  status: number;
+  dat?: TProjects;
+};
+
 export type TProjectMemberFieldInput = {
   key: "member";
   index: number;

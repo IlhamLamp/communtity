@@ -36,15 +36,15 @@ export default function RootLayout({
       <body className={poppins.className}>
         <PublicResourceProvider>
           <FilterProvider>
-            <MainMenuProvider>
-              <AuthProvider>
-                <ProfileProvider>
+            <AuthProvider>
+              <ProfileProvider>
+                <MainMenuProvider>
                   <Toaster toastOptions={toasterStatusColor} />
                   <Header />
                   <main>{children}</main>
-                </ProfileProvider>
-              </AuthProvider>
-            </MainMenuProvider>
+                </MainMenuProvider>
+              </ProfileProvider>
+            </AuthProvider>
           </FilterProvider>
         </PublicResourceProvider>
       </body>

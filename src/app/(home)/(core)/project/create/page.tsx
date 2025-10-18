@@ -18,6 +18,7 @@ const CreateProjectsPage: React.FC = () => {
           title="Create Projects"
           description="Define your project details with this step-by-step process"
           steps={["Project Title", "General Info", "Tags & Extras"]}
+          initialData={itemData}
         >
           <ProjectFormStep1 data={itemData} />
           <ProjectFormStep2 data={itemData} />

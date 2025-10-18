@@ -1,6 +1,5 @@
 import { AvatarUpload } from "@/components/Cards/AvatarUpload";
 import { useMainMenu } from "@/context/MainMenuContext";
-import { useProfile } from "@/context/ProfileContext";
 import { TProjects } from "@/types/project";
 import {
   faBuildingUser,
@@ -13,7 +12,6 @@ import React from "react";
 import DatePicker from "react-datepicker";
 
 export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
-  const { profile } = useProfile();
   const { handleDurationDate, handleInputChange } = useMainMenu();
   return (
     <div id="projectFormStepOne">
@@ -36,10 +34,10 @@ export const ProjectFormStep1: React.FC<{ data: TProjects }> = ({ data }) => {
               id="owner"
               name="owner"
               type="text"
-              disabled={true}
-              className="cursor-not-allowed border rounded-md w-full p-2 text-gray-400"
+              readOnly
+              className="cursor-not-allowed border rounded-md w-full p-2 bg-gray-100 text-gray-400 focus:outline-none focus:ring-0"
               placeholder="Username"
-              value={profile?.username || ""}
+              value={data?.owner || ""}
             />
           </div>
           <div className="w-full">

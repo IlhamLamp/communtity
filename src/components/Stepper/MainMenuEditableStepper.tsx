@@ -1,9 +1,13 @@
-import React from "react";
+import { TProjects } from "@/types/project";
+import React, { useState } from "react";
+
 type StepperProps = {
   steps: string[];
   currentStep: number;
   children: React.ReactNode;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  data: TProjects;
+  handleSubmit: (ev: React.FormEvent<HTMLFormElement>) => void;
 };
 
 const MainMenuEditableStepper: React.FC<StepperProps> = ({
@@ -11,7 +15,11 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
   children,
   currentStep,
   setCurrentStep,
+  data,
+  handleSubmit,
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const nextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (currentStep < 3) setCurrentStep(currentStep + 1);
@@ -25,6 +33,20 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
   const goToStep = (stepIndex: number) => {
     if (stepIndex + 1 !== currentStep) {
       setCurrentStep(stepIndex + 1);
+    }
+  };
+
+  const handleFormSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+    console.log(data);
+
+    setIsSubmitting(true);
+    try {
+      await handleSubmit(ev);
+    } catch (error) {
+      console.error("Creation project failed: ", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -70,7 +92,10 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
       </div>
       {/* STEPPER CONTENT */}
       <div className="flex max-w-[95%] lg:max-w-[70%] mx-auto mt-6 lg:mt-0 justify-center">
-        <form action="" className="w-full bg-gray-100 p-4 rounded-lg shadow-lg">
+        <form
+          className="w-full bg-gray-100 p-4 rounded-lg shadow-lg"
+          onSubmit={handleFormSubmit}
+        >
           {/* Content */}
           {children}
           {/* Navigation Buttons */}
@@ -79,6 +104,7 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
               currentStep === 1 ? "justify-end" : "justify-between"
             }`}
           >
+            {/* Previous Button */}
             <button
               onClick={prevStep}
               disabled={currentStep === 1}
@@ -88,17 +114,22 @@ const MainMenuEditableStepper: React.FC<StepperProps> = ({
             >
               Previous
             </button>
-            <button
-              onClick={nextStep}
-              disabled={currentStep === steps.length}
-              className={`py-2 px-4 bg-purple-600 text-white rounded-md ${
-                currentStep === steps.length
-                  ? "cursor-not-allowed"
-                  : "hover:bg-purple-700"
-              }`}
-            >
-              Next
-            </button>
+            {/* Next / Submit Button */}
+            {currentStep === steps.length ? (
+              <button
+                type="submit"
+                className={`py-2 px-4 bg-PurpleDark text-white rounded-md hover:bg-Purple`}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+            ) : (
+              <button
+                onClick={nextStep}
+                className={`py-2 px-4 bg-purple-600 text-white rounded-md "hover:bg-purple-700`}
+              >
+                Next
+              </button>
+            )}
           </div>
         </form>
       </div>
